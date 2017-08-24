@@ -29,5 +29,9 @@ export class ValueSubject<T> {
             }
         }, 0);
     }
+
+    getValue(): T {
+        return this._data.getValue();
+    }
 }
                                     

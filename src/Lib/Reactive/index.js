@@ -1,6 +1,4 @@
 //@flow
-import Rx from 'rxjs';
-
 import { Subscription } from './Subscription';
 import { Observable, ValueObservable } from './Observable';
 import { Subject } from './Subject';

@@ -1,21 +1,56 @@
-import React, { Component } from 'react';
+//@flow
+
+import * as React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { Observable } from './Lib/Reactive/Observable';
+import BaseComponent from './Lib/BaseComponent';
+import { ValueSubject } from './Lib/Reactive';
 
-class App extends Component {
+
+const thread$ = new ValueSubject(3);
+const message$ = new ValueSubject(44);
+
+setInterval(() => {
+	const current = message$.getValue();
+	message$.next(current + 1);
+}, 2000);
+
+
+type PropsType = {
+    messageId: string,
+};
+
+class MessageItem extends BaseComponent<PropsType> {                        //dziedziczenie dostarcza typy - dekorator funkcjonalność
+    ddd = 121;
+
+    render() {
+        const { messageId } = this.props;
+        const message = this.getValue$(message$.asObservable());
+
+        if (message) {
+            return (
+                <div>
+                    model tenże { messageId } { this.ddd } { message }
+                </div>
+            );
+        }
+
+        return (
+            <div>
+                brak - { messageId } { this.ddd }
+            </div>
+        );
+    }
+}
+
+
+class App extends React.Component<{}> {
 	render() {
 		return (
-		<div className="App">
-			<div className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<h2>Welcome to React</h2>
+			<div className="App">
+				<MessageItem messageId="aaazzzddd1234567890" />
 			</div>
-			<p className="App-intro">
-				To get started, edit <code>src/App.js</code> and save to reload.
-			</p>
-		</div>
 		);
 	}
 }
