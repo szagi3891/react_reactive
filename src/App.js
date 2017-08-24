@@ -8,39 +8,35 @@ import BaseComponent from './Lib/BaseComponent';
 import { ValueSubject } from './Lib/Reactive';
 
 
-const thread$ = new ValueSubject(3);
-const message$ = new ValueSubject(44);
+const counter$ = new ValueSubject(44);
+const counter2$ = new ValueSubject(1);
+
+const char$ = counter2$.asObservable().map(count => '.'.repeat(Math.min(count, 30)));
 
 setInterval(() => {
-	const current = message$.getValue();
-	message$.next(current + 1);
+	counter$.next(counter$.getValue() + 1);
 }, 2000);
 
+setInterval(() => {
+	counter2$.next(counter2$.getValue() + 1);
+}, 3000);
 
 type PropsType = {
     messageId: string,
 };
 
 class MessageItem extends BaseComponent<PropsType> {                        //dziedziczenie dostarcza typy - dekorator funkcjonalność
-    ddd = 121;
-
     render() {
         const { messageId } = this.props;
-        const message = this.getValue$(message$.asObservable());
+        const counter = this.getValue$(counter$.asObservable());
+		const char = this.getValue$(char$);
 
-        if (message) {
-            return (
-                <div>
-                    model tenże { messageId } { this.ddd } { message }
-                </div>
-            );
-        }
-
-        return (
-            <div>
-                brak - { messageId } { this.ddd }
-            </div>
-        );
+		return (
+			<div>
+				<p>model tenże { messageId } { counter }</p>
+				<p>==> {char}</p>
+			</div>
+		);
     }
 }
 
