@@ -1,0 +1,23 @@
+{
+  "name": "aaaa",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "flow-typed": "^2.1.5",
+    "immutable": "4.0.0-rc.2",
+    "react": "next",
+    "react-dom": "next",
+    "rxjs": "^5.4.3"
+  },
+  "devDependencies": {
+    "flow-bin": "^0.53.1",
+    "react-scripts": "1.0.11"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "flow": "./node_modules/flow-bin/vendor/flow status"
+  }
+}
