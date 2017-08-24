@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { ValueSubject, ValueObservable, Subscription } from 'Lib/Core/Reactive';
+import { ValueSubject, ValueObservable, Subscription } from './Reactive';
 import { is as isEqualImmutable } from 'immutable';
 
 const shoudUpdate = (oldObj: mixed, newObj: mixed): bool => {
