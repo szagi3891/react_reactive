@@ -28,7 +28,6 @@ export default class BaseComponent<Props, State=void> extends React.Component<Pr
             const old_sub = this._sub;
             this._sub = [];
 
-            console.info('render');
             const renderOut = oldRender();
 
             for (const sub of old_sub) {
