@@ -1,16 +1,23 @@
 //@flow
 
 import * as React from 'react';
-import { ValueObservable, Subscription } from './Reactive';
+import { ValueSubject, ValueObservable, Subscription } from './Reactive';
 
 
 export default class BaseComponent<Props, State=void> extends React.Component<Props, State> {
 
     _sub: Array<Subscription>;
 
-    constructor() {
+    _props$: ValueSubject<Props>;
+
+    componentWillReceiveProps(nextProps: Props) {
+        this._props$.next(nextProps);
+    }
+
+    constructor(props: Props) {
         super();
 
+        this._props$ = new ValueSubject(props);
         this._sub = [];
 
         const oldRender = this.render.bind(this);
@@ -30,6 +37,10 @@ export default class BaseComponent<Props, State=void> extends React.Component<Pr
 
             return renderOut;
         };
+    }
+
+    getProps$(): ValueObservable<Props> {
+        return this._props$.asObservable();
     }
 
     getValue$<T>(stream: ValueObservable<T>): T {
