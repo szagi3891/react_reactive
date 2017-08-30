@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { ValueSubject, ValueObservable, Subscription } from './Reactive';
 
+const isSSR = typeof window === 'undefined';
 
 export default class BaseComponent<Props, State=void> extends React.Component<Props, State> {
 
@@ -12,6 +13,12 @@ export default class BaseComponent<Props, State=void> extends React.Component<Pr
 
     componentWillReceiveProps(nextProps: Props) {
         this._props$.next(nextProps);
+    }
+
+    componentWillUnmount() {
+        for (const sub of this._sub) {
+            sub.unsubscribe();
+        }
     }
 
     constructor(props: Props) {
@@ -48,17 +55,23 @@ export default class BaseComponent<Props, State=void> extends React.Component<Pr
         //$FlowFixMe
         let result: T = null;
 
-        this._sub.push(stream.take(2).subscribe(data => {
+        const subscription = stream.take(2).subscribe(data => {
             if (isSet === false) {
                 isSet = true;
                 result = data;
             } else {
                 this.forceUpdate();
             }
-        }));
+        })
 
         if (isSet !== true) {
             throw Error('panic');
+        }
+
+        if (isSSR) {
+            subscription.unsubscribe();
+        } else {
+            this._sub.push(subscription);
         }
 
         return result;

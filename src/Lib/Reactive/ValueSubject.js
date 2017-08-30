@@ -15,19 +15,8 @@ export class ValueSubject<T> {
         return new ValueObservable._create(this._data.asObservable());
     }
 
-                                        //TODO - do wyrzucenia ta funkcja jak się zrobi porządek z draftem
-    nextSync(value: T) {
+    next(value: T) {
         this._data.next(value);
-    }
-
-    next(value: T, afterNext?: () => void) {
-        setTimeout(() => {
-            this._data.next(value);
-
-            if (afterNext) {
-                afterNext();
-            }
-        }, 0);
     }
 
     getValue(): T {

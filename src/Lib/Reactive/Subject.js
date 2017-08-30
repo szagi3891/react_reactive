@@ -20,9 +20,7 @@ export class Subject<T> {
     }
 
     next(value: T) {
-        setTimeout(() => {
-            this._data.next(value);
-        }, 0);
+        this._data.next(value);
     }
 
     complete() {
