@@ -138,7 +138,7 @@ export class Observable<T> {
 
 export class ValueObservable<T> extends Observable<T> {
 
-    debounceTime(time: string): ValueObservable<T> {
+    debounceTime(time: number): ValueObservable<T> {
         const newObserver = this._data.debounceTime(time)
             .merge(this._data.take(1));
         return ValueObservable._create(newObserver);

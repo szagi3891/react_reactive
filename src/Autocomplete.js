@@ -22,17 +22,9 @@ class Autocomplete extends BaseComponent<{}> {
     render() {
         return (
             <div>
-                { this._renderInput() }
+                <input onChange={this._onChange} />
                 { this._renderList() }
             </div>
-        );
-    }
-
-    _renderInput() {
-        return (
-            <input
-                onChange={this._onChange}
-            />
         );
     }
 
