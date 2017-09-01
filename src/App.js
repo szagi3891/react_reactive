@@ -7,6 +7,7 @@ import './App.css';
 import BaseComponent from './Lib/BaseComponent';
 import { ValueSubject } from './Lib/Reactive';
 
+import Autocomplete from './Autocomplete';
 
 const counter$ = new ValueSubject(44);
 const counter2$ = new ValueSubject(1);
@@ -47,6 +48,7 @@ class App extends React.Component<{}> {
         return (
             <div className="App">
                 <MessageItem messageId="aaazzzddd1234567890" />
+                <Autocomplete />
             </div>
         );
     }

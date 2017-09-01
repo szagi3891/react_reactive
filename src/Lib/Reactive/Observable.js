@@ -138,6 +138,12 @@ export class Observable<T> {
 
 export class ValueObservable<T> extends Observable<T> {
 
+    debounceTime(time: string): ValueObservable<T> {
+        const newObserver = this._data.debounceTime(time)
+            .merge(this._data.take(1));
+        return ValueObservable._create(newObserver);
+    }
+
     distinctUntilChanged(compare?: (a: T, b: T) => bool): ValueObservable<T> {
         const newObserver = this._data.distinctUntilChanged(compare);
         return ValueObservable._create(newObserver);
