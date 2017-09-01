@@ -2,12 +2,16 @@
 
 import * as React from 'react';
 
-import BaseComponent from './Lib/BaseComponent';
-import { ValueSubject } from './Lib/Reactive';
+import BaseComponent from '../Lib/BaseComponent';
+import { ValueSubject } from '../Lib/Reactive';
 
 import Store from './Store';
 
-class Autocomplete extends BaseComponent<{}> {
+type PropsType = {|
+    className: string
+|};
+
+class Autocomplete extends BaseComponent<PropsType> {
     input = new ValueSubject('');
 
     currentList = this.input.asObservable()
@@ -20,8 +24,10 @@ class Autocomplete extends BaseComponent<{}> {
     }
 
     render() {
+        const { className } = this.props;
+        
         return (
-            <div>
+            <div className={className}>
                 <input onChange={this._onChange} />
                 { this._renderList() }
             </div>
@@ -29,7 +35,6 @@ class Autocomplete extends BaseComponent<{}> {
     }
 
     _renderList = () => {
-
         const list = this.getValue$(this.currentList);
         
         if (list === null) {
@@ -39,6 +44,20 @@ class Autocomplete extends BaseComponent<{}> {
                 </div>
             );
         }
+
+        return (
+            <AutocompleteList list={list} />
+        );
+    }
+}
+
+type PropsListType = {|
+    list: Array<string>
+|};
+
+class AutocompleteList extends BaseComponent<PropsListType> {
+    render() {
+        const { list } = this.props;
 
         return (
             <div>
