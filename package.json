@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.5",
     "flow-typed": "^2.1.5",
     "immutable": "4.0.0-rc.2",
     "react": "next",

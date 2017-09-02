@@ -1,5 +1,6 @@
 //@flow
 import * as React from 'react';
+import cx from 'classnames';
 import BaseComponent from '../Lib/BaseComponent';
 import { ValueSubject, ValueObservable, Subject } from '../Lib/Reactive';
 
@@ -11,8 +12,37 @@ export type FormType = {
     input3: string
 };
 
-const isNumber = (text: string): bool => {
-    return parseInt(text, 10).toString() === text;
+const isNumber = (text: string): bool => parseInt(text, 10).toString() === text;
+
+const isGrunwald = (text: string): bool => text === "1410";
+
+const isHexDigit = (digit: string): bool => {
+    if (isNumber(digit)) {
+        return true;
+    }
+
+    const letter = digit.toLowerCase();
+
+    return (
+        digit === "a" ||
+        digit === "b" ||
+        digit === "c" ||
+        digit === "d" ||
+        digit === "e" ||
+        digit === "f"
+    );
+}
+
+const isHex = (text: string): bool => {
+    const maxIndex = text.length - 1;
+
+    for (let i = 0; i <= maxIndex; i++) {
+        if (isHexDigit(text[i]) === false) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 class InputState {
@@ -60,17 +90,20 @@ class InputState {
 
 type PropsInputType = {|
     input: InputState,
+    caption: string,
 |};
 
 class FormInput extends BaseComponent<PropsInputType> {
 
     render() {
-        const { input } = this.props;
+        const { input, caption } = this.props;
         const value = this.getValue$(input.value$);
         const error = this.getValue$(input.errorForInput$);
 
         return (
             <div className="FormInput">
+                <div>{caption}</div>
+
                 <div className="FormInput__error">
                     { error }
                 </div>
@@ -92,9 +125,9 @@ type PropsType = {|
 
 export default class Form extends BaseComponent<PropsType> {
 
-    input1 = new InputState('Oczekiwano liczby', isNumber);
-    input2 = new InputState('Oczekiwano liczby (2)', isNumber);
-    input3 = new InputState('Oczekiwano liczby (3)', isNumber);
+    input1 = new InputState('Oczekiwano poprawnej daty', isGrunwald);
+    input2 = new InputState('Oczekiwano poprawnego wieku', isNumber);
+    input3 = new InputState('Oczekiwano hasła do biosu', isHex);
 
     send: Subject<void> = new Subject();
     send$ = this.send.asObservable();
@@ -135,39 +168,38 @@ export default class Form extends BaseComponent<PropsType> {
         input3: value3
     }));
 
-    sendMessage$ = this.send$
-        .withLatestFrom3(
-            this.errors$,
-            this.data$,
-            this.getProps$().map(props => props.onSubmit)
-        )
-        .scan([], (prevState: Array<string>, [click, errors, data, onSubmit]) => {
+    constructor(props: PropsType) {
+        super(props);
 
-            if (errors.length < 1) {
-                onSubmit(data);
-                return [];
-            }
-
-            return [
-                "Proszę poprawic błędy w formularzu",
-                ...errors
-            ];
-        });
+        this.subscribe$(
+            this.send$
+                .switchMap(() => ValueObservable.combineLatestTuple(
+                        this.data$,
+                        this.getProps$().map(props => props.onSubmit)
+                    )
+                )
+                .do(([data, onSubmit]) => {
+                    onSubmit(data);
+                })
+        );
+    }
 
     render() {
         const { className } = this.props;
 
-        const sendMessage = this.getValue$(this.sendMessage$);
+        const errors = this.getValue$(this.errors$);
+
+        const submitClassName = cx('FormSubmit', {
+            'FormSubmit--disable': errors.length > 0
+        });
 
         return (
             <div className={className}>
-                <FormInput input={this.input1} />
-                <FormInput input={this.input2} />
-                <FormInput input={this.input3} />
+                <FormInput input={this.input1} caption="Wprowadź datę bitwy pod Grunwaldem" />
+                <FormInput input={this.input2} caption="Wprowadź wiek jakiśtam" />
+                <FormInput input={this.input3} caption="Wprowadź liczbę szesnastkową" />
 
-                { sendMessage.map(message => <div key={message}>{message}</div>) }
-
-                <div className="FormSubmit">
+                <div className={submitClassName}>
                     <div className="FormSubmitButton" onClick={this._onSend}>
                         Wyślij
                     </div>

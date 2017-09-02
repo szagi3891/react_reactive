@@ -1,13 +1,14 @@
 //@flow
 
 import * as React from 'react';
-import { ValueSubject, ValueObservable, Subscription } from './Reactive';
+import { Observable, ValueSubject, ValueObservable, Subscription } from './Reactive';
 
 const isSSR = typeof window === 'undefined';
 
 export default class BaseComponent<Props> extends React.Component<Props, void> {
 
-    _sub: Array<Subscription>;
+    _subscriptionForComponent: Array<Subscription>;
+    _subscriptionForRender: Array<Subscription>;
 
     _props$: ValueSubject<Props>;
 
@@ -16,7 +17,11 @@ export default class BaseComponent<Props> extends React.Component<Props, void> {
     }
 
     componentWillUnmount() {
-        for (const sub of this._sub) {
+        for (const sub of this._subscriptionForComponent) {
+            sub.unsubscribe();
+        }
+    
+        for (const sub of this._subscriptionForRender) {
             sub.unsubscribe();
         }
     }
@@ -24,16 +29,18 @@ export default class BaseComponent<Props> extends React.Component<Props, void> {
     constructor(props: Props) {
         super();
 
+        this._subscriptionForComponent = [];
+        this._subscriptionForRender = [];
+
         this._props$ = new ValueSubject(props);
-        this._sub = [];
 
         const oldRender = this.render.bind(this);
 
         //$FlowFixMe
         this.render = () => {
 
-            const old_sub = this._sub;
-            this._sub = [];
+            const old_sub = this._subscriptionForRender;
+            this._subscriptionForRender = [];
 
             const renderOut = oldRender();
 
@@ -60,10 +67,7 @@ export default class BaseComponent<Props> extends React.Component<Props, void> {
                 isSet = true;
                 result = data;
             } else {
-                                                        //TODO - do zbadania
-                setTimeout(() => {
-                    this.forceUpdate();
-                }, 100);
+                this.forceUpdate();
             }
         })
 
@@ -74,10 +78,16 @@ export default class BaseComponent<Props> extends React.Component<Props, void> {
         if (isSSR) {
             subscription.unsubscribe();
         } else {
-            this._sub.push(subscription);
+            this._subscriptionForRender.push(subscription);
         }
 
         return result;
+    }
+
+    subscribe$<T>(obs: Observable<T>) {
+        this._subscriptionForComponent.push(
+            obs.subscribe(() => {})
+        )
     }
 }
 
