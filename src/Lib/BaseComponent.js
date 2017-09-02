@@ -5,7 +5,7 @@ import { ValueSubject, ValueObservable, Subscription } from './Reactive';
 
 const isSSR = typeof window === 'undefined';
 
-export default class BaseComponent<Props, State=void> extends React.Component<Props, State> {
+export default class BaseComponent<Props> extends React.Component<Props, void> {
 
     _sub: Array<Subscription>;
 
@@ -60,7 +60,10 @@ export default class BaseComponent<Props, State=void> extends React.Component<Pr
                 isSet = true;
                 result = data;
             } else {
-                this.forceUpdate();
+                                                        //TODO - do zbadania
+                setTimeout(() => {
+                    this.forceUpdate();
+                }, 100);
             }
         })
 

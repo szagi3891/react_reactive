@@ -1,0 +1,23 @@
+.FormInput {
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #e0e0e0;
+}
+
+.FormInput__error {
+    color: red;
+}
+
+.FormSubmit {
+    display: flex;
+    justify-content: center;
+}
+
+.FormSubmitButton {
+    width: 150px;
+    height: 25px;
+    line-height: 25px;
+    background-color: #F85959;
+    cursor: pointer;
+}

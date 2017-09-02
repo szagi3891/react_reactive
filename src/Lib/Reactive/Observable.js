@@ -295,12 +295,29 @@ export class ValueObservable<T> extends Observable<T> {
         const z = Rx.Observable.combineLatest(a._data, b._data, combine);
         return ValueObservable._create(z);
     }
+/*
+    static combineLatestTuple<Elem, T:Iterable<Elem>>(
+        list: T
+    ): ValueObservable<$TupleMap<T, typeof $await>> {
+        const z = Rx.Observable.combineLatest(a._data, b._data);
+        return ValueObservable._create(z);
+    }
+*/
 
     static combineLatestTuple<A, B>(
         a: ValueObservable<A>,
         b: ValueObservable<B>,
     ): ValueObservable<[A, B]> {
         const z = Rx.Observable.combineLatest(a._data, b._data);
+        return ValueObservable._create(z);
+    }
+
+    static combineLatestTuple3<A, B, C>(
+        a: ValueObservable<A>,
+        b: ValueObservable<B>,
+        c: ValueObservable<C>,
+    ): ValueObservable<[A, B, C]> {
+        const z = Rx.Observable.combineLatest(a._data, b._data, c._data);
         return ValueObservable._create(z);
     }
 
