@@ -1,15 +1,13 @@
 //@flow
 
 import * as React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import MessageItem from './MessageItem/MessageItem';
 import Autocomplete from './Autocomplete/Autocomplete';
 import Form from './Form/Form';
-import type { FormType } from './Form/Form';
 
-const onSubmit = (form: FormType) => {
+const onSubmit = (form: Array<string>) => {
     console.info('Wysyłam poprawnie zwalidowane dane formularza', form);
 };
 

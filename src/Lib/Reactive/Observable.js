@@ -272,6 +272,15 @@ export class ValueObservable<T> extends Observable<T> {
     }
 */
 
+    static combineLatestTupleArr<K>(
+        k: Array<ValueObservable<K>>,
+    ): ValueObservable<Array<K>> {
+        const inner = k.map(item => item._data);
+        //$FlowFixMe
+        const z = Rx.Observable.combineLatest(inner);
+        return ValueObservable._create(z);
+    }
+
     static combineLatestTuple<A, B>(
         a: ValueObservable<A>,
         b: ValueObservable<B>,

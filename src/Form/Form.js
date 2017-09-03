@@ -2,15 +2,11 @@
 import * as React from 'react';
 import cx from 'classnames';
 import BaseComponent from '../Lib/BaseComponent';
-import { ValueSubject, ValueObservable, Subject } from '../Lib/Reactive';
+import { ValueObservable, Subject } from '../Lib/Reactive';
+
+import InputState from './InputState';
 
 import './Form.css';
-
-export type FormType = {
-    input1: string,
-    input2: string,
-    input3: string
-};
 
 const isNumber = (text: string): bool => parseInt(text, 10).toString() === text;
 
@@ -39,49 +35,6 @@ export const isHex = (text: string): bool => {
     }
 
     return true;
-}
-
-class InputState {
-    value = new ValueSubject('');
-    isVisit = new ValueSubject(false);
-
-    value$ = this.value.asObservable();
-    isVisit$ = this.isVisit.asObservable();
-
-    onChange = (event: SyntheticInputEvent<>) => {
-        this.value.next(event.target.value);
-    }
- 
-    onBlur = () => {
-        this.isVisit.next(true);
-    }
-
-    errorForInput$: ValueObservable<string | null>;
-    errorForForm$: ValueObservable<string | null>;
-
-    constructor(errorMessage: string, fnValidator: (value: string) => bool) {
-
-        const data$ = ValueObservable.combineLatestTuple(
-            this.value$,
-            this.isVisit$
-        );
-
-        this.errorForInput$ = data$.map(([input, isVisit]: [string, bool]): null | string => {
-            if (isVisit === false) {
-                return null;
-            }
-
-            if (!fnValidator(input)) {
-                return errorMessage;
-            }
-
-            return null;
-        });
-
-        this.errorForForm$ = data$.map(([input, isVisit]: [string, bool]): null | string =>
-            fnValidator(input) ? null : errorMessage
-        );
-    }
 }
 
 type PropsInputType = {|
@@ -113,17 +66,39 @@ class FormInput extends BaseComponent<PropsInputType> {
         );
     }
 }
-    
+
+const filterNull = (list: Array<string | null>): Array<string> => {
+    return list.reduce((acc, current) => {
+        if (current !== null) {
+            acc.push(current);
+        }
+        return acc;
+    }, []);
+};
+
+class FormState {   
+}
+
 type PropsType = {|
     className: string,
-    onSubmit: (form: FormType) => void,
+    onSubmit: (form: Array<string>) => void,
 |};
 
 export default class Form extends BaseComponent<PropsType> {
 
-    input1 = new InputState('Oczekiwano poprawnej daty', isGrunwald);
-    input2 = new InputState('Oczekiwano poprawnego wieku', isNumber);
-    input3 = new InputState('Oczekiwano hasła do biosu', isHex);
+    inputs = [{
+        key: 'field1',
+        label: 'Wprowadź datę bitwy pod Grunwaldem',
+        state: new InputState('Oczekiwano poprawnej daty', isGrunwald)
+    }, {
+        key: 'field2',
+        label: 'Wprowadź wiek jakiśtam',
+        state: new InputState('Oczekiwano poprawnego wieku', isNumber)
+    }, {
+        key: 'field3',
+        label: 'Wprowadź liczbę szesnastkową',
+        state: new InputState('Oczekiwano hasła do biosu', isHex)
+    }];
 
     send: Subject<void> = new Subject();
     send$ = this.send.asObservable();
@@ -132,37 +107,14 @@ export default class Form extends BaseComponent<PropsType> {
         this.send.next();
     }
 
-    errors$: ValueObservable<Array<string>> = ValueObservable.combineLatestTuple3(
-        this.input1.errorForForm$,
-        this.input2.errorForForm$,
-        this.input3.errorForForm$,
-    ).map(([error1, error2, error3]) => {
-        const out = [];
+    errors$: ValueObservable<Array<string>> = ValueObservable
+        .combineLatestTupleArr(this.inputs.map(input => input.state.errorForForm$))
+        .map(filterNull)
+    ;
 
-        if (error1 !== null) {
-            out.push(error1);
-        }
-
-        if (error2 !== null) {
-            out.push(error2);
-        }
-
-        if (error3 !== null) {
-            out.push(error3);
-        }
-
-        return out;
-    });
-
-    data$: ValueObservable<FormType> = ValueObservable.combineLatestTuple3(
-        this.input1.value$,
-        this.input2.value$,
-        this.input3.value$
-    ).map(([value1, value2, value3]) => ({
-        input1: value1,
-        input2: value2,
-        input3: value3
-    }));
+    data$: ValueObservable<Array<string>> = ValueObservable
+        .combineLatestTupleArr(this.inputs.map(input => input.state.value$))
+    ;
 
     constructor(props: PropsType) {
         super(props);
@@ -182,6 +134,22 @@ export default class Form extends BaseComponent<PropsType> {
         );
     }
 
+    _renderInputs(): React.Node {
+        return (
+            <div>
+                {
+                    this.inputs.map(field => (
+                        <FormInput
+                            key={field.key}
+                            input={field.state}
+                            caption={field.label}
+                        />
+                    ))
+                }
+            </div>
+        )
+    }
+
     render() {
         const { className } = this.props;
 
@@ -193,9 +161,7 @@ export default class Form extends BaseComponent<PropsType> {
 
         return (
             <div className={className}>
-                <FormInput input={this.input1} caption="Wprowadź datę bitwy pod Grunwaldem" />
-                <FormInput input={this.input2} caption="Wprowadź wiek jakiśtam" />
-                <FormInput input={this.input3} caption="Wprowadź liczbę szesnastkową" />
+                { this._renderInputs() }
 
                 <div className={submitClassName}>
                     <div className="FormSubmitButton" onClick={this._onSend}>
