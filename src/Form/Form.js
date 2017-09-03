@@ -22,20 +22,16 @@ const isHexDigit = (digit: string): bool => {
     }
 
     const letter = digit.toLowerCase();
-
-    return (
-        digit === "a" ||
-        digit === "b" ||
-        digit === "c" ||
-        digit === "d" ||
-        digit === "e" ||
-        digit === "f"
-    );
+    return ["a", "b", "c", "d", "e", "f"].includes(letter);
 }
 
-const isHex = (text: string): bool => {
-    const maxIndex = text.length - 1;
+export const isHex = (text: string): bool => {
+    if (text.length === 0) {
+        return false;
+    }
 
+    const maxIndex = text.length - 1;
+    
     for (let i = 0; i <= maxIndex; i++) {
         if (isHexDigit(text[i]) === false) {
             return false;
@@ -173,13 +169,15 @@ export default class Form extends BaseComponent<PropsType> {
 
         this.subscribe$(
             this.send$
-                .switchMapObservable(() => ValueObservable.combineLatestTuple(
-                        this.data$,
-                        this.getProps$().map(props => props.onSubmit)
-                    )
+                .withLatestFrom3(
+                    this.data$,
+                    this.getProps$().map(props => props.onSubmit),
+                    this.errors$
                 )
-                .do(([data, onSubmit]) => {
-                    onSubmit(data);
+                .do(([click, data, onSubmit, errors]) => {
+                    if (errors.length === 0) {
+                        onSubmit(data);
+                    }
                 })
         );
     }
