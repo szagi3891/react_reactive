@@ -1,5 +1,5 @@
 //@flow
-import { ValueObservable, Subject } from '../Lib/Reactive';
+import { ValueObservable, Subject, Observable } from '../Lib/Reactive';
 import FormInputState from './FormInputState';
 
 const filterNull = (list: Array<string | null>): Array<string> => {
@@ -22,6 +22,8 @@ export default class FormState {
     inputs: Array<InputConfig>;
     errors$: ValueObservable<Array<string>>;
     data$: ValueObservable<Array<string>>;
+                                                    //strumień z poprawnie zwalidowanymi danymi formularza
+    submitData$: Observable<Array<string>>;
 
     send: Subject<void> = new Subject();
     send$ = this.send.asObservable();
@@ -41,5 +43,13 @@ export default class FormState {
         this.data$ = ValueObservable
             .combineLatestTupleArr(this.inputs.map(input => input.state.value$))
         ;
+
+        this.submitData$ = this.send$
+            .withLatestFrom2(
+                this.data$,
+                this.errors$
+            )
+            .filter(([click, data, errors]) => errors.length === 0)
+            .map(([click, data, errors]) => data);
     }
 }

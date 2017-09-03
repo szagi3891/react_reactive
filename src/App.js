@@ -54,28 +54,16 @@ class App extends BaseComponent<{||}> {
         super(props);
 
         this.subscribe$(
-            this.formState.send$
-                .withLatestFrom2(
-                    this.formState.data$,
-                    this.formState.errors$
-                )
-                .do(([click, data, errors]) => {
-                    if (errors.length === 0) {
-                        console.info('dane z pierwszego formularza', data);
-                    }
+            this.formState.submitData$
+                .do(data => {
+                    console.info('dane z pierwszego formularza', data);
                 })
         );
 
         this.subscribe$(
-            this.formState2.send$
-                .withLatestFrom2(
-                    this.formState2.data$,
-                    this.formState2.errors$
-                )
-                .do(([click, data, errors]) => {
-                    if (errors.length === 0) {
-                        console.info('dane z pierwszego formularza', data);
-                    }
+            this.formState2.submitData$
+                .do(data => {
+                    console.info('dane z drugiego formularza', data);
                 })
         );
     }
