@@ -42,7 +42,7 @@ export class Observable<T> {
         return Observable._create(newObserver);
     }
 
-    switchMap<K>(switchFn: (value: T) => Observable<K>): Observable<K> {
+    switchMapObservable<K>(switchFn: (value: T) => Observable<K>): Observable<K> {
         const newObserver = this._data.switchMap((value: T) => switchFn(value)._data);
         return Observable._create(newObserver);
     }
@@ -159,7 +159,7 @@ export class ValueObservable<T> extends Observable<T> {
         return ValueObservable._create(newObserver);
     }
 
-    switchMapValue<K>(switchFn: (value: T) => ValueObservable<K>): ValueObservable<K> {
+    switchMap<K>(switchFn: (value: T) => ValueObservable<K>): ValueObservable<K> {
         const newObserver = this._data.switchMap((value: T) => switchFn(value)._data);
         return ValueObservable._create(newObserver);
     }

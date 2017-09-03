@@ -16,7 +16,7 @@ class Autocomplete extends BaseComponent<PropsType> {
 
     currentList = this.input.asObservable()
         .debounceTime(1000)
-        .switchMapValue(input => Store.getList(input));
+        .switchMap(input => Store.getList(input));
 
     _onChange = (event: Object) => {
         console.info('input', event.target.value);

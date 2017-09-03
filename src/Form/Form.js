@@ -173,7 +173,7 @@ export default class Form extends BaseComponent<PropsType> {
 
         this.subscribe$(
             this.send$
-                .switchMap(() => ValueObservable.combineLatestTuple(
+                .switchMapObservable(() => ValueObservable.combineLatestTuple(
                         this.data$,
                         this.getProps$().map(props => props.onSubmit)
                     )
