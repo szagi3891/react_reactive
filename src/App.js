@@ -6,6 +6,7 @@ import './App.css';
 import MessageItem from './MessageItem/MessageItem';
 import Autocomplete from './Autocomplete/Autocomplete';
 
+import BaseComponent from './Lib/BaseComponent';
 import Form from './Form/Form';
 import FormInputState from './Form/FormInputState';
 import FormState from './Form/FormState';
@@ -15,7 +16,7 @@ const onSubmit = (form: Array<string>) => {
     console.info('Wysyłam poprawnie zwalidowane dane formularza', form);
 };
 
-class App extends React.Component<{||}> {
+class App extends BaseComponent<{||}> {
 
     formState = new FormState([{
         key: 'field1',
@@ -49,6 +50,36 @@ class App extends React.Component<{||}> {
         state: new FormInputState('Oczekiwano hasła do biosu', Validators.isHex)
     }]);
 
+    constructor(props: {||}) {
+        super(props);
+
+        this.subscribe$(
+            this.formState.send$
+                .withLatestFrom2(
+                    this.formState.data$,
+                    this.formState.errors$
+                )
+                .do(([click, data, errors]) => {
+                    if (errors.length === 0) {
+                        console.info('dane z pierwszego formularza', data);
+                    }
+                })
+        );
+
+        this.subscribe$(
+            this.formState2.send$
+                .withLatestFrom2(
+                    this.formState2.data$,
+                    this.formState2.errors$
+                )
+                .do(([click, data, errors]) => {
+                    if (errors.length === 0) {
+                        console.info('dane z pierwszego formularza', data);
+                    }
+                })
+        );
+    }
+
     render() {
         return (
             <div className="App">
@@ -57,12 +88,10 @@ class App extends React.Component<{||}> {
                 <Form
                     className="App__border"
                     formState={this.formState}
-                    onSubmit={onSubmit}
                 />
                 <Form
                     className="App__border"
                     formState={this.formState2}
-                    onSubmit={onSubmit}
                 />
             </div>
         );

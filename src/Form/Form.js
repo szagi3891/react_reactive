@@ -13,7 +13,6 @@ import './Form.css';
 type PropsType = {|
     className: string,
     formState: FormState,
-    onSubmit: (form: Array<string>) => void,
 |};
 
 export default class Form extends BaseComponent<PropsType> {
@@ -21,26 +20,6 @@ export default class Form extends BaseComponent<PropsType> {
     formState$ = this
         .getProps$()
         .map(props => props.formState);
-
-    constructor(props: PropsType) {
-        super(props);
-
-        this.subscribe$(
-            this.formState$
-                .switchMapObservable(formState => formState.send$
-                    .withLatestFrom3(
-                        formState.data$,
-                        this.getProps$().map(props => props.onSubmit),
-                        formState.errors$
-                    )
-                    .do(([click, data, onSubmit, errors]) => {
-                        if (errors.length === 0) {
-                            onSubmit(data);
-                        }
-                    })
-                )
-        );
-    }
 
     _renderInputs(): React.Node {
         const formState = this.getValue$(this.formState$);
