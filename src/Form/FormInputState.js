@@ -1,7 +1,7 @@
 //@flow
 import { ValueSubject, ValueObservable } from '../Lib/Reactive';
 
-export default class InputState {
+export default class FormInputState {
     value = new ValueSubject('');
     isVisit = new ValueSubject(false);
 
