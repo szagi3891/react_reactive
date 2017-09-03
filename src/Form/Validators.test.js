@@ -1,4 +1,4 @@
-import { isHex } from './Form';
+import { isHex } from './Validators';
 
 describe('aa', () => {
 
