@@ -191,38 +191,6 @@ export class ValueObservable<T> extends Observable<T> {
         return ValueObservable._create(z);
     }
 
-    sideEffect<K>(sideEffect$: Observable<K>): ValueObservable<T> {
-        //$FlowFixMe
-        const newObserver = new Rx.Observable((observer) => {
-
-            const sub1 = this._data.subscribe(
-                (value) => {
-                    observer.next(value);
-                },
-                (err) => {
-                    observer.error(err);
-                },
-                () => {
-                    observer.complete();
-                }
-            );
-
-            const sub2 = sideEffect$._data.subscribe(
-                () => {},
-                (err) => {
-                    observer.error(err);
-                },
-                () => {}
-            );
-
-            return () => {
-                sub1.unsubscribe();
-                sub2.unsubscribe();
-            };
-        });
-
-        return ValueObservable._create(newObserver);
-    }
     static _create<K>(observer: Rx.Observable<K>): ValueObservable<K> {
         const result = Object.create(ValueObservable.prototype);
         result._data = observer;
