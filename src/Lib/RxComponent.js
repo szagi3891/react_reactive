@@ -53,7 +53,6 @@ export const createRxComponent = <PropsTypeIn: {}, PropsTypeOut: {}>(
     InnerComponent: React.ComponentType<PropsTypeOut>
 ): React.ComponentType<PropsTypeIn> => {
 
-    //$FlowFixMe
     InnerComponent.displayName = `${componentName}Inner`;
 
     return class RxComponent extends React.Component<PropsTypeIn> {
