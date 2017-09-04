@@ -12,10 +12,6 @@ import FormInputState from './Form/FormInputState';
 import FormState from './Form/FormState';
 import Validators from './Form/Validators';
 
-const onSubmit = (form: Array<string>) => {
-    console.info('Wysyłam poprawnie zwalidowane dane formularza', form);
-};
-
 class App extends BaseComponent<{||}> {
 
     formState = new FormState([{
@@ -48,6 +44,10 @@ class App extends BaseComponent<{||}> {
         key: 'field4',
         label: 'Wprowadź liczbę szesnastkową',
         state: new FormInputState('Oczekiwano hasła do biosu', Validators.isHex)
+    }, {
+        key: 'field5',
+        label: 'Wprowadź cokolwiek',
+        state: new FormInputState('Oczekiwano liczby 42', Validators.is42)
     }]);
 
     constructor(props: {||}) {

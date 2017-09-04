@@ -29,8 +29,11 @@ export const isHex = (text: string): bool => {
     return true;
 }
 
+export const is42 = (text: string): bool => text === "42";
+
 export default {
     isNumber,
     isGrunwald,
-    isHex
+    isHex,
+    is42
 };

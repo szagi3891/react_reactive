@@ -2,9 +2,7 @@
 import * as React from 'react';
 import cx from 'classnames';
 import BaseComponent from '../Lib/BaseComponent';
-import { ValueObservable, Subject } from '../Lib/Reactive';
 
-import FormInputState from './FormInputState';
 import FormInput from './FormInput';
 import FormState from './FormState';
 
@@ -17,12 +15,8 @@ type PropsType = {|
 
 export default class Form extends BaseComponent<PropsType> {
 
-    formState$ = this
-        .getProps$()
-        .map(props => props.formState);
-
     _renderInputs(): React.Node {
-        const formState = this.getValue$(this.formState$);
+        const { formState } = this.props;
 
         return (
             <div>
@@ -42,7 +36,7 @@ export default class Form extends BaseComponent<PropsType> {
     render() {
         const { className } = this.props;
 
-        const formState = this.getValue$(this.formState$);        
+        const { formState } = this.props;
         const errors = this.getValue$(formState.errors$);
 
         const submitClassName = cx('FormSubmit', {
