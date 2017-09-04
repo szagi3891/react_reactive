@@ -3,12 +3,13 @@ import { ValueObservable, Subject, Observable } from '../Lib/Reactive';
 import FormInputState from './FormInputState';
 
 const filterNull = (list: Array<string | null>): Array<string> => {
-    return list.reduce((acc, current) => {
-        if (current !== null) {
-            acc.push(current);
+    const out = [];
+    for (const item of list) {
+        if (item !== null) {
+            out.push(item);
         }
-        return acc;
-    }, []);
+    }
+    return out;
 };
 
 type InputConfig = {|
