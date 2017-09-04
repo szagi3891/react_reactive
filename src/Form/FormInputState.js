@@ -21,25 +21,15 @@ export default class FormInputState {
 
     constructor(errorMessage: string, fnValidator: (value: string) => bool) {
 
-        const data$ = ValueObservable.combineLatestTuple(
-            this.value$,
-            this.isVisit$
+        this.errorForForm$ = this.value$.map((input: string): null | string =>
+            fnValidator(input) ? null : errorMessage
         );
 
-        this.errorForInput$ = data$.map(([input, isVisit]: [string, bool]): null | string => {
-            if (isVisit === false) {
-                return null;
-            }
-
-            if (!fnValidator(input)) {
-                return errorMessage;
-            }
-
-            return null;
-        });
-
-        this.errorForForm$ = data$.map(([input, isVisit]: [string, bool]): null | string =>
-            fnValidator(input) ? null : errorMessage
+        this.errorForInput$ = ValueObservable.combineLatest(
+            this.errorForForm$,
+            this.isVisit$,
+            (error: string | null, isVisit: bool): string | null =>
+                (isVisit === false) ? null : error
         );
     }
 }
