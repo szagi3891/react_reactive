@@ -34,9 +34,7 @@ export default class Form extends BaseComponent<PropsType> {
     }
 
     render() {
-        const { className } = this.props;
-
-        const { formState } = this.props;
+        const { className, formState } = this.props;
         const errors = this.getValue$(formState.errors$);
 
         const submitClassName = cx('FormSubmit', {

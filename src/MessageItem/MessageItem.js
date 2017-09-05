@@ -19,7 +19,6 @@ type PropsType = {|
     messageId: string,
 |};
 
-							//dziedziczenie dostarcza funkcję getValue$ - która mapuje obserwator na wartosć
 export default class MessageItem extends BaseComponent<PropsType> {
 
     counter$ = counter.asObservable();
