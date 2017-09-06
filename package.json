@@ -2,6 +2,7 @@
   "name": "aaaa",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://szagi3891.github.io/react_reactive/",
   "dependencies": {
     "classnames": "^2.2.5",
     "flow-typed": "^2.1.5",
