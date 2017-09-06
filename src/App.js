@@ -1,18 +1,22 @@
 //@flow
 
 import * as React from 'react';
+import cx from 'classnames';
 import './App.css';
 
 import MessageItem from './MessageItem/MessageItem';
 import Autocomplete from './Autocomplete/Autocomplete';
-
+import { ValueSubject } from './Lib/Reactive';
 import BaseComponent from './Lib/BaseComponent';
+import Tab from './Tab';
 import Form from './Form/Form';
 import FormInputState from './Form/FormInputState';
 import FormState from './Form/FormState';
 import Validators from './Form/Validators';
 
 class App extends BaseComponent<{||}> {
+    tab: ValueSubject<string> = new ValueSubject('tab1');
+    tab$ = this.tab.asObservable();
 
     formState = new FormState([{
         key: 'field1',
@@ -68,19 +72,50 @@ class App extends BaseComponent<{||}> {
         );
     }
 
+    _getTabClass = (tab: string) => {
+        const currentTab = this.getValue$(this.tab$);
+        return cx('Menu__item', {
+            'Menu__item--select': currentTab === tab
+        });
+    }
+
+    _tabClick = (newTab: string) => {
+        this.tab.next(newTab);
+    }
+
     render() {
+        const currentTab = this.getValue$(this.tab$);
+
         return (
             <div className="App">
-                <MessageItem messageId="aaazzzddd1234567890" className="App__border" />
-                <Autocomplete className="App__border" />
-                <Form
-                    className="App__border"
-                    formState={this.formState}
-                />
-                <Form
-                    className="App__border"
-                    formState={this.formState2}
-                />
+                <div className="Menu">
+                    <Tab className={this._getTabClass('tab1')} value="tab1" onClick={this._tabClick}>Podstawowy</Tab>
+                    <Tab className={this._getTabClass('tab2')} value="tab2" onClick={this._tabClick}>Autocomplete</Tab>
+                    <Tab className={this._getTabClass('tab3')} value="tab3" onClick={this._tabClick}>Formularz 1</Tab>
+                    <Tab className={this._getTabClass('tab4')} value="tab4" onClick={this._tabClick}>Formularz 2</Tab>
+                </div>
+
+                { currentTab === 'tab1' ? (
+                    <MessageItem messageId="aaazzzddd1234567890" className="App__border" />
+                ) : null }
+
+                { currentTab === 'tab2' ? (
+                    <Autocomplete className="App__border" />
+                ) : null }
+
+                { currentTab === 'tab3' ? (
+                    <Form
+                        className="App__border"
+                        formState={this.formState}
+                    />
+                ) : null }
+
+                { currentTab === 'tab4' ? (
+                    <Form
+                        className="App__border"
+                        formState={this.formState2}
+                    />
+                ) : null }
             </div>
         );
     }
