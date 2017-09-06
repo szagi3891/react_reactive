@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && rm -Rf docs && mv build docs",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "flow": "./node_modules/flow-bin/vendor/flow status"
