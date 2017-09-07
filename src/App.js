@@ -89,18 +89,18 @@ class App extends BaseComponent<{||}> {
         return (
             <div className="App">
                 <div className="Menu">
-                    <Tab className={this._getTabClass('tab1')} value="tab1" onClick={this._tabClick}>Podstawowy</Tab>
-                    <Tab className={this._getTabClass('tab2')} value="tab2" onClick={this._tabClick}>Autocomplete</Tab>
+                    <Tab className={this._getTabClass('tab1')} value="tab1" onClick={this._tabClick}>Autocomplete</Tab>
+                    <Tab className={this._getTabClass('tab2')} value="tab2" onClick={this._tabClick}>Podstawowy</Tab>
                     <Tab className={this._getTabClass('tab3')} value="tab3" onClick={this._tabClick}>Formularz 1</Tab>
                     <Tab className={this._getTabClass('tab4')} value="tab4" onClick={this._tabClick}>Formularz 2</Tab>
                 </div>
 
                 { currentTab === 'tab1' ? (
-                    <MessageItem messageId="aaazzzddd1234567890" className="App__border" />
+                    <Autocomplete className="App__border" />
                 ) : null }
 
                 { currentTab === 'tab2' ? (
-                    <Autocomplete className="App__border" />
+                    <MessageItem messageId="aaazzzddd1234567890" className="App__border" />
                 ) : null }
 
                 { currentTab === 'tab3' ? (
