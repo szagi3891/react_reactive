@@ -45,3 +45,24 @@
     font-weight: bold;
     cursor: default;
 }
+
+.Autocomplete__header {
+    display: flex;
+    justify-content: center;
+}
+
+.Autocomplete__header_label {
+    padding-right: 10px;
+}
+.Autocomplete__header_item {
+    padding: 0 10px;
+}
+
+.Autocomplite__highlight {
+    background-color: #e0e0e0;
+}
+
+.Autocomplite__result_item {
+    display: flex;
+    justify-content: center;
+}
