@@ -12,6 +12,10 @@ export default class BaseComponent<Props> extends React.Component<Props, void> {
 
     _props$: ValueSubject<Props>;
 
+    componentDidCatch(error, info) {
+        console.info('componentDidCatch -> ', error, info);
+    }
+
     componentWillReceiveProps(nextProps: Props) {
         this._props$.next(nextProps);
     }
