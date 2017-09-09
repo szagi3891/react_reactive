@@ -12,7 +12,7 @@ export class ValueSubject<T> {
     }
 
     asObservable(): ValueObservable<T> {
-        return new ValueObservable._create(this._data.asObservable());
+        return ValueObservable._create(this._data.asObservable());
     }
 
     next(value: T) {
