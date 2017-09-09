@@ -18,6 +18,22 @@ const getValue = (obs) => {
     return value;
 }
 
+const getStateInput = (inputState) => ({
+    errorForInput: getValue(inputState.errorForInput$),
+    errorForForm: getValue(inputState.errorForForm$),
+    value: getValue(inputState.value$)
+});
+
+const getStateForm = (formState) => ({
+    inputs: [
+        getStateInput(formState.inputs[0].state),
+        getStateInput(formState.inputs[1].state),
+        getStateInput(formState.inputs[2].state)
+    ],
+    data: getValue(formState.data$),
+    erross: getValue(formState.errors$)
+});
+
 const ErrorLable1 = 'Oczekiwano poprawnej daty';
 const ErrorLable2 = 'Oczekiwano poprawnego wieku';
 const ErrorLable3 = 'Oczekiwano hasła do biosu';
@@ -46,30 +62,12 @@ describe('aa', () => {
         const input1$ = formState.inputs[0].state;
         const input2$ = formState.inputs[1].state;
         const input3$ = formState.inputs[2].state;
-        
-        expect(getValue(input1$.errorForInput$)).toBe(null);
-        expect(getValue(input2$.errorForInput$)).toBe(null);
-        expect(getValue(input3$.errorForInput$)).toBe(null);
 
-        expect(getValue(input1$.errorForForm$)).toBe(ErrorLable1);
-        expect(getValue(input2$.errorForForm$)).toBe(ErrorLable2);
-        expect(getValue(input3$.errorForForm$)).toBe(ErrorLable3);
-
-        expect(getValue(input1$.value$)).toBe('');
-        expect(getValue(input2$.value$)).toBe('');
-        expect(getValue(input3$.value$)).toBe('');
-        expect(getValue(formState.data$)).toEqual(["", "", ""]);
-        expect(getValue(formState.errors$)).toEqual([ErrorLable1, ErrorLable2, ErrorLable3]);
+        expect(getStateForm(formState)).toMatchSnapshot();
 
         input1$.onBlur();
 
-        expect(getValue(input1$.errorForInput$)).toBe(ErrorLable1);
-        expect(getValue(input2$.errorForInput$)).toBe(null);
-        expect(getValue(input3$.errorForInput$)).toBe(null);
-
-        expect(getValue(input1$.errorForForm$)).toBe(ErrorLable1);
-        expect(getValue(input2$.errorForForm$)).toBe(ErrorLable2);
-        expect(getValue(input3$.errorForForm$)).toBe(ErrorLable3);
+        expect(getStateForm(formState)).toMatchSnapshot();
 
         input1$.onChange({
             target: {
@@ -77,38 +75,14 @@ describe('aa', () => {
             }
         });
 
-        expect(getValue(input1$.errorForInput$)).toBe(ErrorLable1);
-        expect(getValue(input2$.errorForInput$)).toBe(null);
-        expect(getValue(input3$.errorForInput$)).toBe(null);
+        expect(getStateForm(formState)).toMatchSnapshot();
 
-        expect(getValue(input1$.errorForForm$)).toBe(ErrorLable1);
-        expect(getValue(input2$.errorForForm$)).toBe(ErrorLable2);
-        expect(getValue(input3$.errorForForm$)).toBe(ErrorLable3);
-
-        expect(getValue(input1$.value$)).toBe('1322');
-        expect(getValue(input2$.value$)).toBe('');
-        expect(getValue(input3$.value$)).toBe('');
-        expect(getValue(formState.data$)).toEqual(["1322", "", ""]);
-        expect(getValue(formState.errors$)).toEqual([ErrorLable1, ErrorLable2, ErrorLable3]);
-        
         input1$.onChange({
             target: {
                 value: '1410'
             }
         });
 
-        expect(getValue(input1$.errorForInput$)).toBe(null);
-        expect(getValue(input2$.errorForInput$)).toBe(null);
-        expect(getValue(input3$.errorForInput$)).toBe(null);
-
-        expect(getValue(input1$.errorForForm$)).toBe(null);
-        expect(getValue(input2$.errorForForm$)).toBe('Oczekiwano poprawnego wieku');
-        expect(getValue(input3$.errorForForm$)).toBe('Oczekiwano hasła do biosu');
-
-        expect(getValue(input1$.value$)).toBe('1410');
-        expect(getValue(input2$.value$)).toBe('');
-        expect(getValue(input3$.value$)).toBe('');
-        expect(getValue(formState.data$)).toEqual(["1410", "", ""]);
-        expect(getValue(formState.errors$)).toEqual([ErrorLable2, ErrorLable3]);        
+        expect(getStateForm(formState)).toMatchSnapshot();        
     });
 });
