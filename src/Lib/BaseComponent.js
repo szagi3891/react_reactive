@@ -12,7 +12,7 @@ export default class BaseComponent<Props> extends React.Component<Props, void> {
 
     _props$: ValueSubject<Props>;
 
-    componentDidCatch(error, info) {
+    componentDidCatch(error: {}, info: {}) {
         console.info('componentDidCatch -> ', error, info);
     }
 
@@ -24,7 +24,7 @@ export default class BaseComponent<Props> extends React.Component<Props, void> {
         for (const sub of this._subscriptionForComponent) {
             sub.unsubscribe();
         }
-    
+
         for (const sub of this._subscriptionForRender) {
             sub.unsubscribe();
         }
