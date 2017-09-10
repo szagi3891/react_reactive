@@ -5,6 +5,7 @@ import cx from 'classnames';
 import './App.css';
 
 import MessageItem from './MessageItem/MessageItem';
+import Chat from './Chat/Chat';
 import Autocomplete from './Autocomplete/Autocomplete';
 import { ValueSubject } from './Lib/Reactive';
 import BaseComponent from './Lib/BaseComponent';
@@ -15,7 +16,7 @@ import FormState from './Form/FormState';
 import Validators from './Form/Validators';
 
 class App extends BaseComponent<{||}> {
-    tab: ValueSubject<string> = new ValueSubject('tab1');
+    tab: ValueSubject<string> = new ValueSubject('tab0');
     tab$ = this.tab.asObservable();
 
     formState = new FormState([{
@@ -89,11 +90,16 @@ class App extends BaseComponent<{||}> {
         return (
             <div className="App">
                 <div className="Menu">
+                    <Tab className={this._getTabClass('tab0')} value="tab0" onClick={this._tabClick}>Chat</Tab>
                     <Tab className={this._getTabClass('tab1')} value="tab1" onClick={this._tabClick}>Autocomplete</Tab>
                     <Tab className={this._getTabClass('tab2')} value="tab2" onClick={this._tabClick}>Podstawowy</Tab>
                     <Tab className={this._getTabClass('tab3')} value="tab3" onClick={this._tabClick}>Formularz 1</Tab>
                     <Tab className={this._getTabClass('tab4')} value="tab4" onClick={this._tabClick}>Formularz 2</Tab>
                 </div>
+
+                { currentTab === 'tab0' ? (
+                    <Chat className="App__border" />
+                ) : null }
 
                 { currentTab === 'tab1' ? (
                     <Autocomplete className="App__border" />

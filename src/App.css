@@ -1,3 +1,9 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+  
 .App {
   text-align: center;
 }
@@ -65,4 +71,59 @@
 .Autocomplite__result_item {
     display: flex;
     justify-content: center;
+}
+
+.Chat__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.Chat__list {
+    background-color: #eee;
+    min-width: 400px;
+}
+
+.Chat__message {
+    display: flex;
+}
+
+.Chat__nick {
+    width: 100px;
+    text-align: right;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.Chat__sending {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 70px;
+    height: 25px;
+    line-height: 25px;
+    background-color: green;
+}
+
+.Chat_InputGroup {
+    display: flex;
+    width: 400px;
+    margin-bottom: 20px;
+}
+
+.Chat_InputLabel {
+    width: 100px;
+    text-align: right;
+    line-height: 25px;
+    padding-right: 10px;
+}
+
+.Chat_InputBox {
+    flex-grow: 1;
+}
+
+.Chat_InputBox * {
+    width: 100%;
 }
