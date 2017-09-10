@@ -58,6 +58,13 @@ messages.on('child_removed', function(data) {
     console.info('child_removed', data, data.val());
 });
 
+/*
+robi zrzut całości (raz)
+database.ref().once('value').then(snap => {
+    console.info('zrzut', snap.val());
+});
+*/
+
 type PropsType = {|
     className: string,
 |};
