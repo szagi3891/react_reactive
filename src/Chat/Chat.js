@@ -22,6 +22,7 @@ const messages = database.ref('rxjs-demo');
 const nick = new ValueSubject('');
 const textarea = new ValueSubject('');
 const sending = new ValueSubject(false);
+const online = new ValueSubject(true);
 
 type MessageItemType = {|
     id: string,
@@ -45,7 +46,10 @@ messages.on('child_added', function(messageItem) {
     chat.next(currentList);
 });
 
-/*
+database.ref(".info/connected").on("value", function(snap) {
+    online.next(snap.val());
+});
+
 messages.on('child_changed', function(data) {
     console.info('child_changed', data, data.val());
 });
@@ -53,7 +57,6 @@ messages.on('child_changed', function(data) {
 messages.on('child_removed', function(data) {
     console.info('child_removed', data, data.val());
 });
-*/
 
 type PropsType = {|
     className: string,
@@ -118,6 +121,7 @@ export default class Chat extends BaseComponent<PropsType> {
 
         return (
             <div className="Chat__wrapper">
+                { this._renderNetworkStatus() }
                 <div>
                     <div className="Chat_InputGroup">
                         <div className="Chat_InputLabel">Nick:</div>
@@ -143,6 +147,19 @@ export default class Chat extends BaseComponent<PropsType> {
                 { sendingValue ? <div className="Chat__sending">Wysyłanie ...</div> : null }
             </div>
         );
+    }
+
+    _renderNetworkStatus = () => {
+        const onlineValue = this.getValue$(online.asObservable());
+        if (onlineValue) {
+            return (
+                <div className="Chat__online">Network Online</div>
+            );
+        } else {
+            return (
+                <div className="Chat__offline">Network Offline</div>
+            );
+        }
     }
 
     _renderList() {

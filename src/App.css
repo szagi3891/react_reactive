@@ -127,3 +127,12 @@ body {
 .Chat_InputBox * {
     width: 100%;
 }
+
+.Chat__online {
+    color: green;
+    margin-bottom: 20px;
+}
+.Chat__offline {
+    color: red;
+    margin-bottom: 20px
+}
