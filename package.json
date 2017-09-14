@@ -8,8 +8,8 @@
     "firebase": "^4.3.1",
     "flow-typed": "^2.1.5",
     "immutable": "4.0.0-rc.2",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "react": "^16.0.0-rc.3",
+    "react-dom": "^16.0.0-rc.3",
     "rxjs": "^5.4.3"
   },
   "devDependencies": {
