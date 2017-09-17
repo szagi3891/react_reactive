@@ -18,7 +18,7 @@ type InputConfig = {|
     state: FormInputState
 |};
 
-export default class FormState {
+export default class FormGroupState {
 
     inputs: Array<InputConfig>;
     errors$: ValueObservable<Array<string>>;

@@ -3,6 +3,8 @@ import * as React from 'react';
 import BaseComponent from '../Lib/BaseComponent';
 import FormInputState from './FormInputState';
 
+import './FormInput.css';
+
 type PropsInputType = {|
     input: FormInputState,
     caption: string,

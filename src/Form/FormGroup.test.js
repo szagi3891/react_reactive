@@ -1,5 +1,5 @@
 import FormInputState from './FormInputState';
-import FormState from './FormState';
+import FormGroupState from './FormGroupState';
 import Validators from './Validators';
 
 const getValue = (obs) => {
@@ -43,7 +43,7 @@ describe('aa', () => {
     let formState;
 
     beforeEach(() => {
-        formState = new FormState([{
+        formState = new FormGroupState([{
             key: 'field1',
             label: 'Wprowadź datę bitwy pod Grunwaldem',
             state: new FormInputState(ErrorLable1, Validators.isGrunwald)

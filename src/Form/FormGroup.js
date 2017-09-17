@@ -4,24 +4,22 @@ import cx from 'classnames';
 import BaseComponent from '../Lib/BaseComponent';
 
 import FormInput from './FormInput';
-import FormState from './FormState';
-
-import './Form.css';
+import FormGroupState from './FormGroupState';
 
 type PropsType = {|
     className: string,
-    formState: FormState,
+    state: FormGroupState,
 |};
 
-export default class Form extends BaseComponent<PropsType> {
+export default class FormGroup extends BaseComponent<PropsType> {
 
     _renderInputs(): React.Node {
-        const { formState } = this.props;
+        const { state } = this.props;
 
         return (
             <div>
                 {
-                    formState.inputs.map(field => (
+                    state.inputs.map(field => (
                         <FormInput
                             key={field.key}
                             input={field.state}
@@ -34,8 +32,8 @@ export default class Form extends BaseComponent<PropsType> {
     }
 
     render() {
-        const { className, formState } = this.props;
-        const errors = this.getValue$(formState.errors$);
+        const { className, state } = this.props;
+        const errors = this.getValue$(state.errors$);
 
         const submitClassName = cx('FormSubmit', {
             'FormSubmit--disable': errors.length > 0
@@ -46,7 +44,7 @@ export default class Form extends BaseComponent<PropsType> {
                 { this._renderInputs() }
 
                 <div className={submitClassName}>
-                    <div className="FormSubmitButton" onClick={formState.onSend}>
+                    <div className="FormSubmitButton" onClick={state.onSend}>
                         Wyślij
                     </div>
                 </div>

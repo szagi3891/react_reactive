@@ -10,13 +10,15 @@ import Autocomplete from './Autocomplete/Autocomplete';
 import { ValueSubject } from './Lib/Reactive';
 import BaseComponent from './Lib/BaseComponent';
 import Tab from './Tab';
-import Form from './Form/Form';
+import FormApp from './Form/FormApp';
 import FormInputState from './Form/FormInputState';
-import FormState from './Form/FormState';
+import FormGroupState from './Form/FormGroupState';
 import Validators from './Form/Validators';
+import FormWizzardMain from './FormWizzard/FormWizzardMain';
+import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
 
 class App extends BaseComponent<{||}> {
-    formState = new FormState([{
+    formState = new FormGroupState([{
         key: 'field1',
         label: 'Wprowadź datę bitwy pod Grunwaldem',
         state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
@@ -30,7 +32,7 @@ class App extends BaseComponent<{||}> {
         state: new FormInputState('Oczekiwano hasła do biosu', Validators.isHex)
     }]);
 
-    formState2 = new FormState([{
+    formState2 = new FormGroupState([{
         key: 'field1',
         label: 'Wprowadź datę bitwy pod Grunwaldem',
         state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
@@ -52,10 +54,21 @@ class App extends BaseComponent<{||}> {
         state: new FormInputState('Oczekiwano liczby 42', Validators.is42)
     }]);
 
+    formWizzardState = new FormWizzardMainState();
+
     tab: ValueSubject<string> = new ValueSubject('chat');
     tab$ = this.tab.asObservable();
 
     _config = [{
+        key: 'formWizzard',
+        label: 'Form wizzard',
+        render: () => (
+            <FormWizzardMain
+                className="App__border"
+                state={this.formWizzardState}
+            />
+        )
+    }, {
         key: 'chat',
         label: 'Chat',
         render: () => <Chat className="App__border" />
@@ -71,18 +84,18 @@ class App extends BaseComponent<{||}> {
         key: 'form1',
         label: 'Formularz 1',
         render: () => (
-            <Form
+            <FormApp
                 className="App__border"
-                formState={this.formState}
+                state={this.formState}
             />
         )
     }, {
         key: 'form2',
         label: 'Formularz 2',
         render: () => (
-            <Form
+            <FormApp
                 className="App__border"
-                formState={this.formState2}
+                state={this.formState2}
             />
         )
     }];
