@@ -1,7 +1,7 @@
 //@flow
 import * as React from 'react';
 import cx from 'classnames';
-import BaseComponent from '../Lib/BaseComponent';
+import { BaseComponent } from 'react_reactive_value';
 
 import FormWizzardMainState from './FormWizzardMainState';
 

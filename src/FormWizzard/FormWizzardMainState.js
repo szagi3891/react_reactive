@@ -1,6 +1,6 @@
 //@flow
 
-import { ValueObservable, Subject, Observable } from '../Lib/Reactive';
+import { ValueObservable, Subject, Observable } from 'react_reactive_value';
 
 export default class FormWizzardState {
     /*

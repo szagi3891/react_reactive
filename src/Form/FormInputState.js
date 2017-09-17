@@ -1,5 +1,5 @@
 //@flow
-import { ValueSubject, ValueObservable } from '../Lib/Reactive';
+import { ValueSubject, ValueObservable } from 'react_reactive_value';
 
 export default class FormInputState {
     _value = new ValueSubject('');

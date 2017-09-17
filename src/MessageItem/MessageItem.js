@@ -1,7 +1,6 @@
 //@flow
 import * as React from 'react';
-import BaseComponent from '../Lib/BaseComponent';
-import { ValueSubject } from '../Lib/Reactive';
+import { BaseComponent, ValueSubject } from 'react_reactive_value';
 
 const counter = new ValueSubject(44);
 const counter2 = new ValueSubject(1);

@@ -2,8 +2,7 @@
 
 import * as React from 'react';
 import firebase from 'firebase';
-import BaseComponent from '../Lib/BaseComponent';
-import { Subject, ValueSubject } from '../Lib/Reactive';
+import { BaseComponent, Subject, ValueSubject } from 'react_reactive_value';
 
 const config = {
     apiKey: "AIzaSyDon__hg5Iv1zi5uvMv2V5HCSGmy6NzDGE",

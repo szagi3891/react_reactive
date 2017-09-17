@@ -2,8 +2,7 @@
 
 import * as React from 'react';
 
-import BaseComponent from '../Lib/BaseComponent';
-import { ValueSubject, ValueObservable } from '../Lib/Reactive';
+import { BaseComponent, ValueSubject, ValueObservable } from 'react_reactive_value';
 
 import Store from './Store';
 

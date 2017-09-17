@@ -1,5 +1,5 @@
 //@flow
-import { ValueObservable } from '../Lib/Reactive';
+import { ValueObservable } from 'react_reactive_value';
 import FormInputState from './FormInputState';
 
 type InputConfig = {|

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import './App.css';
-import BaseComponent from './Lib/BaseComponent';
+import { BaseComponent } from 'react_reactive_value';
 
 type PropsType = {|
     className: string,

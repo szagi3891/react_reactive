@@ -1,6 +1,6 @@
 //@flow
 
-import { ValueSubject, ValueObservable } from '../Lib/Reactive';
+import { ValueSubject, ValueObservable } from 'react_reactive_value';
 
 class Store {
     _data: Map<string, ValueSubject<Array<string> | null>>;
