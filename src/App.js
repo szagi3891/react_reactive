@@ -54,6 +54,14 @@ class App extends BaseComponent<{||}> {
         state: new FormInputState('Oczekiwano liczby 42', Validators.is42)
     }]);
 
+    _onSubmit1 = (data: Array<string>) => {
+        console.info('dane z pierwszego formularza', data);
+    };
+
+    _onSubmit2 = (data: Array<string>) => {
+        console.info('dane z pierwszego formularza', data);
+    };
+
     formWizzardState = new FormWizzardMainState();
 
     tab: ValueSubject<string> = new ValueSubject('chat');
@@ -87,6 +95,7 @@ class App extends BaseComponent<{||}> {
             <FormApp
                 className="App__border"
                 state={this.formState}
+                onSubmit={this._onSubmit1}
             />
         )
     }, {
@@ -96,27 +105,10 @@ class App extends BaseComponent<{||}> {
             <FormApp
                 className="App__border"
                 state={this.formState2}
+                onSubmit={this._onSubmit2}
             />
         )
     }];
-
-    constructor(props: {||}) {
-        super(props);
-
-        this.subscribe$(
-            this.formState.submitData$
-                .do(data => {
-                    console.info('dane z pierwszego formularza', data);
-                })
-        );
-
-        this.subscribe$(
-            this.formState2.submitData$
-                .do(data => {
-                    console.info('dane z drugiego formularza', data);
-                })
-        );
-    }
 
     _getTabClass = (tab: string) => {
         const currentTab = this.getValue$(this.tab$);
@@ -133,6 +125,7 @@ class App extends BaseComponent<{||}> {
         <div className="Menu">
             { this._config.map(item => (
                 <Tab
+                    key={item.key}
                     className={this._getTabClass(item.key)}
                     value={item.key}
                     onClick={this._tabClick}
@@ -145,9 +138,14 @@ class App extends BaseComponent<{||}> {
 
     _renderBody = (currentTab: string) => (
         <div>
-            { this._config.map(item =>
-                item.key === currentTab ? item.render() : null
-            )}
+            { this._config.map(item => {
+                if (item.key === currentTab) {
+                    const Render = item.render;
+                    return <Render key={item.key} />;
+                }
+                
+                return null;
+            })}
         </div>
     );
 
