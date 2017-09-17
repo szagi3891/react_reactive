@@ -2,16 +2,6 @@
 import { ValueObservable } from '../Lib/Reactive';
 import FormInputState from './FormInputState';
 
-const filterNull = (list: Array<string | null>): Array<string> => {
-    const out = [];
-    for (const item of list) {
-        if (item !== null) {
-            out.push(item);
-        }
-    }
-    return out;
-};
-
 type InputConfig = {|
     key: string,
     label: string,
@@ -27,26 +17,19 @@ export default class FormGroupState {
     constructor(inputsConfig: Array<InputConfig>) {
         this.inputs = inputsConfig;
 
-        const errors$: ValueObservable<bool> = ValueObservable
-            .combineLatestTupleArr(this.inputs.map(input => input.state.errorForForm$))
-            .map(filterNull)
-            .map(errors => errors.length > 0)
-        ;
+        this.data$ = ValueObservable
+            .combineLatestTupleArr(this.inputs.map(input => input.state.data$))
+            .map((data: Array<string | null>): Array<string> | null => {
+                const out = [];
 
-        const data$ = ValueObservable
-            .combineLatestTupleArr(this.inputs.map(input => input.state.value$))
-        ;
-
-        this.data$ = ValueObservable.combineLatest(
-            errors$,
-            data$,
-            (errors: bool, data: Array<string>): Array<string> | null => {
-                if (errors) {
-                    return null;
+                for (const dataItem of data) {
+                    if (dataItem === null) {
+                        return null
+                    }
+                    out.push(dataItem);
                 }
 
-                return data;
-            }
-        );
+                return out;
+            });
     }
 }

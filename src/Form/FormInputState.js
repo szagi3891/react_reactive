@@ -2,34 +2,43 @@
 import { ValueSubject, ValueObservable } from '../Lib/Reactive';
 
 export default class FormInputState {
-    value = new ValueSubject('');
-    isVisit = new ValueSubject(false);
-
-    value$ = this.value.asObservable();
-    isVisit$ = this.isVisit.asObservable();
-
-    onChange = (event: SyntheticInputEvent<>) => {
-        this.value.next(event.target.value);
-    }
- 
-    onBlur = () => {
-        this.isVisit.next(true);
-    }
-
-    errorForInput$: ValueObservable<string | null>;
-    errorForForm$: ValueObservable<string | null>;
+    _value = new ValueSubject('');
+    _isVisit = new ValueSubject(false);
+                                                    //dla widoku
+    value$ = this._value.asObservable();
+    error$: ValueObservable<string | null>;
+                                                    //dla wyższego stanu
+    data$: ValueObservable<string | null>;
 
     constructor(errorMessage: string, fnValidator: (value: string) => bool) {
 
-        this.errorForForm$ = this.value$.map((input: string): null | string =>
-            fnValidator(input) ? null : errorMessage
+        const errorInput$ = this.value$.map((input: string): bool => !fnValidator(input));
+
+        this.error$ = ValueObservable.combineLatest(
+            errorInput$,
+            this._isVisit.asObservable(),
+            (error: bool, isVisit: bool): string | null =>
+                (error && isVisit) ? errorMessage : null
         );
 
-        this.errorForInput$ = ValueObservable.combineLatest(
-            this.errorForForm$,
-            this.isVisit$,
-            (error: string | null, isVisit: bool): string | null =>
-                (isVisit === false) ? null : error
-        );
+        this.data$ = ValueObservable.combineLatest(
+            errorInput$,
+            this.value$,
+            (error: bool, value: string): string | null => {
+                if (error) {
+                    return null;
+                }
+
+                return value;
+            }
+        )
+    }
+
+    onChange = (event: SyntheticInputEvent<>) => {
+        this._value.next(event.target.value);
+    }
+ 
+    onBlur = () => {
+        this._isVisit.next(true);
     }
 }
