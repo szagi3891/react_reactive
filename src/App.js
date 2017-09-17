@@ -16,9 +16,6 @@ import FormState from './Form/FormState';
 import Validators from './Form/Validators';
 
 class App extends BaseComponent<{||}> {
-    tab: ValueSubject<string> = new ValueSubject('tab0');
-    tab$ = this.tab.asObservable();
-
     formState = new FormState([{
         key: 'field1',
         label: 'Wprowadź datę bitwy pod Grunwaldem',
@@ -55,6 +52,41 @@ class App extends BaseComponent<{||}> {
         state: new FormInputState('Oczekiwano liczby 42', Validators.is42)
     }]);
 
+    tab: ValueSubject<string> = new ValueSubject('chat');
+    tab$ = this.tab.asObservable();
+
+    _config = [{
+        key: 'chat',
+        label: 'Chat',
+        render: () => <Chat className="App__border" />
+    }, {
+        key: 'autocomplete',
+        label: 'Autocomplete',
+        render: () => <Autocomplete className="App__border" />
+    }, {
+        key: 'podstawowy',
+        label: 'Podstawowy',
+        render: () => <MessageItem messageId="aaazzzddd1234567890" className="App__border" />
+    }, {
+        key: 'form1',
+        label: 'Formularz 1',
+        render: () => (
+            <Form
+                className="App__border"
+                formState={this.formState}
+            />
+        )
+    }, {
+        key: 'form2',
+        label: 'Formularz 2',
+        render: () => (
+            <Form
+                className="App__border"
+                formState={this.formState2}
+            />
+        )
+    }];
+
     constructor(props: {||}) {
         super(props);
 
@@ -84,44 +116,35 @@ class App extends BaseComponent<{||}> {
         this.tab.next(newTab);
     }
 
+    _renderMenu = () => (
+        <div className="Menu">
+            { this._config.map(item => (
+                <Tab
+                    className={this._getTabClass(item.key)}
+                    value={item.key}
+                    onClick={this._tabClick}
+                >
+                    { item.label }
+                </Tab>
+            ))}
+        </div>
+    );
+
+    _renderBody = (currentTab: string) => (
+        <div>
+            { this._config.map(item =>
+                item.key === currentTab ? item.render() : null
+            )}
+        </div>
+    );
+
     render() {
         const currentTab = this.getValue$(this.tab$);
 
         return (
             <div className="App">
-                <div className="Menu">
-                    <Tab className={this._getTabClass('tab0')} value="tab0" onClick={this._tabClick}>Chat</Tab>
-                    <Tab className={this._getTabClass('tab1')} value="tab1" onClick={this._tabClick}>Autocomplete</Tab>
-                    <Tab className={this._getTabClass('tab2')} value="tab2" onClick={this._tabClick}>Podstawowy</Tab>
-                    <Tab className={this._getTabClass('tab3')} value="tab3" onClick={this._tabClick}>Formularz 1</Tab>
-                    <Tab className={this._getTabClass('tab4')} value="tab4" onClick={this._tabClick}>Formularz 2</Tab>
-                </div>
-
-                { currentTab === 'tab0' ? (
-                    <Chat className="App__border" />
-                ) : null }
-
-                { currentTab === 'tab1' ? (
-                    <Autocomplete className="App__border" />
-                ) : null }
-
-                { currentTab === 'tab2' ? (
-                    <MessageItem messageId="aaazzzddd1234567890" className="App__border" />
-                ) : null }
-
-                { currentTab === 'tab3' ? (
-                    <Form
-                        className="App__border"
-                        formState={this.formState}
-                    />
-                ) : null }
-
-                { currentTab === 'tab4' ? (
-                    <Form
-                        className="App__border"
-                        formState={this.formState2}
-                    />
-                ) : null }
+                { this._renderMenu() }
+                { this._renderBody(currentTab) }
             </div>
         );
     }
