@@ -5452,7 +5452,9 @@ react@^16.0.0-rc.3:
 
 "react_reactive_value@https://github.com/szagi3891/react_reactive_value":
   version "0.1"
-  resolved "https://github.com/szagi3891/react_reactive_value#44a6a0e7bb1d966d518d66bf5c50994f76217e94"
+  resolved "https://github.com/szagi3891/react_reactive_value#eb12e9b354c1c7493bfe0cdab9ffd0065acb6d26"
+  dependencies:
+    rxjs "^5.4.3"
 
 read-all-stream@^3.0.0:
   version "3.1.0"

@@ -9,8 +9,7 @@
     "immutable": "4.0.0-rc.2",
     "react": "^16.0.0-rc.3",
     "react-dom": "^16.0.0-rc.3",
-    "react_reactive_value": "https://github.com/szagi3891/react_reactive_value",
-    "rxjs": "^5.4.3"
+    "react_reactive_value": "https://github.com/szagi3891/react_reactive_value"
   },
   "devDependencies": {
     "flow-bin": "^0.54.1",
