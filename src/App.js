@@ -17,7 +17,7 @@ import FormWizzardMain from './FormWizzard/FormWizzardMain';
 import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
 
 class App extends BaseComponent<{||}> {
-    formState = new FormGroupState([{
+    formState1 = new FormGroupState([{
         key: 'field1',
         label: 'Wprowadź datę bitwy pod Grunwaldem',
         state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
@@ -53,17 +53,21 @@ class App extends BaseComponent<{||}> {
         state: new FormInputState('Oczekiwano liczby 42', Validators.is42)
     }]);
 
-    _onSubmit1 = (data: Array<string>) => {
-        console.info('dane z pierwszego formularza', data);
+    _onSubmit1 = (data: Array<string> | null) => {
+        if (data !== null) {
+            console.info('dane z pierwszego formularza', data);
+        }
     };
 
-    _onSubmit2 = (data: Array<string>) => {
-        console.info('dane z pierwszego formularza', data);
+    _onSubmit2 = (data: Array<string> | null) => {
+        if (data !== null) {
+            console.info('dane z pierwszego formularza', data);
+        }
     };
 
     formWizzardState = new FormWizzardMainState();
 
-    tab: ValueSubject<string> = new ValueSubject('chat');
+    tab: ValueSubject<string> = new ValueSubject('formWizzard');
     tab$ = this.tab.asObservable();
 
     _config = [{
@@ -93,7 +97,7 @@ class App extends BaseComponent<{||}> {
         render: () => (
             <FormApp
                 className="App__border"
-                state={this.formState}
+                state={this.formState1}
                 onSubmit={this._onSubmit1}
             />
         )

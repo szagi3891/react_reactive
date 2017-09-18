@@ -3222,7 +3222,7 @@ ignore@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.3.tgz#432352e57accd87ab3110e82d3fea0e47812156d"
 
-immutable@4.0.0-rc.2:
+immutable@4.0.0-rc.2, immutable@^4.0.0-rc.2:
   version "4.0.0-rc.2"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.2.tgz#fdd0948aae728fda2306a02f72bb73e1773432d1"
 
@@ -5452,8 +5452,9 @@ react@^16.0.0-rc.3:
 
 "react_reactive_value@https://github.com/szagi3891/react_reactive_value":
   version "0.1"
-  resolved "https://github.com/szagi3891/react_reactive_value#eb12e9b354c1c7493bfe0cdab9ffd0065acb6d26"
+  resolved "https://github.com/szagi3891/react_reactive_value#980f35b134afcb82eb5539f7eef0a07dbe49dba5"
   dependencies:
+    immutable "^4.0.0-rc.2"
     rxjs "^5.4.3"
 
 read-all-stream@^3.0.0:

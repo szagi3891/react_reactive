@@ -4,49 +4,29 @@ import cx from 'classnames';
 import { BaseComponent, Subject } from 'react_reactive_value';
 import FormGroupState from './FormGroupState';
 import FormGroup from './FormGroup';
+import createFormSubmit from './FormSubmit';
 
 import './FormApp.css';
 
 type PropsType = {|
     className: string,
     state: FormGroupState,
-    onSubmit: (data: Array<string>) => void,
+    onSubmit: (data: Array<string> | null) => void,
 |};
 
 export default class FormApp extends BaseComponent<PropsType> {
 
-    send: Subject<void> = new Subject();
-    dataSubmit$ = this.send.asObservable()
-        .withLatestFrom2(
-            this.getProps$().switchMap(props => props.state.data$),
-            this.getProps$()
-        );
-
-    constructor(props: PropsType) {
-        super(props);
-
-        this.subscribe$(
-            this.dataSubmit$
-                .do(([click, data, props]) => {
-                    if (data !== null) {
-                        const { onSubmit } = props;
-                        onSubmit(data);
-                    }
-                })
-        );
-    }
-
-
-    onSend = () => {
-        this.send.next();
-    }
+    submit$ = createFormSubmit(
+        this.getProps$().switchMap(props => props.state.data$),
+        this.getProps$().map(props => props.onSubmit)
+    );
 
     render() {
         const { className, state } = this.props;
-        const data = this.getValue$(state.data$);
+        const submit = this.getValue$(this.submit$);
 
         const submitClassName = cx('FormSubmit', {
-            'FormSubmit--disable': data === null
+            'FormSubmit--disable': !submit.submitEnable
         });
 
         return (
@@ -56,7 +36,7 @@ export default class FormApp extends BaseComponent<PropsType> {
                 />
 
                 <div className={submitClassName}>
-                    <div className="FormSubmitButton" onClick={this.onSend}>
+                    <div className="FormSubmitButton" onClick={submit.onSubmit}>
                         Wyślij
                     </div>
                 </div>
