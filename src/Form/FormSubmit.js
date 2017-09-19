@@ -1,5 +1,5 @@
 //@flow
-import { Subject, ValueSubject, ValueObservable, Observable } from 'react_reactive_value';
+import { ValueObservable } from 'react_reactive_value';
 
 type SubmitType = {|
     onSubmit: () => void,
@@ -15,9 +15,7 @@ export default <T>(
         submit$,
         (data: T, submit: (data: T) => void) =>
             () => {
-                //if (data !== null) {
                 submit(data);
-                //}
             }
     );
 

@@ -65,7 +65,13 @@ class App extends BaseComponent<{||}> {
         }
     };
 
-    formWizzardState = new FormWizzardMainState();
+    formState3 = new FormGroupState([{
+        key: 'field1',
+        label: 'Wprowadź datę bitwy pod Grunwaldem',
+        state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
+    }]);
+
+    formWizzardState = new FormWizzardMainState(this.formState1, this.formState2, this.formState3);
 
     tab: ValueSubject<string> = new ValueSubject('formWizzard');
     tab$ = this.tab.asObservable();

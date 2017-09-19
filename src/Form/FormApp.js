@@ -1,7 +1,7 @@
 //@flow
 import * as React from 'react';
 import cx from 'classnames';
-import { BaseComponent, Subject } from 'react_reactive_value';
+import { BaseComponent } from 'react_reactive_value';
 import FormGroupState from './FormGroupState';
 import FormGroup from './FormGroup';
 import createFormSubmit from './FormSubmit';
