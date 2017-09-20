@@ -32,8 +32,10 @@ export default class FormWizzardState {
     constructor(steeps: Array<FormGroupState>) {
         this._action = new Subject();
 
-        this.data$ = ValueObservable
-            .combineLatestTupleArr(steeps.map(steep => steep.data$))
+        const listData$: ValueObservable<Array<Array<string> | null>> = ValueObservable
+            .combineLatestTupleArr(steeps.map(steep => steep.data$));
+        
+        this.data$ = listData$
             .map((data: Array<Array<string> | null>): Array<Array<string>> | null => {
                 const out = [];
 
@@ -47,8 +49,7 @@ export default class FormWizzardState {
                 return out;
             });
 
-        const maxSteep$ = ValueObservable
-            .combineLatestTupleArr(steeps.map(steep => steep.data$))
+        const maxSteep$ = listData$
             .map((data: Array<Array<string> | null>) => {
                 for (const [index, value] of data.entries()) {
                     if (value === null) {
