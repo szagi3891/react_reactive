@@ -18,10 +18,6 @@ type StateType = {|
 |};
 
 export default class FormWizzardState {
-    steep1: FormGroupState;
-    steep2: FormGroupState;
-    steep3: FormGroupState;
-
     _action: Subject<ActionType>;
 
     data$: ValueObservable<Array<Array<string>> | null>;
@@ -33,40 +29,36 @@ export default class FormWizzardState {
     prevEnable$: ValueObservable<bool>;
     nextEnable$: ValueObservable<bool>;
     
-    constructor(steep1: FormGroupState, steep2: FormGroupState, steep3: FormGroupState) {
-        this.steep1 = steep1;
-        this.steep2 = steep2;
-        this.steep3 = steep3;
-
+    constructor(steeps: Array<FormGroupState>) {
         this._action = new Subject();
 
-        this.data$ = ValueObservable.combineLatest3(
-            steep1.data$,
-            steep2.data$,
-            steep3.data$,
-            (data1, data2, data3) => {
-                if (data1 === null || data2 === null || data3 === null) {
-                    return null;
+        this.data$ = ValueObservable
+            .combineLatestTupleArr(steeps.map(steep => steep.data$))
+            .map((data: Array<Array<string> | null>): Array<Array<string>> | null => {
+                const out = [];
+
+                for (const dataItem of data) {
+                    if (dataItem === null) {
+                        return null
+                    }
+                    out.push(dataItem);
                 }
 
-                return [data1, data2, data3];
-            }
-        );
+                return out;
+            });
 
-        const maxSteep$ = ValueObservable.combineLatest3(
-            steep1.data$,
-            steep2.data$,
-            steep3.data$,
-            (data1, data2, data3) => {
-                if (data1 === null) {
-                    return 0;
+        const maxSteep$ = ValueObservable
+            .combineLatestTupleArr(steeps.map(steep => steep.data$))
+            .map((data: Array<Array<string> | null>) => {
+                for (const [index, value] of data.entries()) {
+                    if (value === null) {
+                        return index;
+                    }
                 }
-                if (data2 === null) {
-                    return 1;
-                }
-                return 2;
-            }
-        );
+
+                return data.length - 1;
+            });
+
         const initValue = {
             currentSteep: 0,
             maxSteep: 0
@@ -121,15 +113,8 @@ export default class FormWizzardState {
         });
 
         this.currentGroup$ = this.steep$.map(state => {
-            if (state.currentSteep === 0) {
-                return steep1;
-            }
-
-            if (state.currentSteep === 1) {
-                return steep2;
-            }
-
-            return steep3;
+            const { currentSteep } = state;
+            return steeps[currentSteep];
         });
 
         this.prevEnable$ = this.steep$.map(state =>

@@ -71,7 +71,7 @@ class App extends BaseComponent<{||}> {
         state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
     }]);
 
-    formWizzardState = new FormWizzardMainState(this.formState1, this.formState2, this.formState3);
+    formWizzardState = new FormWizzardMainState([this.formState1, this.formState2, this.formState3]);
 
     tab: ValueSubject<string> = new ValueSubject('formWizzard');
     tab$ = this.tab.asObservable();
