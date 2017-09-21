@@ -100,6 +100,13 @@ const TestLogout = () => {
     });    
 };
 
+const AA = () => {
+    firebase.auth().signInWithPopup(
+        new firebase.auth.EmailAuthProvider()
+        //new firebase.auth.GoogleAuthProvider()
+    );
+};
+
 /*
 robi zrzut całości (raz)
 database.ref().once('value').then(snap => {
@@ -197,6 +204,7 @@ export default class Chat extends BaseComponent<PropsType> {
                         <button onClick={TestCreate}>Utwórz</button>
                         <button onClick={TestLogin}>Loguj</button>
                         <button onClick={TestLogout}>Wyloguj</button>
+                        <button onClick={AA}>AAA</button>
                     </div>
                 </div>
                 { this._renderList() }
