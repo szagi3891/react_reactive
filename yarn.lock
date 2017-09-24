@@ -5451,8 +5451,8 @@ react@^16.0.0-rc.3:
     prop-types "^15.5.6"
 
 "react_reactive_value@https://github.com/szagi3891/react_reactive_value":
-  version "0.2"
-  resolved "https://github.com/szagi3891/react_reactive_value#da1c53d10d558e67708ce6ec04be58a846bf0828"
+  version "0.3"
+  resolved "https://github.com/szagi3891/react_reactive_value#3b9d7582fede5b2a781ae288d28aa58a31a391fd"
   dependencies:
     immutable "^4.0.0-rc.2"
     rxjs "^5.4.3"

@@ -17,25 +17,87 @@ type StateType = {|
     maxSteep: number,
 |};
 
+const reducer = (prevSteepState: StateType, action: ActionType): StateType => {
+    if (action.kind === 'back') {
+        const newCurrentSteep = prevSteepState.currentSteep - 1;
+
+        if (newCurrentSteep >= 0) {
+            return {
+                currentSteep: newCurrentSteep,
+                maxSteep: prevSteepState.maxSteep
+            };
+        }
+
+        return prevSteepState;
+    }
+
+    if (action.kind === 'next') {
+        const newCurrentSteep = prevSteepState.currentSteep + 1;
+        
+        if (newCurrentSteep <= prevSteepState.maxSteep) {
+            return {
+                currentSteep: newCurrentSteep,
+                maxSteep: prevSteepState.maxSteep
+            };
+        }
+
+        return prevSteepState;
+    }
+
+    if (action.kind === 'new_max_steep') {
+        return {
+            currentSteep: Math.min(prevSteepState.currentSteep, action.max),
+            maxSteep: action.max
+        };
+    }
+
+    return prevSteepState;
+};
+
 export default class FormWizzardState {
-    _action: Subject<ActionType>;
+    +_action: Subject<ActionType>;
 
-    data$: ValueObservable<Array<Array<string>> | null>;
-    steep$: ValueObservable<StateType>;
+    +data$: ValueObservable<Array<Array<string>> | null>;
  
-    currentSteep$: ValueObservable<[number, number]>;
-    currentGroup$: ValueObservable<FormGroupState>;
+    +currentSteep$: ValueObservable<[number, number]>;
+    +currentGroup$: ValueObservable<FormGroupState>;
 
-    prevEnable$: ValueObservable<bool>;
-    nextEnable$: ValueObservable<bool>;
+    +prevEnable$: ValueObservable<bool>;
+    +nextEnable$: ValueObservable<bool>;
     
-    constructor(steeps: Array<FormGroupState>) {
-        this._action = new Subject();
+    constructor(
+        _action: Subject<ActionType>,
+        
+        data$: ValueObservable<Array<Array<string>> | null>,
+        
+        currentSteep$: ValueObservable<[number, number]>,
+        currentGroup$: ValueObservable<FormGroupState>,
+    
+        prevEnable$: ValueObservable<bool>,
+        nextEnable$: ValueObservable<bool>
+    ) {
 
+        //$FlowFixMe
+        this._action = _action;
+        //$FlowFixMe
+        this.data$ = data$;
+        //$FlowFixMe
+        this.currentSteep$ = currentSteep$;
+        //$FlowFixMe
+        this.currentGroup$ = currentGroup$;
+        //$FlowFixMe
+        this.prevEnable$ = prevEnable$;
+        //$FlowFixMe
+        this.nextEnable$ = nextEnable$;
+    }
+
+    static build(steeps: Array<FormGroupState>): [FormWizzardState, () => void] {
+        const _action = new Subject();
+        
         const listData$: ValueObservable<Array<Array<string> | null>> = ValueObservable
             .combineLatestTupleArr(steeps.map(steep => steep.data$));
         
-        this.data$ = listData$
+        const data$ = listData$
             .map((data: Array<Array<string> | null>): Array<Array<string>> | null => {
                 const out = [];
 
@@ -65,66 +127,43 @@ export default class FormWizzardState {
             maxSteep: 0
         };
 
-        this.steep$ = this._action.asObservable()
+        const [steep$, disconnect] = _action.asObservable()
             .merge(
                 maxSteep$.map(maxSteep => ({
                     kind: 'new_max_steep',
                     max: maxSteep
                 }))
             )
-            .scan(initValue, (prevSteepState, action) => {
-                if (action.kind === 'back') {
-                    const newCurrentSteep = prevSteepState.currentSteep - 1;
+            .scan(initValue, reducer);
 
-                    if (newCurrentSteep >= 0) {
-                        return {
-                            currentSteep: newCurrentSteep,
-                            maxSteep: prevSteepState.maxSteep
-                        };
-                    }
-
-                    return prevSteepState;
-                }
-
-                if (action.kind === 'next') {
-                    const newCurrentSteep = prevSteepState.currentSteep + 1;
-                    
-                    if (newCurrentSteep <= prevSteepState.maxSteep) {
-                        return {
-                            currentSteep: newCurrentSteep,
-                            maxSteep: prevSteepState.maxSteep
-                        };
-                    }
-
-                    return prevSteepState;
-                }
-
-                if (action.kind === 'new_max_steep') {
-                    return {
-                        currentSteep: Math.min(prevSteepState.currentSteep, action.max),
-                        maxSteep: action.max
-                    };
-                }
-
-                return prevSteepState;
-            });
-        
-        this.currentSteep$ = this.steep$.map(state => {
+        const currentSteep$ = steep$.map(state => {
             return [state.currentSteep + 1, 3]
         });
 
-        this.currentGroup$ = this.steep$.map(state => {
+        const currentGroup$ = steep$.map(state => {
             const { currentSteep } = state;
             return steeps[currentSteep];
         });
 
-        this.prevEnable$ = this.steep$.map(state =>
+        const prevEnable$ = steep$.map(state =>
             state.currentSteep > 0
         );
 
-        this.nextEnable$ = this.steep$.map(state =>
+        const nextEnable$ = steep$.map(state =>
             state.currentSteep < state.maxSteep
         );
+
+        return [
+            new FormWizzardState(
+                _action,
+                data$,
+                currentSteep$,
+                currentGroup$,
+                prevEnable$,
+                nextEnable$
+            ),
+            disconnect
+        ];
     }
 
     back = () => {
