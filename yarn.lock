@@ -5452,7 +5452,7 @@ react@^16.0.0-rc.3:
 
 "react_reactive_value@https://github.com/szagi3891/react_reactive_value":
   version "0.3"
-  resolved "https://github.com/szagi3891/react_reactive_value#3b9d7582fede5b2a781ae288d28aa58a31a391fd"
+  resolved "https://github.com/szagi3891/react_reactive_value#5c0e8b1bd2961441525b5a247b3b5abca4cdfea1"
   dependencies:
     immutable "^4.0.0-rc.2"
     rxjs "^5.4.3"
