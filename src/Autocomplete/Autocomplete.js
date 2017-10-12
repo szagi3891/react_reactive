@@ -57,15 +57,15 @@ class Autocomplete extends BaseComponent<PropsType> {
             <div className={className}>
                 <div className="Autocomplete__header">
                     <div className="Autocomplete__header_item">
-                        <span className="Autocomplete__header_label">Wyszukaj:</span> 
+                        <span className="Autocomplete__header_label">Search:</span> 
                         <input onChange={this._onChange} />
                     </div>
                     <div className="Autocomplete__header_item">
-                        <span className="Autocomplete__header_label">Podświetl:</span>
+                        <span className="Autocomplete__header_label">Highlight:</span>
                         <input onChange={this._onChangeHighlight} />
                     </div>
                     <div className="Autocomplete__header_item">
-                        <span className="Autocomplete__header_label">Sortuj odwrotnie:</span>
+                        <span className="Autocomplete__header_label">Display in reverse order:</span>
                         <input type="checkbox" onChange={this._onChangeDirection} />
                     </div>
                 </div>

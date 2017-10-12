@@ -19,56 +19,56 @@ import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
 class App extends BaseComponent<{||}> {
     formState1 = new FormGroupState([{
         key: 'field1',
-        label: 'Wprowadź datę bitwy pod Grunwaldem',
-        state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
+        label: 'Enter the number 1410',
+        state: new FormInputState('Wrong value', Validators.isGrunwald)
     }, {
         key: 'field2',
-        label: 'Wprowadź wiek jakiśtam',
-        state: new FormInputState('Oczekiwano poprawnego wieku', Validators.isNumber)
+        label: 'Input some number',
+        state: new FormInputState('Wrong number', Validators.isNumber)
     }, {
         key: 'field3',
-        label: 'Wprowadź liczbę szesnastkową',
-        state: new FormInputState('Oczekiwano hasła do biosu', Validators.isHex)
+        label: 'Enter the hexadecimal value',
+        state: new FormInputState('Wrong hexadecimal value', Validators.isHex)
     }]);
 
     formState2 = new FormGroupState([{
         key: 'field1',
-        label: 'Wprowadź datę bitwy pod Grunwaldem',
-        state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
+        label: 'Enter the number 1410',
+        state: new FormInputState('Wrong value', Validators.isGrunwald)
     }, {
         key: 'field2',
-        label: 'Wprowadź wiek jakiśtam',
-        state: new FormInputState('Oczekiwano poprawnego wieku', Validators.isNumber)
+        label: 'Input some number',
+        state: new FormInputState('Enter the number', Validators.isNumber)
     }, {
         key: 'field3',
-        label: 'Wprowadź liczbę szesnastkową',
-        state: new FormInputState('Oczekiwano hasła do biosu', Validators.isHex)
+        label: 'Enter the hexadecimal value',
+        state: new FormInputState('Wrong hexadecimal value', Validators.isHex)
     }, {
         key: 'field4',
-        label: 'Wprowadź liczbę szesnastkową',
-        state: new FormInputState('Oczekiwano hasła do biosu', Validators.isHex)
+        label: 'Enter the hexadecimal value',
+        state: new FormInputState('Wrong hexadecimal value', Validators.isHex)
     }, {
         key: 'field5',
-        label: 'Wprowadź cokolwiek',
-        state: new FormInputState('Oczekiwano liczby 42', Validators.is42)
+        label: 'Enter the number 42',
+        state: new FormInputState('Wrong value', Validators.is42)
     }]);
 
     _onSubmit1 = (data: Array<string> | null) => {
         if (data !== null) {
-            console.info('dane z pierwszego formularza', data);
+            console.info('FormData1', data);
         }
     };
 
     _onSubmit2 = (data: Array<string> | null) => {
         if (data !== null) {
-            console.info('dane z pierwszego formularza', data);
+            console.info('FormData2', data);
         }
     };
 
     formState3 = new FormGroupState([{
         key: 'field1',
-        label: 'Wprowadź datę bitwy pod Grunwaldem',
-        state: new FormInputState('Oczekiwano poprawnej daty', Validators.isGrunwald)
+        label: 'Enter the number 1410',
+        state: new FormInputState('Wrong value', Validators.isGrunwald)
     }]);
 
     formWizzardState = this.mount$(FormWizzardMainState.build([this.formState1, this.formState2, this.formState3]));
@@ -95,11 +95,11 @@ class App extends BaseComponent<{||}> {
         render: () => <Autocomplete className="App__border" />
     }, {
         key: 'podstawowy',
-        label: 'Podstawowy',
-        render: () => <MessageItem messageId="aaazzzddd1234567890" className="App__border" />
+        label: 'Simple timer',
+        render: () => <MessageItem messageId="someIdExample" className="App__border" />
     }, {
         key: 'form1',
-        label: 'Formularz 1',
+        label: 'Form 1',
         render: () => (
             <FormApp
                 className="App__border"
@@ -109,7 +109,7 @@ class App extends BaseComponent<{||}> {
         )
     }, {
         key: 'form2',
-        label: 'Formularz 2',
+        label: 'Form 2',
         render: () => (
             <FormApp
                 className="App__border"

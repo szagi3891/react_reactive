@@ -34,7 +34,7 @@ export default class FormWizzard extends BaseComponent<PropsType> {
                 <br/>
                 <br/>
                 <div>
-                    Krok { currentSteep } / { maxSteep }
+                    Steep { currentSteep } / { maxSteep }
                 </div>
             </div>
         );

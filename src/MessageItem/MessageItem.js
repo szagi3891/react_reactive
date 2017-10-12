@@ -31,8 +31,8 @@ export default class MessageItem extends BaseComponent<PropsType> {
 
         return (
             <div className={className}>
-                <p>model tenże { messageId } { counter }</p>
-                <p>==> {char}</p>
+                <p>{ messageId } { counter }</p>
+                <p>{char}</p>
             </div>
         );
     }
