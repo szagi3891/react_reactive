@@ -57,28 +57,6 @@ messages.on('child_removed', function(data) {
     console.info('child_removed', data, data.val());
 });
 
-//console.info('auth', auth);
-
-const user = {
-    //email: 'szeligagrzegorz@gmail.com',
-    email: 'aaa@aaa.pl',
-    password: 'aaaaaa'
-};
-
-const AA = () => {
-    firebase.auth().signInWithPopup(
-        new firebase.auth.EmailAuthProvider()
-        //new firebase.auth.GoogleAuthProvider()
-    );
-};
-
-/*
-robi zrzut całości (raz)
-database.ref().once('value').then(snap => {
-    console.info('zrzut', snap.val());
-});
-*/
-
 type PropsType = {|
     className: string,
 |};
@@ -109,12 +87,12 @@ export default class Chat extends BaseComponent<PropsType> {
             )
             .do(([click, nickValue, textareaValue]) => {
                 if (nickValue.length < 1) {
-                    alert('Wpisz nick');
+                    alert('Type in the nick');
                     return;
                 }
 
                 if (textareaValue.length < 1) {
-                    alert('Wpisz wiadomość');
+                    alert('Type in the message');
                     return;
                 }
 
@@ -125,7 +103,7 @@ export default class Chat extends BaseComponent<PropsType> {
                     nick: nickValue,
                     message: textareaValue
                 }).then((aaa) => {
-                    console.info(`Wysłano wiadomość ${textareaValue}`);
+                    console.info(`Message send: ${textareaValue}`);
                     sending.next(false);
                 }).catch((error: Object) => {
                     console.error(error);
@@ -143,8 +121,6 @@ export default class Chat extends BaseComponent<PropsType> {
         return (
             <div className="Chat__wrapper">
                 { this._renderNetworkStatus() }
-
-                <br/>
 
                 <div>
                     <div className="Chat_InputGroup">
@@ -165,13 +141,10 @@ export default class Chat extends BaseComponent<PropsType> {
 
                     <div>
                         <button onClick={this._onSend}>Send</button>
-                        { /*
-                        <button onClick={AA}>AAA</button>
-                        */ }
                     </div>
                 </div>
                 { this._renderList() }
-                { sendingValue ? <div className="Chat__sending">Wysyłanie ...</div> : null }
+                { sendingValue ? <div className="Chat__sending">Sending ...</div> : null }
             </div>
         );
     }
