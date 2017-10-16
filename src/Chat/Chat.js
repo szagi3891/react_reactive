@@ -22,7 +22,6 @@ const nick = new ValueSubject('');
 const textarea = new ValueSubject('');
 const sending = new ValueSubject(false);
 const online = new ValueSubject(true);
-const activeUser = new ValueSubject(null);
 
 type MessageItemType = {|
     id: string,
@@ -58,46 +57,12 @@ messages.on('child_removed', function(data) {
     console.info('child_removed', data, data.val());
 });
 
-/*const auth =*/ firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        activeUser.next(user.email);
-        console.info('user zalogowany', user);
-    } else {
-        activeUser.next(null);
-        console.info('user wylogowany');
-    }
-});
-
 //console.info('auth', auth);
 
 const user = {
     //email: 'szeligagrzegorz@gmail.com',
     email: 'aaa@aaa.pl',
     password: 'aaaaaa'
-};
-
-const TestCreate = () => {
-    console.info('Odpalam logowanie');
-
-    firebase.auth().createUserWithEmailAndPassword(user.email, user.password).catch((error) => {
-        console.info('error tworzenia użytkownika', error);    
-    });
-};
-
-const TestLogin = () => {
-    console.info('Odpalam logowanie');
-
-    firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch((error) => {
-        console.info('error tworzenia użytkownika', error);    
-    });
-};
-
-const TestLogout = () => {
-    console.info('Odpalam wylogowanie');
-    
-    firebase.auth().signOut().catch((error) => {
-        console.info('error wylogowania użytkownika', error);    
-    });    
 };
 
 const AA = () => {
@@ -179,7 +144,6 @@ export default class Chat extends BaseComponent<PropsType> {
             <div className="Chat__wrapper">
                 { this._renderNetworkStatus() }
 
-                { this._renderUser() }
                 <br/>
 
                 <div>
@@ -202,9 +166,6 @@ export default class Chat extends BaseComponent<PropsType> {
                     <div>
                         <button onClick={this._onSend}>Send</button>
                         { /*
-                        <button onClick={TestCreate}>Utwórz</button>
-                        <button onClick={TestLogin}>Loguj</button>
-                        <button onClick={TestLogout}>Wyloguj</button>
                         <button onClick={AA}>AAA</button>
                         */ }
                     </div>
@@ -213,17 +174,6 @@ export default class Chat extends BaseComponent<PropsType> {
                 { sendingValue ? <div className="Chat__sending">Wysyłanie ...</div> : null }
             </div>
         );
-    }
-
-    _renderUser = () => {
-        const activeUserValue = this.getValue$(activeUser.asObservable());
-        if (activeUserValue) {
-            return (
-                <div>{activeUserValue}</div>
-            );
-        }
-
-        return <div>No user</div>;
     }
 
     _renderNetworkStatus = () => {
