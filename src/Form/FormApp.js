@@ -37,7 +37,7 @@ export default class FormApp extends BaseComponent<PropsType> {
 
                 <div className={submitClassName}>
                     <div className="FormSubmitButton" onClick={submit.onSubmit}>
-                        Wyślij
+                        send
                     </div>
                 </div>
             </div>

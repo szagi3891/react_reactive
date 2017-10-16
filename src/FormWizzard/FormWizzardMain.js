@@ -29,8 +29,8 @@ export default class FormWizzard extends BaseComponent<PropsType> {
                 <FormGroup
                     state={currentGroup}
                 />
-                { this._renderButton('Wstecz', state.back, prevEnable) }
-                { this._renderButton('Dalej', state.next, nextEnable) }
+                { this._renderButton('Back', state.back, prevEnable) }
+                { this._renderButton('Next', state.next, nextEnable) }
                 <br/>
                 <br/>
                 <div>
