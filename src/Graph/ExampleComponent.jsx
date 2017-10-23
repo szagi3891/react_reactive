@@ -16,7 +16,7 @@ class LastMessage extends BaseComponent<PropsType> {
             return (
                 <div>
                     <div>Last message: lastMessage.body</div>
-                    <div>{ this._renderAuthor(lastMessage) }
+                    <div>{ this._renderAuthor(lastMessage) }</div>
                 </div>
             )
         }
@@ -24,7 +24,8 @@ class LastMessage extends BaseComponent<PropsType> {
         return null;
     }
 
-    _renderAuthor(lastMessage: MessageModel): React.Node {
+    _renderAuthor = (lastMessage: MessageModel): React.Node => {
+        /*
         const author: UserModel | null = this.getValue$(graph.user.get$(lastMessage.author));
 
         if (author) {
@@ -34,5 +35,6 @@ class LastMessage extends BaseComponent<PropsType> {
         }
 
         return null;
+        */
     }
 }

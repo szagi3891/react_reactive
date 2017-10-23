@@ -33,16 +33,17 @@ const chat: ValueSubject<Array<MessageItemType>> = new ValueSubject([]);
 
 
 messages.on('child_added', function(messageItem) {
-    const currentList = chat.getValue();
-    const messageKey = messageItem.key;
-    const messageVal = messageItem.val();
-    const message = {
-        id: messageKey,
-        nick: messageVal.nick,
-        message: messageVal.message
-    }
-    currentList.push(message);
-    chat.next(currentList);
+    chat.update(currentList => {
+        const messageKey = messageItem.key;
+        const messageVal = messageItem.val();
+        const message = {
+            id: messageKey,
+            nick: messageVal.nick,
+            message: messageVal.message
+        }
+        currentList.push(message);
+        return currentList;
+    });
 });
 
 database.ref(".info/connected").on("value", function(snap) {

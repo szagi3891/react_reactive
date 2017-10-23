@@ -6,11 +6,11 @@ const counter = new ValueSubject(44);
 const counter2 = new ValueSubject(1);
 
 setInterval(() => {
-    counter.next(counter.getValue() + 1);
+    counter.update(prevValue => prevValue + 1);
 }, 2000);
 
 setInterval(() => {
-    counter2.next(counter2.getValue() + 1);
+    counter2.update(prevValue => prevValue + 1);
 }, 3000);
 
 type PropsType = {|

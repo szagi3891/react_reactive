@@ -2698,9 +2698,9 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@^0.56.0:
-  version "0.56.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.56.0.tgz#ce43092203a344ba9bf63c0cabe95d95145f6cad"
+flow-bin@0.57.3:
+  version "0.57.3"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.57.3.tgz#843fb80a821b6d0c5847f7bb3f42365ffe53b27b"
 
 flow-typed@^2.1.5:
   version "2.1.5"
@@ -3253,7 +3253,11 @@ ignore@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.3.tgz#432352e57accd87ab3110e82d3fea0e47812156d"
 
-immutable@^4.0.0-rc.2, immutable@^4.0.0-rc.4:
+immutable@4.0.0-rc.9:
+  version "4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.9.tgz#1e6e0094e649013ec3742d2b5aeeca5eeda4f0bf"
+
+immutable@^4.0.0-rc.2:
   version "4.0.0-rc.4"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.4.tgz#eff99bcea8bd68ce6c7725885e44011225f14fec"
 
@@ -5492,8 +5496,8 @@ react@^16.0.0-rc.3:
     prop-types "^15.6.0"
 
 "react_reactive_value@https://github.com/szagi3891/react_reactive_value":
-  version "0.6"
-  resolved "https://github.com/szagi3891/react_reactive_value#66b9fcf93af317d5e41c573c42c0105008e4642c"
+  version "0.7"
+  resolved "https://github.com/szagi3891/react_reactive_value#716f04d30d52202b695a6e1725a4f9e3c08aa579"
   dependencies:
     immutable "^4.0.0-rc.2"
     rxjs "^5.4.3"
