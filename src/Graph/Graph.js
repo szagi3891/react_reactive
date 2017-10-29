@@ -5,11 +5,11 @@ import ChatGraph from './GraphBranch/ChatGraph';
 
 export default class Graph {
 
+    chatMessage: ChatMessageGraph;
     chatList: ChatGraph;
-    //chatMessage: ChatMessageGraph;
 
     constructor() {
-        this.chatList = new ChatGraph();
-        //this.chatMessage = new ChatMessageGraph();
+        this.chatMessage = new ChatMessageGraph();
+        this.chatList = new ChatGraph(this.chatMessage);
     }
 }

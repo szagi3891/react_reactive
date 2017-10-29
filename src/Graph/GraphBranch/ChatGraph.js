@@ -1,13 +1,15 @@
 //@flow
 import { database } from './firebase';
 
-import { BaseComponent, Subject, ValueSubject, ValueObservable } from 'react_reactive_value';
-import type { MessageItemType } from '../Models';
+import { ValueSubject, ValueObservable } from 'react_reactive_value';
+import ChatMessageGraph from './ChatMessageGraph';
 
 export default class ChatGraph {
 
-    _list: ValueSubject<Array<MessageItemType>>;
-    list: ValueObservable<Array<MessageItemType>>;
+    _chatMessage: ChatMessageGraph;
+
+    _list: ValueSubject<Array<string>>;
+    list: ValueObservable<Array<string>>;
 
     _online: ValueSubject<bool>;
     online: ValueObservable<bool>;
@@ -15,7 +17,9 @@ export default class ChatGraph {
     _sending: ValueSubject<bool>;
     sending: ValueObservable<bool>;
 
-    constructor() {
+    constructor(chatMessage: ChatMessageGraph) {
+        this._chatMessage = chatMessage;
+
         this._list = new ValueSubject([]);
         this.list = this._list.asObservable();
 
@@ -30,7 +34,10 @@ export default class ChatGraph {
                     nick: messageVal.nick,
                     message: messageVal.message
                 }
-                currentList.push(message);
+
+                this._chatMessage.set(message.id, message);
+                currentList.push(message.id);
+
                 return currentList;
             });
         });

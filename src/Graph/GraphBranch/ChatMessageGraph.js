@@ -1,24 +1,31 @@
 //@flow
 
-import { ValueObservable } from 'react_reactive_value';
+import { ValueSubject, ValueObservable } from 'react_reactive_value';
+import type { MessageItemType } from '../Models';
 
-export default class MessageBranch {
+export default class ChatMessage {
 
-    /*
-    _data: ModelsCollection<MessageModel>;
+    _data: Map<string, ValueSubject<MessageItemType | null>>;
 
-    constructor(globalStorage: GlobalStorage) {
-        this._data = new ModelsCollection(globalStorage);
+    set(id: string, model: MessageItemType) {
+        const item = this._data.get(id);
+        if (item) {
+            item.next(model);
+            return;
+        }
 
-        globalStorage.subscribeAll((model: Object) => {
-            if (model instanceof MessageModel) {
-                this._data.set(model.id, model);
-            }
-        });
+        const newItem = new ValueSubject(model);
+        this._data.set(id, newItem);
     }
 
-    get$(id: string): ValueObservable<MessageModel | null> {
-        return this._data.get(id);
+    get$(id: string): ValueObservable<MessageItemType | null> {
+        const item = this._data.get(id);
+        if (item) {
+            return item.asObservable();
+        }
+
+        const newSub = new ValueSubject(null);
+        this._data.set(id, newSub);
+        return newSub.asObservable();
     }
-    */
 }

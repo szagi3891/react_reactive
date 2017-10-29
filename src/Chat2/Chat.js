@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import PureComponent from '../Graph/PureComponent';
-import type { MessageItemType } from '../Graph/Models';
 
 type PropsType = {|
     className: string,
@@ -15,7 +14,6 @@ type StateType = {|
 |};
 
 export default class Chat extends PureComponent<PropsType, StateType> {
-
     constructor(props: PropsType) {
         super(props);
         this.state = {
@@ -113,14 +111,20 @@ export default class Chat extends PureComponent<PropsType, StateType> {
 
         return (
             <div className="Chat__list App__border">
-                { reverse.map(item => this._renderListItem(item)) }
+                { reverse.map(this._renderListItem) }
             </div>
         );
     }
 
-    _renderListItem(item: MessageItemType) {
+    _renderListItem(id: string) {
+        const item = this.graph.chatMessage.get(id);
+
+        if (item === null) {
+            return <div className="Chat__message" key={id}><i>Loading ...</i></div>;
+        }
+
         return (
-            <div className="Chat__message" key={item.id}>
+            <div className="Chat__message" key={id}>
                 <div className="Chat__nick">{item.nick}:</div>
                 <div>{item.message}</div>
             </div>
