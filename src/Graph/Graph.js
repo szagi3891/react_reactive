@@ -1,16 +1,15 @@
 //@flow
 
-import GlobalStorage from './GlobalStorage';
-import ThreadBranch from './GraphBranch/ThreadBranch';
-import MessageBranch from './GraphBranch/MessageBranch';
+import ChatMessageGraph from './GraphBranch/ChatMessageGraph';
+import ChatGraph from './GraphBranch/ChatGraph';
 
 export default class Graph {
 
-    thread: ThreadBranch;
-    message: MessageBranch;
+    chatList: ChatGraph;
+    //chatMessage: ChatMessageGraph;
 
-    constructor(globalStorage: GlobalStorage) {
-        this.message = new MessageBranch(globalStorage);
-        this.thread = new ThreadBranch(globalStorage, this.message);
+    constructor() {
+        this.chatList = new ChatGraph();
+        //this.chatMessage = new ChatMessageGraph();
     }
 }

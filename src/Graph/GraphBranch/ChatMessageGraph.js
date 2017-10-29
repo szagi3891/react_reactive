@@ -1,12 +1,10 @@
 //@flow
 
 import { ValueObservable } from 'react_reactive_value';
-import GlobalStorage from '../GlobalStorage';
-import MessageModel from '../Models/MessageModel';
-import ModelsCollection from '../ModelsCollection';
 
 export default class MessageBranch {
 
+    /*
     _data: ModelsCollection<MessageModel>;
 
     constructor(globalStorage: GlobalStorage) {
@@ -22,4 +20,5 @@ export default class MessageBranch {
     get$(id: string): ValueObservable<MessageModel | null> {
         return this._data.get(id);
     }
+    */
 }

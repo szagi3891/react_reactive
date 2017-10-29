@@ -6,6 +6,7 @@ import './App.css';
 
 import MessageItem from './MessageItem/MessageItem';
 import Chat from './Chat/Chat';
+import Chat2 from './Chat2/Chat';
 import Autocomplete from './Autocomplete/Autocomplete';
 import { BaseComponent, ValueSubject } from 'react_reactive_value';
 import Tab from './Tab';
@@ -89,6 +90,10 @@ class App extends BaseComponent<{||}> {
         key: 'chat',
         label: 'Chat',
         render: () => <Chat className="App__border" />
+    }, {
+        key: 'chat2',
+        label: 'Chat2',
+        render: () => <Chat2 className="App__border" />
     }, {
         key: 'autocomplete',
         label: 'Autocomplete',

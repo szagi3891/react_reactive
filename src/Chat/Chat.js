@@ -1,9 +1,12 @@
 //@flow
 
 import * as React from 'react';
-import firebase from 'firebase';
+//import firebase from 'firebase';
 import { BaseComponent, Subject, ValueSubject } from 'react_reactive_value';
 
+import { database } from '../Graph/GraphBranch/firebase';
+
+/*
 const config = {
     apiKey: "AIzaSyDon__hg5Iv1zi5uvMv2V5HCSGmy6NzDGE",
     authDomain: "rxczat.firebaseapp.com",
@@ -16,6 +19,8 @@ const config = {
 firebase.initializeApp(config);
 
 const database = firebase.database();
+*/
+
 const messages = database.ref('rxjs-demo');
 
 const nick = new ValueSubject('');
@@ -30,7 +35,6 @@ type MessageItemType = {|
 |};
 
 const chat: ValueSubject<Array<MessageItemType>> = new ValueSubject([]);
-
 
 messages.on('child_added', function(messageItem) {
     chat.update(currentList => {
