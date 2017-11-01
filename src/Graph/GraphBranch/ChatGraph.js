@@ -2,26 +2,29 @@
 import { database } from './firebase';
 
 import { ValueSubject, ValueObservable } from 'react_reactive_value';
+import GraphRenderManager from '../GraphRenderManager';
 import ChatMessageGraph from './ChatMessageGraph';
 
 export default class ChatGraph {
 
+    _graphRenderManager: GraphRenderManager;
     _chatMessage: ChatMessageGraph;
 
     _list: ValueSubject<Array<string>>;
-    list: ValueObservable<Array<string>>;
+    list$: ValueObservable<Array<string>>;
 
     _online: ValueSubject<bool>;
-    online: ValueObservable<bool>;
+    online$: ValueObservable<bool>;
 
     _sending: ValueSubject<bool>;
-    sending: ValueObservable<bool>;
+    sending$: ValueObservable<bool>;
 
-    constructor(chatMessage: ChatMessageGraph) {
+    constructor(graphRenderManager: GraphRenderManager, chatMessage: ChatMessageGraph) {
+        this._graphRenderManager = graphRenderManager;
         this._chatMessage = chatMessage;
 
         this._list = new ValueSubject([]);
-        this.list = this._list.asObservable();
+        this.list$ = this._list.asObservable();
 
         const messages = database.ref('rxjs-demo');
  
@@ -51,14 +54,14 @@ export default class ChatGraph {
         });
 
         this._online = new ValueSubject(true);
-        this.online = this._online.asObservable();
+        this.online$ = this._online.asObservable();
 
         database.ref(".info/connected").on("value", (snap) => {
             this._online.next(snap.val());
         });
 
         this._sending = new ValueSubject(false);
-        this.sending = this._sending.asObservable();
+        this.sending$ = this._sending.asObservable();
     }
 
     send(nick: string, message: string): Promise<void> {
@@ -76,5 +79,17 @@ export default class ChatGraph {
             this._sending.next(false);
             return Promise.reject(error);
         });
+    }
+
+    get sending(): bool {
+        return this._graphRenderManager.getValue$(this.sending$);
+    }
+
+    get online(): bool {
+        return this._graphRenderManager.getValue$(this.online$);
+    }
+
+    get list(): Array<string> {
+        return this._graphRenderManager.getValue$(this.list$);
     }
 }

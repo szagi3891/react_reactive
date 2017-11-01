@@ -116,7 +116,7 @@ export default class Chat extends PureComponent<PropsType, StateType> {
         );
     }
 
-    _renderListItem(id: string) {
+    _renderListItem = (id: string) => {
         const item = this.graph.chatMessage.get(id);
 
         if (item === null) {
