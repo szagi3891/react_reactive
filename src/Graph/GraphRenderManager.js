@@ -21,7 +21,7 @@ export default class GraphRenderManager {
             return this._getValue$(stream);
         }
 
-        throw Error('Panic');
+        throw Error('getValue$ - has been called outside the render function');
     }
 
     renderExit() {
