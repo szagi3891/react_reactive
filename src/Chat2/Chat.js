@@ -1,7 +1,7 @@
 //@flow
 
 import * as React from 'react';
-import PureComponent from '../Graph/PureComponent';
+import GraphPureComponent from '../Graph/GraphPureComponent';
 
 type PropsType = {|
     className: string,
@@ -13,7 +13,7 @@ type StateType = {|
     errorMessage: string | null,
 |};
 
-export default class Chat extends PureComponent<PropsType, StateType> {
+export default class Chat extends GraphPureComponent<PropsType, StateType> {
     constructor(props: PropsType) {
         super(props);
         this.state = {
