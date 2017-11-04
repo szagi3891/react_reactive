@@ -43,3 +43,22 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
         this.render = this._graphConnection.newRender;
     }
 }
+
+/*
+Do późniejszego wykorzystania
+
+var original = {
+    "foo": "bar"
+};
+var proxy = new Proxy(original, {
+    get: function(target, name, receiver) {
+        var rv = target[name];
+        if (typeof rv === "string") {
+            rv = rv.toUpperCase();
+        }
+        return rv;
+      }
+});
+console.log("original.foo = " + original.foo); // "bar"
+console.log("proxy.foo = " + proxy.foo);       // "BAR"
+*/
