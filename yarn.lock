@@ -2698,9 +2698,9 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@0.57.3:
-  version "0.57.3"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.57.3.tgz#843fb80a821b6d0c5847f7bb3f42365ffe53b27b"
+flow-bin@0.59:
+  version "0.59.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.59.0.tgz#8c151ee7f09f1deed9bf0b9d1f2e8ab9d470f1bb"
 
 flow-typed@^2.1.5:
   version "2.1.5"
@@ -3256,10 +3256,6 @@ ignore@^3.3.3:
 immutable@4.0.0-rc.9:
   version "4.0.0-rc.9"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.9.tgz#1e6e0094e649013ec3742d2b5aeeca5eeda4f0bf"
-
-immutable@^4.0.0-rc.2:
-  version "4.0.0-rc.4"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.4.tgz#eff99bcea8bd68ce6c7725885e44011225f14fec"
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -5496,10 +5492,10 @@ react@^16.0.0-rc.3:
     prop-types "^15.6.0"
 
 "react_reactive_value@https://github.com/szagi3891/react_reactive_value":
-  version "0.7"
-  resolved "https://github.com/szagi3891/react_reactive_value#716f04d30d52202b695a6e1725a4f9e3c08aa579"
+  version "0.8"
+  resolved "https://github.com/szagi3891/react_reactive_value#036f84cb4466b429e4a471b2c7ce6280e611a3c7"
   dependencies:
-    immutable "^4.0.0-rc.2"
+    immutable "4.0.0-rc.9"
     rxjs "^5.4.3"
 
 read-all-stream@^3.0.0:
@@ -5816,8 +5812,8 @@ rx-lite@*, rx-lite@^4.0.8:
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
 
 rxjs@^5.4.3:
-  version "5.4.3"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.4.3.tgz#0758cddee6033d68e0fd53676f0f3596ce3d483f"
+  version "5.5.2"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.2.tgz#28d403f0071121967f18ad665563255d54236ac3"
   dependencies:
     symbol-observable "^1.0.1"
 

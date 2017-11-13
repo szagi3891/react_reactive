@@ -127,14 +127,19 @@ export default class FormWizzardState {
             maxSteep: 0
         };
 
-        const [steep$, disconnect] = _action.asObservable()
+        const actionScan$ = _action.asObservable()
             .merge(
                 maxSteep$.map(maxSteep => ({
                     kind: 'new_max_steep',
                     max: maxSteep
                 }))
-            )
-            .scan(initValue, reducer);
+            );
+
+        const [steep$, disconnect] = ValueObservable.scan(
+            actionScan$,
+            initValue,
+            reducer
+        );
 
         const currentSteep$ = steep$.map(state => {
             return [state.currentSteep + 1, 3]

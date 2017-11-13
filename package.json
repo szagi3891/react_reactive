@@ -12,7 +12,7 @@
     "react_reactive_value": "https://github.com/szagi3891/react_reactive_value"
   },
   "devDependencies": {
-    "flow-bin": "0.57.3",
+    "flow-bin": "0.59",
     "flow-typed": "^2.1.5",
     "react-scripts": "^1.0.13"
   },

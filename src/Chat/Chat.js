@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 //import firebase from 'firebase';
-import { BaseComponent, Subject, ValueSubject } from 'react_reactive_value';
+import { BaseComponent, Subject, ValueSubject, ValueObservable } from 'react_reactive_value';
 
 import { database } from '../Graph/GraphBranch/firebase';
 
@@ -86,7 +86,8 @@ export default class Chat extends BaseComponent<PropsType> {
         super(props);
 
         this.subscribe$(
-            this.click.asObservable().withLatestFrom2(
+            ValueObservable.observableWithLatestFrom2(
+                this.click.asObservable(),        
                 nick.asObservable(),
                 textarea.asObservable()
             )
