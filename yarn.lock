@@ -5492,11 +5492,11 @@ react@^16.0.0-rc.3:
     prop-types "^15.6.0"
 
 "react_reactive_value@https://github.com/szagi3891/react_reactive_value":
-  version "0.8"
-  resolved "https://github.com/szagi3891/react_reactive_value#036f84cb4466b429e4a471b2c7ce6280e611a3c7"
+  version "0.30"
+  resolved "https://github.com/szagi3891/react_reactive_value#c0bf8ece581bd4332335f1ebf7c11c1070e1d6f1"
   dependencies:
     immutable "4.0.0-rc.9"
-    rxjs "^5.4.3"
+    rxjs "5.5.2"
 
 read-all-stream@^3.0.0:
   version "3.1.0"
@@ -5811,7 +5811,7 @@ rx-lite@*, rx-lite@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
 
-rxjs@^5.4.3:
+rxjs@5.5.2:
   version "5.5.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.2.tgz#28d403f0071121967f18ad665563255d54236ac3"
   dependencies:
