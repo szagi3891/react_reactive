@@ -6,7 +6,11 @@ const counter = new ValueSubject(44);
 const counter2 = new ValueSubject(1);
 
 setInterval(() => {
-    counter.update(prevValue => prevValue + 1);
+//    counter.update(prevValue => prevValue + 1);
+    counter.update(prevValue => {
+        counter2.update(prevValue => prevValue);
+        return prevValue + 1;
+    });
 }, 2000);
 
 setInterval(() => {
