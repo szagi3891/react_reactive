@@ -7,11 +7,9 @@ import type { MessageItemType } from '../Models';
 
 export default class ChatMessage {
 
-    _graphRenderManager: GraphRenderManager;
     _data: Map<string, ValueSubject<MessageItemType | null>>;
 
-    constructor(graphRenderManager: GraphRenderManager) {
-        this._graphRenderManager = graphRenderManager;
+    constructor() {
         this._data = new Map();
     }
 
@@ -38,6 +36,6 @@ export default class ChatMessage {
     }
 
     get(id: string): MessageItemType | null {
-        return this._graphRenderManager.getValue$(this.get$(id));
+        return GraphRenderManager.getValue$(this.get$(id));
     }
 }

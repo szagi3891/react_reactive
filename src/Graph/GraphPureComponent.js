@@ -2,12 +2,10 @@
 
 import * as React from 'react';
 
-import GraphRenderManager from './GraphRenderManager';
 import GraphConnection from './GraphConnection';
 import Graph from './Graph';
 
-const graphRenderManager = new GraphRenderManager();
-const graph: Graph = new Graph(graphRenderManager);
+const graph: Graph = new Graph();
 
 export default class GraphPureComponent<Props, StateType = void> extends React.PureComponent<Props, StateType> {
 
@@ -27,7 +25,6 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
 
         this.graph = graph;
         this._graphConnection = new GraphConnection(
-            graphRenderManager,
             this.render.bind(this),
             () => {
                 //this.forceUpdate();

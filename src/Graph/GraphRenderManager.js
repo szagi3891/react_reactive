@@ -4,7 +4,7 @@ import { ValueObservable } from 'react_reactive_value';
 
 type GetValueType = <T>(stream: ValueObservable<T>) => T;
 
-export default class GraphRenderManager {
+class GraphRenderManager {
 
     _getValue$: null | GetValueType;
 
@@ -28,3 +28,5 @@ export default class GraphRenderManager {
         this._getValue$ = null;
     }
 }
+
+export default new GraphRenderManager();

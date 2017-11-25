@@ -10,13 +10,11 @@ export default class GraphConnection {
 
     _subscriptionForRender: Array<Subscription>;
 
-    _graphRenderManager: GraphRenderManager;
     _oldRender: () => React.Node;
     _updateComponent: () => void;
 
-    constructor(graphRenderManager: GraphRenderManager, oldRender: () => React.Node, updateComponent: () => void) {
+    constructor(oldRender: () => React.Node, updateComponent: () => void) {
         this._subscriptionForRender = [];
-        this._graphRenderManager = graphRenderManager;
         this._oldRender = oldRender;
         this._updateComponent = updateComponent;
     }
@@ -25,9 +23,9 @@ export default class GraphConnection {
         const old_sub = this._subscriptionForRender;
         this._subscriptionForRender = [];
 
-        this._graphRenderManager.setCurrent(this.getValue$);
+        GraphRenderManager.setCurrent(this.getValue$);
         const renderOut = this._oldRender();
-        this._graphRenderManager.renderExit();
+        GraphRenderManager.renderExit();
 
         for (const sub of old_sub) {
             sub.unsubscribe();

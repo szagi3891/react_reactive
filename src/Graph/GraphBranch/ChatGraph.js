@@ -7,7 +7,6 @@ import ChatMessageGraph from './ChatMessageGraph';
 
 export default class ChatGraph {
 
-    _graphRenderManager: GraphRenderManager;
     _chatMessage: ChatMessageGraph;
 
     _list: ValueSubject<Array<string>>;
@@ -19,8 +18,7 @@ export default class ChatGraph {
     _sending: ValueSubject<bool>;
     sending$: ValueObservable<bool>;
 
-    constructor(graphRenderManager: GraphRenderManager, chatMessage: ChatMessageGraph) {
-        this._graphRenderManager = graphRenderManager;
+    constructor(chatMessage: ChatMessageGraph) {
         this._chatMessage = chatMessage;
 
         this._list = new ValueSubject([]);
@@ -82,14 +80,14 @@ export default class ChatGraph {
     }
 
     get sending(): bool {
-        return this._graphRenderManager.getValue$(this.sending$);
+        return GraphRenderManager.getValue$(this.sending$);
     }
 
     get online(): bool {
-        return this._graphRenderManager.getValue$(this.online$);
+        return GraphRenderManager.getValue$(this.online$);
     }
 
     get list(): Array<string> {
-        return this._graphRenderManager.getValue$(this.list$);
+        return GraphRenderManager.getValue$(this.list$);
     }
 }
