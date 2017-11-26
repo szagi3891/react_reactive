@@ -41,21 +41,17 @@ export default class GraphConnection {
     }
 
     getValue$ = <T>(stream: ValueObservable<T>): T => {
-        
-        let isSet = false;
-        //$FlowFixMe
-        let result: T = null;
+        let result: null | { value: T }  = null;
 
         const subscription = stream.subscribe(data => {
-            if (isSet === false) {
-                isSet = true;
-                result = data;
+            if (result === null) {
+                result = { value: data };
             } else {
                 this._updateComponent();
             }
         });
 
-        if (isSet !== true) {
+        if (result === null) {
             throw Error('getValue - not available branches');
         }
 
@@ -65,6 +61,6 @@ export default class GraphConnection {
             this._subscriptionForRender.push(subscription);
         }
 
-        return result;
+        return result.value;
     };
 }
