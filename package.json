@@ -14,7 +14,8 @@
   "devDependencies": {
     "flow-bin": "0.59",
     "flow-typed": "^2.1.5",
-    "react-scripts": "^1.0.13"
+    "react-scripts": "^1.0.13",
+    "flow-bin-ci": "https://github.com/szagi3891/flow-bin-ci"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -22,6 +23,7 @@
     "test": "react-scripts test --env=jsdom",
     "test-coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
-    "flow": "./node_modules/flow-bin/vendor/flow status"
+    "flow": "./node_modules/flow-bin/vendor/flow status",
+    "flow-ci": "flow-bin-ci src src/App.js"
   }
 }
