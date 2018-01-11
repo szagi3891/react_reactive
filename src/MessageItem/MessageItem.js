@@ -1,89 +1,141 @@
 //@flow
 import * as React from 'react';
-import { BaseComponent, ValueSubject } from 'react_reactive_value';
+import { BaseComponent, ValueSubject, Subscription } from 'react_reactive_value';
 
 type ParentType<T> = {
     getValue: () => T;
 };
 
+type NotifyFunctionType = () => Array<() => void>;
+type RefreshFunctionType = () => void;
+
+class ValueConnection<T> {
+    _getValue: () => T;
+    _disconnect: () => void;
+
+    constructor(getValue: () => T, disconnect: () => void) {
+        this._getValue = getValue;
+        this._disconnect = disconnect;
+    }
+
+    disconnect() {
+        this._disconnect();
+    }
+
+    getValue(): T {
+        return this._getValue();
+    }
+}
+
+class ValueSubscription<T> {
+    _getValue: () => T;
+
+    _subscription: Map<mixed, {
+        hot: bool,
+        notify: () => Array<() => void>,
+        subscribe: RefreshFunctionType | null,
+        onClearCache: () => void,
+    }>;
+
+    constructor(getValue: () => T) {
+        this._getValue = getValue;
+        this._subscription = new Map();
+    }
+
+    notify(): Array<() => void> {
+        const allToRefresh = [];
+
+        for (const item of this._subscription.values()) {
+            item.onClearCache();
+
+            if (item.subscribe !== null) {
+                allToRefresh.push(item.subscribe);
+            }
+
+            const result = item.notify();
+            allToRefresh.push(...result);
+        }
+
+        //TODO - Tutaj przeprowadzić trzeba deduplikację zmiennej allToRefresh
+
+        return allToRefresh;
+    }
+
+    add(hot: bool, notifyFunc: () => Array<() => void>, subscribe: RefreshFunctionType | null, onClearCache: () => void): ValueConnection<T> {
+        const token = {};
+
+        this._subscription.set(token, {
+            hot,
+            notify: notifyFunc,
+            subscribe,
+            onClearCache
+        });
+
+        return new ValueConnection(this._getValue, () => {
+            this._subscription.delete(token);
+        });
+    }
+}
+
 class Value<T> {
     _value: T;
-
-    _connectSubscription: Array<() => Array<() => void>>;
+    _subscription: ValueSubscription<T>;
 
     constructor(value: T) {
         this._value = value;
+        this._subscription = new ValueSubscription(() => this._value);
     }
 
     setValue(newValue: T) {
         this._value = newValue;
 
-        const allToRefresh = [];
+        const allToRefresh = this._subscription.notify();
 
-                                                //powiadom wszystkich przyłączonych że muszą oczyścić kesze ...
-
-        for (const itemNotify of this._connectSubscription) {
-            const result = itemNotify();
-            allToRefresh.push(...result);
-        }
-
-        //Tutaj przeprowadzić trzeba deduplikację zmiennej allToRefresh
-
+                                            //wywołanie wszystkich funkcji odświeżających komponenty
         for (const item of allToRefresh) {
-            item();                             //wywołujemy funkcję odświeżającą nod-a
+            item();
         }
-    }
-
-    getValue(): T {
-        return this._value;
     }
 
     asComputed(): ValueComputed<T, T> {
-        return new ValueComputed(() => this.getValue(), (value) => value);
+        return new ValueComputed(
+            () => this._value,
+            (value) => value
+        );
     }
 
-    connect(toNotify: () => Array<() => void>): () => void {
-
-        return () => {
-            //następuje odłączenie
-        };
-
-        /*
-            //a może tak ...
-        return {    
-            disconect: () => {},                //disconnect(self)
-            getValue() => {                     //getValue(&self)
-
-            }
-        }
-        */
+    connect(hot: bool, notifyFunc: NotifyFunctionType, subscribe: RefreshFunctionType | null): ValueConnection<T> {
+        return this._subscription.add(hot, notifyFunc, subscribe, () => {
+            //W tym miejscu czyścimy lokalny kesz ...
+            //Dla tego typu nic nie robimy ponieważ ten węzeł nie posiada kesza
+        });
     }
 }
 
 class ValueComputed<T, K> {
-    _parent: () => T;
+    _getParentValue: () => T;
     _mapFun: (value: T) => K;
     _cache: null | { value: K };
 
-    _subscrition: Map<mixed, () => void>;
+    _subscription: ValueSubscription<K>;
 
-    //_subHot: Set<>;
-
-    constructor(parent: () => T, mapFun: (value: T) => K) {
-        this._parent = parent;
+    constructor(getParentValue: () => T, mapFun: (value: T) => K) {
+        this._getParentValue = getParentValue;
         this._mapFun = mapFun;
         this._cache = null;
 
-        this._subscrition = new Map();
+        this._subscription = new ValueSubscription(() => this._getValue());
     }
 
-    //_getValue(): K {}
-
-    getValue(): K {
+    _getValue(): K {
         const cache = this._cache;
 
         if (cache === null) {
-            const value = this._mapFun(this._parent.getValue());
+            const value = this._mapFun(this._getParentValue());
+
+            this._cache = {
+                value
+            };
 
             /*
                 jeśli powinniśmy keszować, to wypełnij ten kesz ...
@@ -103,41 +155,19 @@ class ValueComputed<T, K> {
     }
 
     map<M>(mapFun: (value: K) => M): ValueComputed<K, M> {
-        return new ValueComputed(() => this.getValue(), mapFun);
+        return new ValueComputed(() => this._getValue(), mapFun);
     }
 
-    subscribe(funSub: () => void): () => void {                 //argumentem jest funkcja która będzie wywołana w razie konieczności odświeżenia
-                                                                //komponent będzie miał współdzielonego callbacka który będzie odpalany w przypadku odświeżenia
-                                                                //jeśli będzie kilka subskrypcji z komponentu, to zostaną one spłaszczone w jednego callbacka Set<() => void>
-                                                                //duplikaty zostaną usunięte
-        const token = {};
-
-        this._subscrition.set(token, funSub);
-
-        return () => {
-            this._subscrition.delete(token);    
-        };
+    connect(hot: bool, notifyFunc: NotifyFunctionType, subscribe: RefreshFunctionType | null): ValueConnection<T> {
+        return this._subscription.add(hot, notifyFunc, subscribe, () => {
+            //W tym miejscu czyścimy lokalny kesz ...
+            //Dla tego typu nic nie robimy ponieważ ten węzeł nie posiada kesza
+        });
     }
 
-    connect(): () => void {
-
-        //parent.connect()
-
-        return () => {
-        };
-    }
-
-
-    /*
-    connectHot(): () => void {
-
-        return () => {
-
-        };
-    }
-    */
 }
 
+/*
 const counter8 = new Value(44);
 
 const counter9 = counter8.asComputed().map(value => value + 1);
@@ -147,28 +177,21 @@ const counter10 = counter9.map(value => `dsadsa ${value}`);
 //newC.getValue() --> pobiera wartość wyliczoną
 //   //potrzebne do ustalania kesza
 
-const unconnect = counter10.connect();
+const connection = counter10.connect();
 
-const vvv = counter10.getValue();
+const vvv = connection.getValue();
 
 console.info('value ==>', vvv);
 
-
-/*
-const ValueComputed = <T, K>(
-    parent: ParentType<T>,
-    mapFunc: (value: T) => K
-): ParentType<K> => {
-
-    const getValue = (): K => mapFunc(parent.getValue());
-
-    return {
-        getValue
-    };
-};
+//rozłączenie połączenia
+//connection.disconnect();
 */
 
 
+/*
+    nadpisac render
+    getValue(value)
+*/
 
 
 const counter = new ValueSubject(44);
