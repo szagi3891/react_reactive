@@ -6,39 +6,41 @@ type ParentType<T> = {
     getValue: () => T;
 };
 
-type NotifyFunctionType = () => Array<() => void>;
-type RefreshFunctionType = () => void;
 
 class ValueConnection<T> {
+    _connect: bool;
     _getValue: () => T;
     _disconnect: () => void;
 
     constructor(getValue: () => T, disconnect: () => void) {
+        this._connect = true;
         this._getValue = getValue;
         this._disconnect = disconnect;
     }
 
     disconnect() {
+        this._connect = true;
         this._disconnect();
     }
 
-    getValue(): T {
-        return this._getValue();
+    getValue = (): T => {
+        if (this._connect) {
+            return this._getValue();
+        }
+
+        throw Error('Połączenie jest rozłączone');
     }
 }
 
 class ValueSubscription<T> {
-    _getValue: () => T;
-
     _subscription: Map<mixed, {
         hot: bool,
         notify: () => Array<() => void>,
-        subscribe: RefreshFunctionType | null,
+        onRefresh: (() => void) | null,
         onClearCache: () => void,
     }>;
 
-    constructor(getValue: () => T) {
-        this._getValue = getValue;
+    constructor(onChangeSubscribers: (count: number) => void) {
         this._subscription = new Map();
     }
 
@@ -48,8 +50,8 @@ class ValueSubscription<T> {
         for (const item of this._subscription.values()) {
             item.onClearCache();
 
-            if (item.subscribe !== null) {
-                allToRefresh.push(item.subscribe);
+            if (item.onRefresh !== null) {
+                allToRefresh.push(item.onRefresh);
             }
 
             const result = item.notify();
@@ -61,19 +63,27 @@ class ValueSubscription<T> {
         return allToRefresh;
     }
 
-    add(hot: bool, notifyFunc: () => Array<() => void>, subscribe: RefreshFunctionType | null, onClearCache: () => void): ValueConnection<T> {
+    add(getValue: () => T, param: {
+        hot: bool,
+        notify: () => Array<() => void>,
+        onRefresh: (() => void) | null,
+        onClearCache: () => void
+    }): ValueConnection<T> {
         const token = {};
 
         this._subscription.set(token, {
-            hot,
-            notify: notifyFunc,
-            subscribe,
-            onClearCache
+            hot: param.hot,
+            notify: param.notify,
+            onRefresh: param.onRefresh,
+            onClearCache: param.onClearCache
         });
 
-        return new ValueConnection(this._getValue, () => {
-            this._subscription.delete(token);
-        });
+        return new ValueConnection(
+            getValue,
+            () => {
+                this._subscription.delete(token);
+            }
+        );
     }
 }
 
@@ -83,7 +93,7 @@ class Value<T> {
 
     constructor(value: T) {
         this._value = value;
-        this._subscription = new ValueSubscription(() => this._value);
+        this._subscription = new ValueSubscription(() => {});
     }
 
     setValue(newValue: T) {
@@ -97,46 +107,55 @@ class Value<T> {
         }
     }
 
-    asComputed(): ValueComputed<T, T> {
+    asComputed(): ValueComputed<T> {
         return new ValueComputed(
-            () => this._value,
-            (value) => value
+            () => this._subscription.add(
+                () => this._value, {
+                    hot: false,
+                    notify: () => {
+                        return [];
+                    },
+                    onRefresh: null,
+                    onClearCache: () => { /* ten obiekt nie posiada kesza więc nie ma co szyścić */ }
+                }
+            )
         );
-    }
-
-    connect(hot: bool, notifyFunc: NotifyFunctionType, subscribe: RefreshFunctionType | null): ValueConnection<T> {
-        return this._subscription.add(hot, notifyFunc, subscribe, () => {
-            //W tym miejscu czyścimy lokalny kesz ...
-            //Dla tego typu nic nie robimy ponieważ ten węzeł nie posiada kesza
-        });
     }
 }
 
-class ValueComputed<T, K> {
-    _getParentValue: () => T;
-    _mapFun: (value: T) => K;
-    _cache: null | { value: K };
+class ValueComputed<T> {
+    _subscription: ValueSubscription<T>;
 
-    _subscription: ValueSubscription<K>;
+    _getParentConnection: () => ValueConnection<T>;
 
-    constructor(getParentValue: () => T, mapFun: (value: T) => K) {
-        this._getParentValue = getParentValue;
-        this._mapFun = mapFun;
+    _cache: null | {
+        connection: ValueConnection<T>,
+        value: null | { value: T }
+    };
+
+    constructor(getParentConnection: () => ValueConnection<T>) {
+        this._getParentConnection = getParentConnection;
         this._cache = null;
 
-        this._subscription = new ValueSubscription(() => this._getValue());
+        this._subscription = new ValueSubscription((subscribersCount: number) => {
+            if (subscribersCount === 0 && this._cache !== null) {
+                this._cache.connection.disconnect();
+                this._cache = null;
+            }
+        });
     }
 
-    _getValue(): K {
+/*
+    _getValue(): T {
         const cache = this._cache;
 
         if (cache === null) {
-            const value = this._mapFun(this._getParentValue());
+            const value = this._getParentValue();
 
             this._cache = {
                 value
             };
-
+*/
             /*
                 jeśli powinniśmy keszować, to wypełnij ten kesz ...
 
@@ -147,25 +166,67 @@ class ValueComputed<T, K> {
 
                 w pozostałych przypadkach keszuj
             */
-
+/*
             return value;
         }
 
         return cache.value;
     }
+*/
 
-    map<M>(mapFun: (value: K) => M): ValueComputed<K, M> {
-        return new ValueComputed(() => this._getValue(), mapFun);
+/*
+    _getFromCacheParrentConnection(): ValueConnection<T> {
+        if (this._cacheParentConnection !== null) {
+            return this._cacheParentConnection;
+        }
+
+        const newItem = this._getParentConnection();
+        this._cacheParentConnection = newItem;
+        return newItem;
+    }
+*/
+
+    map<M>(mapFun: (value: T) => M): ValueComputed<M> {
+        return new ValueComputed(
+            () => this._subscription.add(
+                () => {
+                    //pobranie wartości
+
+                    //pobierz parenta
+                    //zwróć zmapowaną wartość zparent
+                    return mapFun(this._getParentConnection().getValue());
+                },
+                {
+                    hot: false,
+                    notify: () => {
+                        //Jedź po dzieciach subskrypcji i powiadamiaj kolejno
+                        return [];
+                    },
+                    onRefresh: null,
+                    onClearCache: () => {
+                        //wyczyść kesz
+                    }
+                }
+            )
+            /*
+            () => new ValueConnection(
+                () => this._getValue(),
+                () => {}
+            ),
+            */
+        );
     }
 
+    /*
     connect(hot: bool, notifyFunc: NotifyFunctionType, subscribe: RefreshFunctionType | null): ValueConnection<T> {
         return this._subscription.add(hot, notifyFunc, subscribe, () => {
             //W tym miejscu czyścimy lokalny kesz ...
             //Dla tego typu nic nie robimy ponieważ ten węzeł nie posiada kesza
         });
     }
-
+    */
 }
+
 
 /*
 const counter8 = new Value(44);
