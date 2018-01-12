@@ -93,7 +93,7 @@ class ValueSubscription {
         );
     }
 
-    shoudCache(): bool {
+    hasShouldCache(): bool {
         if (this._subscription.size > 1) {
             return true;
         }
@@ -192,9 +192,13 @@ class ValueComputed<T> {
     }
 
     _getValue(): T {
+        if (this._cache !== null && this._cache.value !== null) {
+            return this._cache.value.value;
+        }
+
         const value = this._getParentValueConnection().getValue();
 
-        if (this._subscription.shoudCache()) {
+        if (this._subscription.hasShouldCache()) {
             if (this._cache) {
                 if (this._cache.value === null) {
                     this._cache.value = {
