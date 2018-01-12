@@ -90,6 +90,24 @@ class ValueSubscription {
         };
     }
 
+    bind<T>(getValue: () => T, onRefresh: (() => void) | null): ValueConnection<T> {
+        const token = {};
+
+        this._subscription.set(token, {
+            hot: false,
+            notify: () => [],
+            onRefresh: onRefresh,
+            onClearCache: () => {}      //nie ma żadnego kesza do czyszczenia
+        });
+
+        return new ValueConnection(
+            getValue,
+            () => {
+                this._subscription.delete(token);
+            }
+        );
+    }
+
     shoudCache(): bool {
         if (this._subscription.size > 1) {
             return true;
@@ -181,27 +199,36 @@ class ValueComputed<T> {
         return valueConnection;
     }
 
-    map<M>(mapFun: (value: T) => M): ValueComputed<M> {
-        const getValue = (): M => {
-            const value = this._getParentValueConnection().getValue();
+    _getValue(): T {
+        const value = this._getParentValueConnection().getValue();
 
-            if (this._subscription.shoudCache()) {
-                if (this._cache) {
-                    if (this._cache.value === null) {
-                        this._cache.value = {
-                            value: value
-                        };
-                    }
-                } else {
-                    throw Error('Nieprawidłowe odgałęzienie programu');
+        if (this._subscription.shoudCache()) {
+            if (this._cache) {
+                if (this._cache.value === null) {
+                    this._cache.value = {
+                        value: value
+                    };
                 }
+            } else {
+                throw Error('Nieprawidłowe odgałęzienie programu');
             }
+        }
 
-            return mapFun(value);
-        };
+        return value;
+    }
 
-        return new ValueComputed(
-            this._subscription.buildCreatorFunctionForValueConnection(getValue)
+    map<M>(mapFun: (value: T) => M): ValueComputed<M> {
+       return new ValueComputed(
+            this._subscription.buildCreatorFunctionForValueConnection(
+                () => mapFun(this._getValue())
+            )
+        );
+    }
+
+    connect(): ValueConnection<T> {
+        return this._subscription.bind(
+            () => this._getValue(),
+            null
         );
     }
 }
