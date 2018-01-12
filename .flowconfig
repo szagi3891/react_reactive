@@ -17,8 +17,6 @@ esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
 #esproposal.decorators=ignore
 
-unsafe.enable_getters_and_setters=true
-
 sharedmemory.hash_table_pow=19
 
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe

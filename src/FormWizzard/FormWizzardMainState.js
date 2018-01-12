@@ -77,17 +77,11 @@ export default class FormWizzardState {
         nextEnable$: ValueObservable<bool>
     ) {
 
-        //$FlowFixMe
         this._action = _action;
-        //$FlowFixMe
         this.data$ = data$;
-        //$FlowFixMe
         this.currentSteep$ = currentSteep$;
-        //$FlowFixMe
         this.currentGroup$ = currentGroup$;
-        //$FlowFixMe
         this.prevEnable$ = prevEnable$;
-        //$FlowFixMe
         this.nextEnable$ = nextEnable$;
     }
 
