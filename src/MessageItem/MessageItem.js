@@ -1,11 +1,6 @@
 //@flow
 import * as React from 'react';
-import { BaseComponent, ValueSubject, Subscription } from 'react_reactive_value';
-
-type ParentType<T> = {
-    getValue: () => T;
-};
-
+import { BaseComponent, ValueSubject } from 'react_reactive_value';
 
 class ValueConnection<T> {
     _connect: bool;
@@ -32,45 +27,37 @@ class ValueConnection<T> {
     }
 }
 
-type AddParamType = {
+type AddParamType = {|
     hot: bool,
-    notify: () => Array<() => void>,
-    onRefresh: (() => void) | null,
-    onClearCache: () => void
-};
+    notify: () => Set<() => void>,
+    onRefresh: (() => void) | null
+|};
 
 class ValueSubscription {
-    _subscription: Map<mixed, {
-        hot: bool,
-        notify: () => Array<() => void>,
-        onRefresh: (() => void) | null,
-        onClearCache: () => void,
-    }>;
+    _subscription: Map<mixed, AddParamType>;
 
     constructor(onChangeSubscribers: (count: number) => void) {
         this._subscription = new Map();
     }
 
-    notify(): Array<() => void> {
-        const allToRefresh = [];
+    notify(): Set<() => void> {
+        const allToRefresh = new Set();
 
         for (const item of this._subscription.values()) {
-            item.onClearCache();
-
             if (item.onRefresh !== null) {
-                allToRefresh.push(item.onRefresh);
+                allToRefresh.add(item.onRefresh);
             }
 
             const result = item.notify();
-            allToRefresh.push(...result);
+            for (const item of result) {
+                allToRefresh.add(item);
+            }
         }
-
-        //TODO - Tutaj przeprowadzić trzeba deduplikację zmiennej allToRefresh
 
         return allToRefresh;
     }
 
-    buildCreatorFunctionForValueConnection<T>(getValue: () => T): ((param: AddParamType) => ValueConnection<T>) {
+    buildCreatorForConnection<T>(getValue: () => T): ((param: AddParamType) => ValueConnection<T>) {
         return (param: AddParamType): ValueConnection<T> => {
             const token = {};
 
@@ -78,7 +65,6 @@ class ValueSubscription {
                 hot: param.hot,
                 notify: param.notify,
                 onRefresh: param.onRefresh,
-                onClearCache: param.onClearCache
             });
 
             return new ValueConnection(
@@ -95,9 +81,8 @@ class ValueSubscription {
 
         this._subscription.set(token, {
             hot: false,
-            notify: () => [],
+            notify: () => new Set(),
             onRefresh: onRefresh,
-            onClearCache: () => {}      //nie ma żadnego kesza do czyszczenia
         });
 
         return new ValueConnection(
@@ -137,6 +122,8 @@ class Value<T> {
 
         const allToRefresh = this._subscription.notify();
 
+        //TODO - zmienna allToRefresh będzie przekazywana do manegera tranzakcji
+
                                             //wywołanie wszystkich funkcji odświeżających komponenty
         for (const item of allToRefresh) {
             item();
@@ -145,7 +132,9 @@ class Value<T> {
 
     asComputed(): ValueComputed<T> {
         return new ValueComputed(
-            this._subscription.buildCreatorFunctionForValueConnection(() => this._value)
+            this._subscription.buildCreatorForConnection(
+                () => this._value
+            )
         );
     }
 }
@@ -172,6 +161,12 @@ class ValueComputed<T> {
         });
     }
 
+    _clearCache() {
+        if (this._cache) {
+            this._cache.value = null;
+        }
+    }
+
     _getParentValueConnection(): ValueConnection<T> {
         const cache = this._cache;
 
@@ -182,13 +177,10 @@ class ValueComputed<T> {
         const valueConnection = this._getParentConnection({
             hot: false,
             notify: () => {
-                //TODO - Jedź po dzieciach subskrypcji i powiadamiaj kolejno
-                return [];
+                this._clearCache();
+                return this._subscription.notify();
             },
-            onRefresh: null,
-            onClearCache: () => {
-                //TODO - wyczyść kesz
-            }
+            onRefresh: null
         });
 
         this._cache = {
@@ -219,47 +211,42 @@ class ValueComputed<T> {
 
     map<M>(mapFun: (value: T) => M): ValueComputed<M> {
        return new ValueComputed(
-            this._subscription.buildCreatorFunctionForValueConnection(
+            this._subscription.buildCreatorForConnection(
                 () => mapFun(this._getValue())
             )
         );
     }
 
-    connect(): ValueConnection<T> {
+    connect(onRefresh: (() => void) | null): ValueConnection<T> {
         return this._subscription.bind(
             () => this._getValue(),
-            null
+            onRefresh
         );
     }
 }
 
 
-/*
+
 const counter8 = new Value(44);
 
 const counter9 = counter8.asComputed().map(value => value + 1);
 
 const counter10 = counter9.map(value => `dsadsa ${value}`);
 
-//newC.getValue() --> pobiera wartość wyliczoną
-//   //potrzebne do ustalania kesza
+const connection = counter10.connect(() => {
+    console.info('TRZEBA ODŚWIEŻYĆ WIDOK');
+});
 
-const connection = counter10.connect();
+console.info('value ==>', connection.getValue());
 
-const vvv = connection.getValue();
+counter8.setValue(334444);
 
-console.info('value ==>', vvv);
+console.info('value ==>', connection.getValue());
 
-//rozłączenie połączenia
-//connection.disconnect();
-*/
+counter8.setValue(6);
 
 
-/*
-    nadpisac render
-    getValue(value)
-*/
-
+console.info('value ==>', connection.getValue());
 
 const counter = new ValueSubject(44);
 const counter2 = new ValueSubject(1);
