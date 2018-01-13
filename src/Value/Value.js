@@ -14,7 +14,10 @@ export class Value<T> {
 
     setValue(newValue: T) {
         this._value = newValue;
+        this._notify();
+    }
 
+    _notify() {
         const allToRefresh = this._subscription.notify();
 
         //TODO - zmienna allToRefresh będzie przekazywana do manegera tranzakcji
@@ -23,6 +26,12 @@ export class Value<T> {
         for (const item of allToRefresh) {
             item();
         }
+    }
+
+    update(fnUpdate: (old: T) => T) {
+        //TODO - obczaić senderSync w kontekście nowej reprezentacji
+        this._value = fnUpdate(this._value);
+        this._notify();
     }
 
     asComputed(): ValueComputed<T> {

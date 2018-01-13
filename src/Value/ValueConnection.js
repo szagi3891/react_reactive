@@ -11,7 +11,7 @@ export class ValueConnection<T> {
         this._disconnect = disconnect;
     }
 
-    disconnect() {
+    disconnect = () => {
         this._connect = true;
         this._disconnect();
     }

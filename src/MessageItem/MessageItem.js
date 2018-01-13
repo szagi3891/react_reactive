@@ -1,9 +1,9 @@
 //@flow
 import * as React from 'react';
-import { BaseComponent, ValueSubject } from 'react_reactive_value';
+//import { BaseComponent, ValueSubject } from 'react_reactive_value';
+import { BaseComponent, Value } from '../Value';
 
-import { Value } from '../Value';
-
+/*
 const counter8 = new Value(44);
 
 const counter9 = counter8.asComputed().map(value => value + 1);
@@ -24,11 +24,11 @@ counter8.setValue(6);
 
 
 console.info('value ==>', connection.getValue());
+*/
 
 
-
-const counter = new ValueSubject(44);
-const counter2 = new ValueSubject(1);
+const counter = new Value(44);
+const counter2 = new Value(1);
 
 setInterval(() => {
 //    counter.update(prevValue => prevValue + 1);
@@ -49,14 +49,14 @@ type PropsType = {|
 
 export default class MessageItem extends BaseComponent<PropsType> {
 
-    counter$ = counter.asObservable();
-    char$ = counter2.asObservable()
+    counter$ = counter.asComputed();
+    char$ = counter2.asComputed()
         .map(count => '.'.repeat(Math.min(count, 30)));
 
     render() {
         const { className, messageId } = this.props;
-        const counter = this.getValue$(this.counter$);
-        const char = this.getValue$(this.char$);
+        const counter = this.getFromComputed(this.counter$);
+        const char = this.getFromComputed(this.char$);
 
         return (
             <div className={className}>
