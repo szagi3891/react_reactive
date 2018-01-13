@@ -40,7 +40,7 @@ export class Value<T> {
 
     asComputed(): ValueComputed<T> {
         return new ValueComputed(
-            this._subscription.buildCreatorForConnection(
+            this._subscription.buildGetValue(
                 () => this._value
             )
         );

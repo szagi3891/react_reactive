@@ -68,18 +68,17 @@ export class ValueComputed<T> {
     }
 
     map<M>(mapFun: (value: T) => M): ValueComputed<M> {
-       return new ValueComputed(
-            this._subscription.buildCreatorForConnection(
+        return new ValueComputed(
+            this._subscription.buildGetValue(
                 () => mapFun(this._getValue())
             )
         );
     }
 
     connect(onRefresh: (() => void) | null): ValueConnection<T> {
-        return this._subscription.bind(
-            () => this._getValue(),
-            onRefresh
-        );
+        return this._subscription.buildGetValue
+            (() => this._getValue())
+            (() => new Set(onRefresh === null ? [] : [onRefresh]));
     }
 }
 

@@ -20,7 +20,7 @@ export class ValueSubscription {
         return mergeSet(...allToRefresh);
     }
 
-    buildCreatorForConnection<T>(getValue: () => T): ((notify: () => Set<() => void>) => ValueConnection<T>) {
+    buildGetValue<T>(getValue: () => T): ((notify: () => Set<() => void>) => ValueConnection<T>) {
         return (notify: () => Set<() => void>): ValueConnection<T> => {
             const token = {};
 
@@ -33,24 +33,5 @@ export class ValueSubscription {
                 }
             );
         };
-    }
-
-    bind<T>(getValue: () => T, onRefresh: (() => void) | null): ValueConnection<T> {
-        const token = {};
-
-        this._subscription.set(token, () => {
-            if (onRefresh === null) {
-                return new Set();
-            } else {
-                return new Set([onRefresh]);
-            }
-        });
-
-        return new ValueConnection(
-            getValue,
-            () => {
-                this._subscription.delete(token);
-            }
-        );
     }
 }
