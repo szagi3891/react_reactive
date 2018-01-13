@@ -1,37 +1,12 @@
 //@flow
 import * as React from 'react';
-//import { BaseComponent, ValueSubject } from 'react_reactive_value';
 import { BaseComponent, Value } from '../Value';
-
-/*
-const counter8 = new Value(44);
-
-const counter9 = counter8.asComputed().map(value => value + 1);
-
-const counter10 = counter9.map(value => `dsadsa ${value}`);
-
-const connection = counter10.connect(() => {
-    console.info('TRZEBA ODŚWIEŻYĆ WIDOK');
-});
-
-console.info('value ==>', connection.getValue());
-
-counter8.setValue(334444);
-
-console.info('value ==>', connection.getValue());
-
-counter8.setValue(6);
-
-
-console.info('value ==>', connection.getValue());
-*/
 
 
 const counter = new Value(44);
 const counter2 = new Value(1);
 
 setInterval(() => {
-//    counter.update(prevValue => prevValue + 1);
     counter.update(prevValue => {
         counter2.update(prevValue => prevValue);
         return prevValue + 1;

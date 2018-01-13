@@ -1,7 +1,6 @@
 //@flow
 
 import { ValueSubscription } from './ValueSubscription';
-import type { AddParamType } from './ValueSubscription';
 import { ValueConnection } from './ValueConnection';
 
 /*
@@ -36,10 +35,10 @@ import { ValueConnection } from './ValueConnection';
 export class ValueComputed<T> {
     _subscription: ValueSubscription;
 
-    _getParentConnection: (param: AddParamType) => ValueConnection<T>;
+    _getParentConnection: (param: () => Set<() => void>) => ValueConnection<T>;
     _connection: null | ValueConnection<T>;
 
-    constructor(getParentConnection: (param: AddParamType) => ValueConnection<T>) {
+    constructor(getParentConnection: (param: () => Set<() => void>) => ValueConnection<T>) {
         this._getParentConnection = getParentConnection;
         this._connection = null;
 
@@ -56,11 +55,8 @@ export class ValueComputed<T> {
             return this._connection;
         }
 
-        const valueConnection = this._getParentConnection({
-            notify: () => {
-                return this._subscription.notify();
-            },
-            onRefresh: null
+        const valueConnection = this._getParentConnection(() => {
+            return this._subscription.notify();
         });
 
         this._connection = valueConnection;

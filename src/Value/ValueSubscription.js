@@ -3,13 +3,8 @@
 import { ValueConnection } from './ValueConnection';
 import { mergeSet } from './Utils';
 
-export type AddParamType = {|
-    notify: () => Set<() => void>,
-    onRefresh: (() => void) | null
-|};
-
 export class ValueSubscription {
-    _subscription: Map<mixed, AddParamType>;
+    _subscription: Map<mixed, () => Set<() => void>>;
 
     constructor(onChangeSubscribers: (count: number) => void) {
         this._subscription = new Map();
@@ -19,24 +14,17 @@ export class ValueSubscription {
         const allToRefresh = [];
 
         for (const item of this._subscription.values()) {
-            if (item.onRefresh !== null) {
-                allToRefresh.push(new Set([item.onRefresh]));
-            }
-
-            allToRefresh.push(item.notify());
+            allToRefresh.push(item());
         }
 
         return mergeSet(...allToRefresh);
     }
 
-    buildCreatorForConnection<T>(getValue: () => T): ((param: AddParamType) => ValueConnection<T>) {
-        return (param: AddParamType): ValueConnection<T> => {
+    buildCreatorForConnection<T>(getValue: () => T): ((notify: () => Set<() => void>) => ValueConnection<T>) {
+        return (notify: () => Set<() => void>): ValueConnection<T> => {
             const token = {};
 
-            this._subscription.set(token, {
-                notify: param.notify,
-                onRefresh: param.onRefresh,
-            });
+            this._subscription.set(token, notify);
 
             return new ValueConnection(
                 getValue,
@@ -50,9 +38,12 @@ export class ValueSubscription {
     bind<T>(getValue: () => T, onRefresh: (() => void) | null): ValueConnection<T> {
         const token = {};
 
-        this._subscription.set(token, {
-            notify: () => new Set(),
-            onRefresh: onRefresh,
+        this._subscription.set(token, () => {
+            if (onRefresh === null) {
+                return new Set();
+            } else {
+                return new Set([onRefresh]);
+            }
         });
 
         return new ValueConnection(
