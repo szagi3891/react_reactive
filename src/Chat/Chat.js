@@ -1,32 +1,16 @@
 //@flow
 
 import * as React from 'react';
-//import firebase from 'firebase';
-import { BaseComponent, Subject, ValueSubject, ValueObservable } from 'react_reactive_value';
+import { BaseComponent, Value } from '../Value';
 
 import { database } from '../Graph/GraphBranch/firebase';
 
-/*
-const config = {
-    apiKey: "AIzaSyDon__hg5Iv1zi5uvMv2V5HCSGmy6NzDGE",
-    authDomain: "rxczat.firebaseapp.com",
-    databaseURL: "https://rxczat.firebaseio.com",
-    projectId: "rxczat",
-    storageBucket: "",
-    messagingSenderId: "324635810240"
-};
-
-firebase.initializeApp(config);
-
-const database = firebase.database();
-*/
-
 const messages = database.ref('rxjs-demo');
 
-const nick = new ValueSubject('');
-const textarea = new ValueSubject('');
-const sending = new ValueSubject(false);
-const online = new ValueSubject(true);
+const nick = new Value('');
+const textarea = new Value('');
+const sending = new Value(false);
+const online = new Value(true);
 
 type MessageItemType = {|
     id: string,
@@ -34,7 +18,7 @@ type MessageItemType = {|
     message: string,
 |};
 
-const chat: ValueSubject<Array<MessageItemType>> = new ValueSubject([]);
+const chat: Value<Array<MessageItemType>> = new Value([]);
 
 messages.on('child_added', function(messageItem) {
     chat.update(currentList => {
@@ -51,7 +35,7 @@ messages.on('child_added', function(messageItem) {
 });
 
 database.ref(".info/connected").on("value", function(snap) {
-    online.next(snap.val());
+    online.setValue(snap.val());
 });
 
 messages.on('child_changed', function(data) {
@@ -68,61 +52,47 @@ type PropsType = {|
 
 export default class Chat extends BaseComponent<PropsType> {
 
-    click = new Subject();
-
     _onChangeNick = (event: Object) => {
-        nick.next(event.target.value);
+        nick.setValue(event.target.value);
     }
 
     _onChangeTextarea = (event: Object) => {
-        textarea.next(event.target.value);
+        textarea.setValue(event.target.value);
     }
 
     _onSend = () => {
-        this.click.next();
-    }
+        const nickValue = nick.getValue();
+        const textareaValue = textarea.getValue();
 
-    constructor(props: PropsType) {
-        super(props);
+        if (nickValue.length < 1) {
+            alert('Type in the nick');
+            return;
+        }
 
-        this.subscribe$(
-            ValueObservable.observableWithLatestFrom2(
-                this.click.asObservable(),        
-                nick.asObservable(),
-                textarea.asObservable()
-            )
-            .do(([click, nickValue, textareaValue]) => {
-                if (nickValue.length < 1) {
-                    alert('Type in the nick');
-                    return;
-                }
+        if (textareaValue.length < 1) {
+            alert('Type in the message');
+            return;
+        }
 
-                if (textareaValue.length < 1) {
-                    alert('Type in the message');
-                    return;
-                }
+        sending.setValue(true);
+        textarea.setValue('');
 
-                sending.next(true);
-                textarea.next('');
-
-                messages.push({
-                    nick: nickValue,
-                    message: textareaValue
-                }).then((aaa) => {
-                    console.info(`Message send: ${textareaValue}`);
-                    sending.next(false);
-                }).catch((error: Object) => {
-                    console.error(error);
-                    sending.next(false);
-                });
-            })
-        );
+        messages.push({
+            nick: nickValue,
+            message: textareaValue
+        }).then((aaa) => {
+            console.info(`Message send: ${textareaValue}`);
+            sending.setValue(false);
+        }).catch((error: Object) => {
+            console.error(error);
+            sending.setValue(false);
+        });
     }
 
     render() {
-        const nickValue = this.getValue$(nick.asObservable());
-        const textareaValue = this.getValue$(textarea.asObservable());
-        const sendingValue = this.getValue$(sending.asObservable());
+        const nickValue = this.getFromComputed(nick.asComputed());
+        const textareaValue = this.getFromComputed(textarea.asComputed());
+        const sendingValue = this.getFromComputed(sending.asComputed());
 
         return (
             <div className="Chat__wrapper">
@@ -156,7 +126,7 @@ export default class Chat extends BaseComponent<PropsType> {
     }
 
     _renderNetworkStatus = () => {
-        const onlineValue = this.getValue$(online.asObservable());
+        const onlineValue = this.getFromComputed(online.asComputed());
         if (onlineValue) {
             return (
                 <div className="Chat__online">Network Online</div>
@@ -169,7 +139,7 @@ export default class Chat extends BaseComponent<PropsType> {
     }
 
     _renderList() {
-        const list = this.getValue$(chat.asObservable()).concat().reverse();
+        const list = this.getFromComputed(chat.asComputed()).concat().reverse();
         return (
             <div className="Chat__list App__border">
                 { list.map(item => this._renderListItem(item)) }
@@ -186,26 +156,3 @@ export default class Chat extends BaseComponent<PropsType> {
         )
     }
 }
-
-
-/*
-this.cat = this.db.object('/cats/-KpRuC...Id')
-this.dog = this.db.object('/dogs/-KpRuD...Id')
-this.dogs = this.db.list('/dogs')
-
-https://gist.github.com/deltaepsilon/b9ac6bdb5d30b1e4203ae3b2f6e2cd07#file-rxjs-firebase-demo-js
-*/
-
-
-/*
-        const userId = "3121";
-        const name = "name111";
-        const email = "sdaasda";
-        const imageUrl = "http://wwaw.psdasda";
-
-        firebase.database().ref('users/' + userId).set({
-            username: name,
-            email: email,
-            profile_picture : imageUrl
-        });
-*/

@@ -17,6 +17,10 @@ export class Value<T> {
         this._notify();
     }
 
+    getValue(): T {
+        return this._value;
+    }
+
     _notify() {
         const allToRefresh = this._subscription.notify();
 
