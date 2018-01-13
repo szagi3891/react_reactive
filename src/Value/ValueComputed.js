@@ -37,74 +37,38 @@ export class ValueComputed<T> {
     _subscription: ValueSubscription;
 
     _getParentConnection: (param: AddParamType) => ValueConnection<T>;
-
-    _cache: null | {
-        connection: ValueConnection<T>,
-        value: null | { value: T }
-    };
+    _connection: null | ValueConnection<T>;
 
     constructor(getParentConnection: (param: AddParamType) => ValueConnection<T>) {
         this._getParentConnection = getParentConnection;
-        this._cache = null;
+        this._connection = null;
 
         this._subscription = new ValueSubscription((subscribersCount: number) => {
-            if (subscribersCount === 0 && this._cache !== null) {
-                this._cache.connection.disconnect();
-                this._cache = null;
+            if (subscribersCount === 0 && this._connection !== null) {
+                this._connection.disconnect();
+                this._connection = null;
             }
         });
     }
 
-    _clearCache() {
-        if (this._cache) {
-            this._cache.value = null;
-        }
-    }
-
     _getParentValueConnection(): ValueConnection<T> {
-        const cache = this._cache;
-
-        if (cache) {
-            return cache.connection;
+        if (this._connection) {
+            return this._connection;
         }
 
         const valueConnection = this._getParentConnection({
-            hot: false,
             notify: () => {
-                this._clearCache();
                 return this._subscription.notify();
             },
             onRefresh: null
         });
 
-        this._cache = {
-            connection: valueConnection,
-            value: null
-        };
-
+        this._connection = valueConnection;
         return valueConnection;
     }
 
     _getValue(): T {
-        if (this._cache !== null && this._cache.value !== null) {
-            return this._cache.value.value;
-        }
-
-        const value: T = this._getParentValueConnection().getValue();
-
-        if (this._subscription.hasShouldCache()) {
-            if (this._cache) {
-                if (this._cache.value === null) {
-                    this._cache.value = {
-                        value: value
-                    };
-                }
-            } else {
-                throw Error('Nieprawidłowe odgałęzienie programu');
-            }
-        }
-
-        return value;
+        return this._getParentValueConnection().getValue();
     }
 
     map<M>(mapFun: (value: T) => M): ValueComputed<M> {
@@ -121,13 +85,5 @@ export class ValueComputed<T> {
             onRefresh
         );
     }
-
-    /*
-    connectMore() {
-
-    }
-    */
-
-    //buildCreatorForConnection<T>(getValue: () => T): ((param: AddParamType) => ValueConnection<T>) {
 }
 

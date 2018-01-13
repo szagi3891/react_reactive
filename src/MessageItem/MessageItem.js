@@ -36,7 +36,7 @@ setInterval(() => {
         counter2.update(prevValue => prevValue);
         return prevValue + 1;
     });
-}, 2000);
+}, 500);
 
 setInterval(() => {
     counter2.update(prevValue => prevValue + 1);

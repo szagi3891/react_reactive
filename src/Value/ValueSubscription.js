@@ -1,9 +1,9 @@
 //@flow
 
 import { ValueConnection } from './ValueConnection';
+import { mergeSet } from './Utils';
 
 export type AddParamType = {|
-    hot: bool,
     notify: () => Set<() => void>,
     onRefresh: (() => void) | null
 |};
@@ -16,20 +16,17 @@ export class ValueSubscription {
     }
 
     notify(): Set<() => void> {
-        const allToRefresh = new Set();
+        const allToRefresh = [];
 
         for (const item of this._subscription.values()) {
             if (item.onRefresh !== null) {
-                allToRefresh.add(item.onRefresh);
+                allToRefresh.push(new Set([item.onRefresh]));
             }
 
-            const result = item.notify();
-            for (const item of result) {
-                allToRefresh.add(item);
-            }
+            allToRefresh.push(item.notify());
         }
 
-        return allToRefresh;
+        return mergeSet(...allToRefresh);
     }
 
     buildCreatorForConnection<T>(getValue: () => T): ((param: AddParamType) => ValueConnection<T>) {
@@ -37,7 +34,6 @@ export class ValueSubscription {
             const token = {};
 
             this._subscription.set(token, {
-                hot: param.hot,
                 notify: param.notify,
                 onRefresh: param.onRefresh,
             });
@@ -55,7 +51,6 @@ export class ValueSubscription {
         const token = {};
 
         this._subscription.set(token, {
-            hot: false,
             notify: () => new Set(),
             onRefresh: onRefresh,
         });
@@ -66,19 +61,5 @@ export class ValueSubscription {
                 this._subscription.delete(token);
             }
         );
-    }
-
-    hasShouldCache(): bool {
-        if (this._subscription.size > 1) {
-            return true;
-        }
-
-        if (this._subscription.size === 1) {
-            for (const item of this._subscription.values()) {
-                return item.hot;
-            }
-        }
-
-        return false;
     }
 }

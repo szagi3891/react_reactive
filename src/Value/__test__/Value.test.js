@@ -1,5 +1,3 @@
-//@flow
-
 import { Value } from '../Value';
 
 describe('', () => {
