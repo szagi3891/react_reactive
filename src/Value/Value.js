@@ -2,6 +2,7 @@
 
 import { ValueSubscription } from './ValueSubscription';
 import { ValueComputed } from './ValueComputed';
+import { transaction } from './transaction';
 
 export class Value<T> {
     _value: T;
@@ -13,29 +14,21 @@ export class Value<T> {
     }
 
     setValue(newValue: T) {
-        this._value = newValue;
-        this._notify();
+        transaction(() => {
+            this._value = newValue;
+            this._subscription.notify();
+        });
     }
 
     getValue(): T {
         return this._value;
     }
 
-    _notify() {
-        const allToRefresh = this._subscription.notify();
-
-        //TODO - zmienna allToRefresh będzie przekazywana do manegera tranzakcji
-
-                                            //wywołanie wszystkich funkcji odświeżających komponenty
-        for (const item of allToRefresh) {
-            item();
-        }
-    }
-
     update(fnUpdate: (old: T) => T) {
-        //TODO - obczaić senderSync w kontekście nowej reprezentacji
-        this._value = fnUpdate(this._value);
-        this._notify();
+        transaction(() => {
+            this._value = fnUpdate(this._value);
+            this._subscription.notify();
+        });
     }
 
     asComputed(): ValueComputed<T> {

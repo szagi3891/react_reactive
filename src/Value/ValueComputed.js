@@ -2,7 +2,7 @@
 
 import { ValueSubscription } from './ValueSubscription';
 import { ValueConnection } from './ValueConnection';
-
+import { pushToRefresh } from './transaction';
 /*
     Trzeba dodać memoryzowanie ostatniej wartości
 
@@ -104,7 +104,13 @@ export class ValueComputed<T> {
         );
     }
 
-    bind(notify: (() => Set<() => void>)): ValueConnection<T> {
+/*
+    switch(swithFunc: ((value: T) => ValueComputed<K>)): ValueComputed<K> => {
+
+    }
+*/
+
+    bind(notify: () => void): ValueConnection<T> {
         const disconnect = this._subscription.bind(notify);
         return new ValueConnection(
             () => this._getValue(),
@@ -114,7 +120,11 @@ export class ValueComputed<T> {
 
     connect(onRefresh: (() => void) | null): ValueConnection<T> {
         const disconnect = this._subscription.bind(
-            () => new Set(onRefresh === null ? [] : [onRefresh])
+            () => {
+                if (onRefresh) {
+                    pushToRefresh(onRefresh);
+                }
+            }
         );
 
         return new ValueConnection(
