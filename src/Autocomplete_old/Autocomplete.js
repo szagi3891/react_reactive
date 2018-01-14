@@ -2,34 +2,26 @@
 
 import * as React from 'react';
 
-import { BaseComponent, Value, ValueComputed } from '../Value';
+import { BaseComponent, ValueSubject, ValueObservable } from 'react_reactive_value';
 
 import Store from './Store';
-
-//const combineLatest = <A,B,R>(aa: ValueComputed<A>, bb: ValueComputed<B>, ())
 
 type PropsType = {|
     className: string
 |};
 
 class Autocomplete extends BaseComponent<PropsType> {
-    input = new Value('');
-    inputHighlight = new Value('');
-    direction = new Value(false);
+    input = new ValueSubject('');
+    inputHighlight = new ValueSubject('');
+    direction = new ValueSubject(false);
 
-                                                                        //TODO - przywrócić tą wersję
-    /*
-    currentList = this.input.asComputed()
-        //.debounceTime(1000)                                           //TODO - do przywrócenia w innej formie
+    currentList = this.input.asObservable()
+        .debounceTime(1000)
         .switchMap(input => Store.getList(input));
-    */
 
-                                                                        //TODO - tymczasowy mock
-    currentList = new Value(['adsada', 'dasdas', 'aaa', 'bbb', 'zzz', 'kkk']).asComputed();
-
-    currentListWithDirection = combineLatest(
+    currentListWithDirection = ValueObservable.combineLatest(
         this.currentList,
-        this.direction.asComputed(),
+        this.direction.asObservable(),
         (list, direction) => {
             if (direction === false) {
                 return list;
@@ -47,15 +39,15 @@ class Autocomplete extends BaseComponent<PropsType> {
 
     _onChange = (event: Object) => {
         console.info('input', event.target.value);
-        this.input.setValue(event.target.value);
+        this.input.next(event.target.value);
     }
 
     _onChangeHighlight = (event: Object) => {
-        this.inputHighlight.setValue(event.target.value);
+        this.inputHighlight.next(event.target.value);
     };
 
     _onChangeDirection = (event: Object) => {
-        this.direction.setValue(event.target.checked);
+        this.direction.next(event.target.checked);
     }
 
     render() {
@@ -83,7 +75,7 @@ class Autocomplete extends BaseComponent<PropsType> {
     }
 
     _renderList = () => {
-        const list = this.getFromComputed(this.currentListWithDirection);
+        const list = this.getValue$(this.currentListWithDirection);
         
         if (list === null) {
             return (
@@ -99,7 +91,7 @@ class Autocomplete extends BaseComponent<PropsType> {
                     <AutocompleteListItem
                         key={item}
                         value={item}
-                        highlight={this.inputHighlight.asComputed()}
+                        highlight={this.inputHighlight.asObservable()}
                     />
                 ))}
             </div>
@@ -109,32 +101,26 @@ class Autocomplete extends BaseComponent<PropsType> {
 
 type PropsListType = {|
     value: string,
-    highlight: ValueComputed<string>,
+    highlight: ValueObservable<string>,
 |};
 
 class AutocompleteListItem extends BaseComponent<PropsListType> {
-    chunks$: ValueComputed<[Array<string>, string]>;
+    chunks$: ValueObservable<[Array<string>, string]>;
 
     constructor(props: PropsListType) {
         super(props);
 
-        //const props$ = this.getProps$()
+        const props$ = this.getProps$()
 
-        const value$: ValueComputed<string> = this.propsComputed
-            .map(props => props.value);
-            //.distinctUntilChanged();                                      //TODO ???
+        const value$: ValueObservable<string> = props$
+            .map(props => props.value)
+            .distinctUntilChanged();
 
-
-        const highlight$: ValueComputed<string> = new Value('a').asComputed();  //TODO - tymczasowy mock
-
-                                                                            //TODO - do przywrócenia
-        /*
-        const highlight$: ValueComputed<string> = this.propsComputed
-            .switchMap(props => props.highlight);
-            //.distinctUntilChanged();                                      //TODO ???
-        */
-
-        this.chunks$ = combineLatest(
+        const highlight$: ValueObservable<string> = props$
+            .switchMap(props => props.highlight)
+            .distinctUntilChanged();
+        
+        this.chunks$ = ValueObservable.combineLatest(
             value$,
             highlight$,
             (value, highlight) => {
@@ -148,7 +134,7 @@ class AutocompleteListItem extends BaseComponent<PropsListType> {
     }
 
     render() {
-        const [chunks, highlight] = this.getFromComputed(this.chunks$);
+        const [chunks, highlight] = this.getValue$(this.chunks$);
 
         const out = [];
         for (const [index, item] of chunks.entries()) {

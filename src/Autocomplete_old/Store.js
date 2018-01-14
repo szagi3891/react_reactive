@@ -1,33 +1,33 @@
 //@flow
 
-import { Value, ValueComputed } from '../Value';
+import { ValueSubject, ValueObservable } from 'react_reactive_value';
 
 class Store {
-    _data: Map<string, Value<Array<string> | null>>;
+    _data: Map<string, ValueSubject<Array<string> | null>>;
 
     constructor() {
         this._data = new Map();
     }
 
-    getList(text: string): ValueComputed<Array<string> | null> {
+    getList(text: string): ValueObservable<Array<string> | null> {
         const item = this._data.get(text);
 
         if (item) {
-            return item.asComputed();
+            return item.asObservable();
         }
 
-        const newStream = new Value(null);
+        const newStream = new ValueSubject(null);
 
         this._data.set(text, newStream);
 
         this._sendRequest(text, newStream);
 
-        return newStream.asComputed();
+        return newStream.asObservable();
     }
 
-    _sendRequest(text: string, subject: Value<Array<string> | null>) {
+    _sendRequest(text: string, subject: ValueSubject<Array<string> | null>) {
         if (text === '') {
-            subject.setValue([]);
+            subject.next([]);
             return;
         }
 
@@ -50,7 +50,7 @@ class Store {
                 return resp.items.map(item => `${item.name} -> ${item.full_name}`)
             })
             .then(resp => {
-                subject.setValue(resp);
+                subject.next(resp);
             })
             .catch((err) => {
                 console.info('fetch - error', err);
