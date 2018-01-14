@@ -20,14 +20,12 @@ export const combineValue = <A, B, R>(
     let connection: null | ConnectionDataType = null;
 
     const subscription = new ValueSubscription(() => {
-        //gdy rozłączono wszystkich
-
         if (connection !== null) {
             connection.a.disconnect();
             connection.b.disconnect();
             connection = null;
         } else {
-            throw Error('combineValue - Rozłączanie - Nieprawidłowe odgałęzienie');
+            throw Error('combineValue - disconnect - Incorrect code branch');
         }
     });
 
@@ -35,7 +33,7 @@ export const combineValue = <A, B, R>(
         if (connection) {
             connection.result = null;
         } else {
-            throw Error('combineValue - clearCache - Nieprawidłowe odgałęzienie')
+            throw Error('combineValue - clearCache - Incorrect code branch')
         }
     };
 

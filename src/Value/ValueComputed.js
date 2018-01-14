@@ -70,11 +70,67 @@ export class ValueComputed<T> {
     }
 
     map<M>(mapFun: (value: T) => M): ValueComputed<M> {
+        type ConnectionDataType = {
+            parent: ValueConnection<T>,
+            result: null | { value: M }
+        };
+
+        let connection: null | ConnectionDataType = null;
+
+        const subscription = new ValueSubscription(() => {
+            if (connection !== null) {
+                connection.parent.disconnect();
+                connection = null;
+            } else {
+                throw Error('Map - disconnect - Incorrect code branch');
+            }
+        });
+
+        const clearCache = () => {
+            if (connection) {
+                connection.result = null;
+            } else {
+                throw Error('Map - clearCache - Incorrect code branch')
+            }
+        };
+
+        const notify = () => {
+            clearCache();
+            return subscription.notify();
+        };
+
+        const getConnection = (): ConnectionDataType => {
+            if (connection !== null) {
+                return connection;
+            }
+
+            const newConnect = this.bind(notify);
+
+            connection = {
+                parent: newConnect,
+                result: null
+            };
+
+            return connection;
+        };
+
+        const getResult = (): M => {
+            const connection = getConnection();
+
+            if (connection.result === null) {
+                const result = mapFun(this._getValue());
+                connection.result = { value: result };
+                return result;
+            } else {
+                return connection.result.value;
+            }
+        };
+
         return new ValueComputed(
             (notify: (() => Set<() => void>)): ValueConnection<M> => {
                 const disconnect = this._subscription.bind(notify);
                 return new ValueConnection(
-                    () => mapFun(this._getValue()),
+                    getResult,
                     disconnect
                 );
             }
