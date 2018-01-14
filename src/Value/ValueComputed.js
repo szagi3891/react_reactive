@@ -3,34 +3,6 @@
 import { ValueSubscription } from './ValueSubscription';
 import { ValueConnection } from './ValueConnection';
 import { pushToRefresh } from './transaction';
-/*
-    Trzeba dodać memoryzowanie ostatniej wartości
-
-    jakąś lokalną zmienną sobie trzeba przygotować na wartości wejściowe i wartość wyjściową
-    w momencie gdy trzeba będzie wyliczyć jeszcze raz kesz, sprawdzamy czy przypadkiem nie mamy wyliczonej tej wartości
-
-    gdy liczba subskryberów spadnie do zera to trzeba skasować memoryzację
-
-
-    komponent będzie posiadał memoryzację na poziomie PureComponrntu.
-    czyli jak się nie zmieniły propsy, to nic nie przerenderuje
-
-
-    refresh komponentu powinien być wywoływany jeśli wystąpiła jakaś zmiana na którymś z propsów z których powstał ostatni widok
-
-
-    getValue może zwracać --->
-
-    {
-        kolejna_wersja_wyniku: number,
-        value: T
-    }
-
-    wtedy będzie można określić czy dla tej wartości przeprowadzana była już operacja
-
-
-    mając takie dane, będzie można określić w kommponencie reaktowym czy konieczne jest przeliczenie komponentu ...
-*/
 
 export class ValueComputed<T> {
     _subscription: ValueSubscription;
