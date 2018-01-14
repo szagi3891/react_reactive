@@ -1,9 +1,9 @@
 //@flow
 
 import * as React from 'react';
-import { Value } from './Value';
-import { ValueComputed } from './ValueComputed';
-import { logError } from './Log';
+import { Value } from '../Value';
+import { ValueComputed } from '../ValueComputed';
+import { logError } from '../Utils/Log';
 
 const isSSR = typeof window === 'undefined';
 

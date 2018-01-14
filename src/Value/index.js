@@ -1,9 +1,9 @@
 //@flow
 
 import { Value } from './Value';
-import { BaseComponent } from './BaseComponent';
+import { BaseComponent } from './React/BaseComponent';
 import { ValueComputed } from './ValueComputed';
-import { combineValue } from './combineValue';
+import { combineValue } from './Operators/combineValue';
 
 export {
     Value,
