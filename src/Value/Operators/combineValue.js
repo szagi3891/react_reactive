@@ -72,12 +72,7 @@ export const combineValue = <A, B, R>(
     };
 
     return new ValueComputed(
-        (notify: (() => Set<() => void>)): ValueConnection<R> => {
-            const disconnect = subscription.bind(notify);
-            return new ValueConnection(
-                getResult,
-                disconnect
-            );
-        }
+        subscription,
+        getResult
     );
 };

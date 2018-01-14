@@ -34,39 +34,11 @@ import { ValueConnection } from './ValueConnection';
 
 export class ValueComputed<T> {
     _subscription: ValueSubscription;
+    _getValue: () => T;
 
-    _getParentConnection: (param: () => Set<() => void>) => ValueConnection<T>;
-    _connection: null | ValueConnection<T>;
-
-    constructor(getParentConnection: (param: () => Set<() => void>) => ValueConnection<T>) {
-        this._getParentConnection = getParentConnection;
-        this._connection = null;
-
-        this._subscription = new ValueSubscription(() => {
-            if (this._connection !== null) {
-                this._connection.disconnect();
-                this._connection = null;
-            } else {
-                throw Error('ValueComputed - Rozłączanie - Nieprawidłowe odgałęzienie');
-            }
-        });
-    }
-
-    _getParentValueConnection(): ValueConnection<T> {
-        if (this._connection) {
-            return this._connection;
-        }
-
-        const valueConnection = this._getParentConnection(() => {
-            return this._subscription.notify();
-        });
-
-        this._connection = valueConnection;
-        return valueConnection;
-    }
-
-    _getValue(): T {
-        return this._getParentValueConnection().getValue();
+    constructor(subscription: ValueSubscription, getValue: () => T) {
+        this._subscription = subscription;
+        this._getValue = getValue;
     }
 
     map<M>(mapFun: (value: T) => M): ValueComputed<M> {
@@ -127,13 +99,8 @@ export class ValueComputed<T> {
         };
 
         return new ValueComputed(
-            (notify: (() => Set<() => void>)): ValueConnection<M> => {
-                const disconnect = this._subscription.bind(notify);
-                return new ValueConnection(
-                    getResult,
-                    disconnect
-                );
-            }
+            this._subscription,
+            getResult
         );
     }
 

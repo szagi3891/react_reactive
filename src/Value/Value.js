@@ -2,7 +2,6 @@
 
 import { ValueSubscription } from './ValueSubscription';
 import { ValueComputed } from './ValueComputed';
-import { ValueConnection } from './ValueConnection';
 
 export class Value<T> {
     _value: T;
@@ -41,13 +40,8 @@ export class Value<T> {
 
     asComputed(): ValueComputed<T> {
         return new ValueComputed(
-            (notify: (() => Set<() => void>)): ValueConnection<T> => {
-                const disconnect = this._subscription.bind(notify);
-                return new ValueConnection(
-                    () => this._value,
-                    disconnect
-                );
-            }
+            this._subscription,
+            () => this._value
         );
     }
 }
