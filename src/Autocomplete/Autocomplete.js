@@ -25,10 +25,10 @@ class Autocomplete extends BaseComponent<PropsType> {
     */
 
                                                                         //TODO - tymczasowy mock
-    currentList = new Value(['adsada', 'dasdas', 'aaa', 'bbb', 'zzz', 'kkk']).asComputed();
+    currentList = new Value(['adsada', 'dasdas', 'aaa', 'bbb', 'zzz', 'kkk']);
 
     currentListWithDirection = combineValue(
-        this.currentList,
+        this.currentList.asComputed(),
         this.direction.asComputed(),
         (list, direction) => {
             if (direction === false) {
@@ -44,6 +44,18 @@ class Autocomplete extends BaseComponent<PropsType> {
             return list;
         }
     );
+
+    /*
+    constructor(props: PropsType) {
+        super(props);
+
+        let counter = 0;
+        setInterval(() => {
+            this.currentList.update(prev => [...prev, `nowyyyy ${counter}`]);
+            counter++;
+        }, 5000);
+    }
+    */
 
     _onChange = (event: Object) => {
         console.info('input', event.target.value);

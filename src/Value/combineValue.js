@@ -11,72 +11,56 @@ export const combineValue = <A, B, R>(
 ):
     ValueComputed<R> => {
 
-    const subscription = new ValueSubscription(() => {
-        //gdy rozłączono wszystkich
-    });
-
     let connection: null | {
         a: ValueConnection<A>,
         b: ValueConnection<B>
     } = null;
 
-    /*
-    bindNotify(notify: () => Set<() => void>): () => void {
+    const subscription = new ValueSubscription(() => {
+        //gdy rozłączono wszystkich
 
-
-        ta funkcja będzie posiadałą obiekt ValueSubscriptions
-
-        będzie jednocześnie się łączył do dwóch parentów
-
-
-        wynikowy ValueComputad będzie pokazywał na tą powyższą subskrypcję
-    */
-
-
-
-    let connectionA: null | ValueConnection<A> = null;
-    let connectionB: null | ValueConnection<B> = null;
-
-    const getValueA = (): ValueConnection<A> => {
-        if (connectionA !== null) {
-            return connectionA;
+        if (connection !== null) {
+            connection.a.disconnect();
+            connection.b.disconnect();
+            connection = null;
+        } else {
+            throw Error('combineValue - Rozłączanie - Nieprawidłowe odgałęzienie');
         }
+    });
 
-        const newItem = a.connect(null);
-        connectionA = newItem;
-        return newItem;
+    const clearCache = () => {
+        //TODO - wyczyszczenie kesza
     };
 
-    const getValueB = (): ValueConnection<B> => {
-        if (connectionB !== null) {
-            return connectionB;
-        }
-
-        const newItem = b.connect(null);
-        connectionB = newItem;
-        return newItem;
+    const notify = () => {
+        clearCache();
+        return subscription.notify();
     };
 
-
-    /*
-    return ValueComputed.create(
-        (subscription) => {
-            this._subscription.buildGetValue(
-                //gdy to jest wywołane, tworzona jest wartość
-                () => combine(getValueA().getValue(), getValueB().getValue())
-            )
+    const getValue = (): [ValueConnection<A>, ValueConnection<B>] => {
+        if (connection !== null) {
+            return [connection.a, connection.b];
         }
-    )
-    */
+
+        const newConnectA = a.bind(notify);
+        const newConnectB = b.bind(notify);
+
+        connection = {
+            a: newConnectA,
+            b: newConnectB
+        };
+
+        return [newConnectA, newConnectB];
+    };
 
     return new ValueComputed(
-        //(): ValueConnection<R> => {
-            //podłącz się na parentaA i parentaB
-        //}
         (notify: (() => Set<() => void>)): ValueConnection<R> => {
             const disconnect = subscription.bind(notify);
             return new ValueConnection(
-                () => combine(getValueA().getValue(), getValueB().getValue()),
+                () => {
+                    const [connectionA, connectionB] = getValue();
+                    return combine(connectionA.getValue(), connectionB.getValue())
+                },
                 disconnect
             );
         }

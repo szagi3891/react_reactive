@@ -47,7 +47,7 @@ export class ValueComputed<T> {
                 this._connection.disconnect();
                 this._connection = null;
             } else {
-                throw Error('ValueComputed - rozłączanie - Nieprawidłowe oggałęzienie');
+                throw Error('ValueComputed - Rozłączanie - Nieprawidłowe odgałęzienie');
             }
         });
     }
@@ -78,6 +78,14 @@ export class ValueComputed<T> {
                     disconnect
                 );
             }
+        );
+    }
+
+    bind(notify: (() => Set<() => void>)): ValueConnection<T> {
+        const disconnect = this._subscription.bind(notify);
+        return new ValueConnection(
+            () => this._getValue(),
+            disconnect
         );
     }
 
