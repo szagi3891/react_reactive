@@ -9,10 +9,10 @@ export const transaction = (funcToRun: () => void) => {
     level--;
 
     if (level === 0) {
-        const toRefresh = refresh;
+        const toRefresh: Set<() => void> = new Set(refresh);
         refresh = [];
 
-        for (const item of toRefresh) {
+        for (const item of toRefresh.values()) {
             item();
         }
     }
