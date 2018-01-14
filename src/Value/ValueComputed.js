@@ -105,8 +105,9 @@ export class ValueComputed<T> {
 
         const notify = () => {
             if (connection !== null) {
+                const newTarget = getTargetBySelf(connection.self);
                 connection.target.disconnect();
-                connection.target = getTargetBySelf(connection.self)
+                connection.target = newTarget;
             } else {
                 throw Error('Switch - notify - Incorrect code branch');
             }
