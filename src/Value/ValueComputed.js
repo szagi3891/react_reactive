@@ -42,10 +42,12 @@ export class ValueComputed<T> {
         this._getParentConnection = getParentConnection;
         this._connection = null;
 
-        this._subscription = new ValueSubscription((subscribersCount: number) => {
-            if (subscribersCount === 0 && this._connection !== null) {
+        this._subscription = new ValueSubscription(() => {
+            if (this._connection !== null) {
                 this._connection.disconnect();
                 this._connection = null;
+            } else {
+                throw Error('ValueComputed - rozłączanie - Nieprawidłowe oggałęzienie');
             }
         });
     }

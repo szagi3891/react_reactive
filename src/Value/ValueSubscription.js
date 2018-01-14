@@ -14,9 +14,11 @@ export const mergeSet = <T>(...list: Array<Set<T>>): Set<T> => {
 
 export class ValueSubscription {
     _subscription: Map<mixed, () => Set<() => void>>;
+    _onIdlee: () => void;
 
-    constructor(onChangeSubscribers: (count: number) => void) {
+    constructor(onIdlee: () => void) {
         this._subscription = new Map();
+        this._onIdlee = onIdlee;
     }
 
     notify(): Set<() => void> {
@@ -36,6 +38,10 @@ export class ValueSubscription {
 
         return () => {
             this._subscription.delete(token);
+
+            if (this._subscription.size === 0) {
+                this._onIdlee();
+            }
         }
     }
 }
