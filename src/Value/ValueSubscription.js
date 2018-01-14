@@ -1,7 +1,16 @@
 //@flow
 
-import { ValueConnection } from './ValueConnection';
-import { mergeSet } from './Utils';
+export const mergeSet = <T>(...list: Array<Set<T>>): Set<T> => {
+    const result = new Set();
+
+    for (const argItem of list) {
+        for (const item of argItem) {
+            result.add(item);
+        }
+    }
+
+    return result;
+};
 
 export class ValueSubscription {
     _subscription: Map<mixed, () => Set<() => void>>;
@@ -20,7 +29,7 @@ export class ValueSubscription {
         return mergeSet(...allToRefresh);
     }
 
-    bindNotify(notify: () => Set<() => void>): () => void {
+    bind(notify: () => Set<() => void>): () => void {
         const token = {};
 
         this._subscription.set(token, notify);
@@ -28,36 +37,5 @@ export class ValueSubscription {
         return () => {
             this._subscription.delete(token);
         }
-    }
-
-    /*
-    bind<T>(
-        getValue: () => T,
-        notify: () => Set<() => void>
-    ): ValueConnection<T> {
-        const disconnect = this.bindNotify(notify);
-        return new ValueConnection(getValue, disconnect); 
-    }
-    */
-
-    buildGetValue<T>(getValue: () => T): ((notify: () => Set<() => void>) => ValueConnection<T>) {
-        return (notify: () => Set<() => void>): ValueConnection<T> => {
-
-            const disconnect = this.bindNotify(notify);
-            return new ValueConnection(getValue, disconnect);
-
-            /*
-            const token = {};
-
-            this._subscription.set(token, notify);
-
-            return new ValueConnection(
-                getValue,
-                () => {
-                    this._subscription.delete(token);
-                }
-            );
-            */
-        };
     }
 }

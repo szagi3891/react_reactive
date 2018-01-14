@@ -73,8 +73,12 @@ export const combineValue = <A, B, R>(
         //(): ValueConnection<R> => {
             //podłącz się na parentaA i parentaB
         //}
-        subscription.buildGetValue(
-            () => combine(getValueA().getValue(), getValueB().getValue())
-        )
+        (notify: (() => Set<() => void>)): ValueConnection<R> => {
+            const disconnect = subscription.bind(notify);
+            return new ValueConnection(
+                () => combine(getValueA().getValue(), getValueB().getValue()),
+                disconnect
+            );
+        }
     );
 };

@@ -69,16 +69,25 @@ export class ValueComputed<T> {
 
     map<M>(mapFun: (value: T) => M): ValueComputed<M> {
         return new ValueComputed(
-            this._subscription.buildGetValue(
-                () => mapFun(this._getValue())
-            )
+            (notify: (() => Set<() => void>)): ValueConnection<M> => {
+                const disconnect = this._subscription.bind(notify);
+                return new ValueConnection(
+                    () => mapFun(this._getValue()),
+                    disconnect
+                );
+            }
         );
     }
 
     connect(onRefresh: (() => void) | null): ValueConnection<T> {
-        return this._subscription.buildGetValue
-            (() => this._getValue())
-            (() => new Set(onRefresh === null ? [] : [onRefresh]));
+        const disconnect = this._subscription.bind(
+            () => new Set(onRefresh === null ? [] : [onRefresh])
+        );
+
+        return new ValueConnection(
+            () => this._getValue(),
+            disconnect
+        );
     }
 }
 
