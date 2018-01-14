@@ -130,21 +130,17 @@ class AutocompleteListItem extends BaseComponent<PropsListType> {
     constructor(props: PropsListType) {
         super(props);
 
-        //const props$ = this.getProps$()
-
         const value$: ValueComputed<string> = this.propsComputed
             .map(props => props.value);
             //.distinctUntilChanged();                                      //TODO ???
 
 
-        const highlight$: ValueComputed<string> = new Value('a').asComputed();  //TODO - tymczasowy mock
 
-                                                                            //TODO - do przywrócenia
-        /*
         const highlight$: ValueComputed<string> = this.propsComputed
-            .switchMap(props => props.highlight);
+            .switch(props => props.highlight);
             //.distinctUntilChanged();                                      //TODO ???
-        */
+
+
 
         this.chunks$ = combineValue(
             value$,

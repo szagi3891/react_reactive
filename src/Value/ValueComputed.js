@@ -40,7 +40,7 @@ export class ValueComputed<T> {
 
         const notify = () => {
             clearCache();
-            return subscription.notify();
+            subscription.notify();
         };
 
         const getConnection = (): ConnectionDataType => {
@@ -71,16 +71,78 @@ export class ValueComputed<T> {
         };
 
         return new ValueComputed(
-            this._subscription,
+            subscription,
             getResult
         );
     }
 
-/*
-    switch(swithFunc: ((value: T) => ValueComputed<K>)): ValueComputed<K> => {
+    switch<K>(swithFunc: ((value: T) => ValueComputed<K>)): ValueComputed<K> {
+        type ConnectionDataType = {
+            self: ValueConnection<T>,
+            target: ValueConnection<K>,
+        };
 
+        let connection: null | ConnectionDataType = null;
+
+        const clearConnection = () => {
+            if (connection !== null) {
+                connection.self.disconnect();
+                connection.target.disconnect();
+                connection = null;
+            } else {
+                throw Error('Switch - disconnect - Incorrect code branch');
+            }
+        };
+
+        const subscription = new ValueSubscription(clearConnection);
+
+        const getTargetBySelf = (self: ValueConnection<T>): ValueConnection<K> => {
+            const targetComputed = swithFunc(self.getValue());
+            return targetComputed.bind(() => {
+                subscription.notify();
+            });
+        };
+
+        const notify = () => {
+            if (connection !== null) {
+                connection.target.disconnect();
+                connection.target = getTargetBySelf(connection.self)
+            } else {
+                throw Error('Switch - notify - Incorrect code branch');
+            }
+
+            subscription.notify();
+        };
+
+        const getNewConnection = (): ConnectionDataType => {
+            const self = this.bind(notify);
+
+            return {
+                self,
+                target: getTargetBySelf(self)
+            };
+        };
+
+        const getConnection = (): ConnectionDataType => {
+            if (connection !== null) {
+                return connection;
+            }
+
+            const newConnect = getNewConnection();
+            connection = newConnect;
+            return connection;
+        };
+
+        const getResult = (): K => {
+            const connection = getConnection();
+            return connection.target.getValue();
+        };
+
+        return new ValueComputed(
+            subscription,
+            getResult
+        );
     }
-*/
 
     bind(notify: () => void): ValueConnection<T> {
         const disconnect = this._subscription.bind(notify);
