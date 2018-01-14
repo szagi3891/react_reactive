@@ -11,10 +11,13 @@ export const combineValue = <A, B, R>(
 ):
     ValueComputed<R> => {
 
-    let connection: null | {
+    type ConnectionDataType = {
         a: ValueConnection<A>,
-        b: ValueConnection<B>
-    } = null;
+        b: ValueConnection<B>,
+        result: null | { value: R }
+    };
+
+    let connection: null | ConnectionDataType = null;
 
     const subscription = new ValueSubscription(() => {
         //gdy rozłączono wszystkich
@@ -29,7 +32,11 @@ export const combineValue = <A, B, R>(
     });
 
     const clearCache = () => {
-        //TODO - wyczyszczenie kesza
+        if (connection) {
+            connection.result = null;
+        } else {
+            throw Error('combineValue - clearCache - Nieprawidłowe odgałęzienie')
+        }
     };
 
     const notify = () => {
@@ -37,9 +44,9 @@ export const combineValue = <A, B, R>(
         return subscription.notify();
     };
 
-    const getValue = (): [ValueConnection<A>, ValueConnection<B>] => {
+    const getConnection = (): ConnectionDataType => {
         if (connection !== null) {
-            return [connection.a, connection.b];
+            return connection;
         }
 
         const newConnectA = a.bind(notify);
@@ -47,20 +54,30 @@ export const combineValue = <A, B, R>(
 
         connection = {
             a: newConnectA,
-            b: newConnectB
+            b: newConnectB,
+            result: null,
         };
 
-        return [newConnectA, newConnectB];
+        return connection;
+    };
+
+    const getResult = (): R => {
+        const connection = getConnection();
+
+        if (connection.result === null) {
+            const result = combine(connection.a.getValue(), connection.b.getValue());
+            connection.result = { value: result };
+            return result;
+        } else {
+            return connection.result.value;
+        }
     };
 
     return new ValueComputed(
         (notify: (() => Set<() => void>)): ValueConnection<R> => {
             const disconnect = subscription.bind(notify);
             return new ValueConnection(
-                () => {
-                    const [connectionA, connectionB] = getValue();
-                    return combine(connectionA.getValue(), connectionB.getValue())
-                },
+                getResult,
                 disconnect
             );
         }
