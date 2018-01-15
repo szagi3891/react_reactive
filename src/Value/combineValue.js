@@ -76,3 +76,78 @@ export const combineValue = <A, B, R>(
         getResult
     );
 };
+
+//TODO - scalić w jeden te dwa operatory
+
+export const combineValueArr = <A,R>(
+    arr: Array<ValueComputed<A>>,
+    combine: ((arr: Array<A>) => R)
+):
+    ValueComputed<R> => {
+
+    type ConnectionDataType = {
+        arr: Array<ValueConnection<A>>,
+        result: null | { value: R }
+    };
+
+    let connection: null | ConnectionDataType = null;
+
+    const subscription = new ValueSubscription(() => {
+        if (connection !== null) {
+            for (const connectionItem of connection.arr) {
+                connectionItem.disconnect();
+            }
+            connection = null;
+        } else {
+            throw Error('combineValue - disconnect - Incorrect code branch');
+        }
+    });
+
+    const clearCache = () => {
+        if (connection) {
+            connection.result = null;
+        } else {
+            throw Error('combineValue - clearCache - Incorrect code branch')
+        }
+    };
+
+    const notify = () => {
+        clearCache();
+        return subscription.notify();
+    };
+
+    const getConnection = (): ConnectionDataType => {
+        if (connection !== null) {
+            return connection;
+        }
+
+        const newConnectArr = arr.map(
+            item => item.bind(notify)
+        );
+
+        connection = {
+            arr: newConnectArr,
+            result: null,
+        };
+
+        return connection;
+    };
+
+    const getResult = (): R => {
+        const connection = getConnection();
+
+        if (connection.result === null) {
+            const arrArgs = connection.arr.map(connectionItem => connectionItem.getValue());
+            const result = combine(arrArgs);
+            connection.result = { value: result };
+            return result;
+        } else {
+            return connection.result.value;
+        }
+    };
+
+    return new ValueComputed(
+        subscription,
+        getResult
+    );
+};
