@@ -2,22 +2,6 @@ import FormInputState from './FormInputState';
 import FormGroupState from './FormGroupState';
 import Validators from './Validators';
 
-const getValue = (obs) => {
-    let value = null;
-    let isSet = false;
-
-    obs.subscribe((newValue) => {
-        value = newValue;
-        isSet = true;
-    });
-
-    if (isSet !== true) {
-        throw Error('Nieprawidłowe zachowanie ValueObservable');
-    }
-
-    return value;
-}
-
 const getStateInput = (inputState) => ({
     errorForInput: getValue(inputState.errorForInput$),
     errorForForm: getValue(inputState.errorForForm$),

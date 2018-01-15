@@ -8,7 +8,7 @@ import MessageItem from './MessageItem/MessageItem';
 import Chat from './Chat/Chat';
 import Chat2 from './Chat2/Chat';
 import Autocomplete from './Autocomplete/Autocomplete';
-import { BaseComponent, ValueSubject } from 'react_reactive_value';
+import { BaseComponent, Value } from './Value';
 import Tab from './Tab';
 import FormApp from './Form/FormApp';
 import FormInputState from './Form/FormInputState';
@@ -74,8 +74,8 @@ class App extends BaseComponent<{||}> {
 
     formWizzardState = new FormWizzardMainState([this.formState1, this.formState2, this.formState3]);
 
-    tab: ValueSubject<string> = new ValueSubject('formWizzard');
-    tab$ = this.tab.asObservable();
+    tab: Value<string> = new Value('formWizzard');
+    tab$ = this.tab.asComputed();
 
     _config = [{
         key: 'formWizzard',
@@ -124,15 +124,15 @@ class App extends BaseComponent<{||}> {
         )
     }];
 
-    _getTabClass = (tab: string) => {
-        const currentTab = this.getValue$(this.tab$);
+    _getTabClass = (tab: string): string => {
+        const currentTab = this.getFromComputed(this.tab$);
         return cx('Menu__item', {
             'Menu__item--select': currentTab === tab
         });
     }
 
     _tabClick = (newTab: string) => {
-        this.tab.next(newTab);
+        this.tab.setValue(newTab);
     }
 
     _renderMenu = () => (
@@ -164,7 +164,7 @@ class App extends BaseComponent<{||}> {
     );
 
     render() {
-        const currentTab = this.getValue$(this.tab$);
+        const currentTab = this.getFromComputed(this.tab$);
 
         return (
             <div className="App">
