@@ -1,4 +1,5 @@
 //@flow
+import { transaction } from './transaction';
 
 export class ValueSubscription {
     _subscription: Map<mixed, () => void>;
@@ -11,7 +12,9 @@ export class ValueSubscription {
 
     notify() {
         for (const item of this._subscription.values()) {
-            item();
+            transaction(() => {
+                item();
+            });
         }
     }
 

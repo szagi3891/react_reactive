@@ -146,46 +146,74 @@ export class ValueComputed<T> {
         );
     }
 
-    debounceTime(time: number): ValueComputed<T> {
-        return this;
+    /*
+        null
+        connection, value,
+        connection, value, timer
+    */
 
-        //TODO 
-
-        /*
-        type ConnectionDataType = {
-            connection: null | ValueConnection<T>,
-            timer: number,
-        };
-
+    debounceTime(timeout: number): ValueComputed<T> {
         let connection: null | ValueConnection<T> = null;
+        let timer: TimeoutID | null = null;
 
-        const subscription = new ValueSubscription(() => {
+        //const valueOut = new Value();
+
+        const clearConnection = () => {
             if (connection !== null) {
                 connection.disconnect();
                 connection = null;
-            } else {
-                throw Error('debounceTime - disconnect - Incorrect code branch');
-            }
-        });
 
-        const getValue = (): T => {
-            //...
-            return this._getValue();
+                if (timer !== null) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+            } else {
+                throw Error('Switch - disconnect - Incorrect code branch');
+            }
         };
 
-        const out = new Value();
-        out._subscription = subscription;
+        const subscription = new ValueSubscription(clearConnection);
 
-        //...
+        const notify = () => {
+            if (connection !== null) {
+                if (timer !== null) {
+                    clearTimeout(timer);
+                }
 
-        return out.asComputed();
-        */
+                timer = setTimeout(() => {
+                    subscription.notify();
+                    timer = null;
+                }, timeout);
+            } else {
+                throw Error('Switch - notify - Incorrect code branch');
+            }
+        };
+
+
+        const getConnection = (): ValueConnection<T> => {
+            if (connection !== null) {
+                return connection;
+            }
+
+            const newConnect = this.bind(notify);
+            connection = newConnect;
+            return connection;
+        };
+
+        const getResult = (): T => {
+            return getConnection().getValue();
+        };
+
+        return new ValueComputed(
+            subscription,
+            getResult
+        );
     }
 
     distinctUntilChanged(): ValueComputed<T> {
         return this;
 
-        //TODO
+        //TODO - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     bind(notify: () => void): ValueConnection<T> {
