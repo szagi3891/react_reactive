@@ -1,5 +1,5 @@
 //@flow
-import { ValueObservable } from 'react_reactive_value';
+import { ValueComputed, combineValueArr } from '../Value';
 import FormInputState from './FormInputState';
 
 type InputConfig = {|
@@ -12,13 +12,12 @@ export default class FormGroupState {
 
     inputs: Array<InputConfig>;
                                                         //null - error, Array<string> - walidowalne dane
-    data$: ValueObservable<Array<string> | null>;
+    data$: ValueComputed<Array<string> | null>;
 
     constructor(inputsConfig: Array<InputConfig>) {
         this.inputs = inputsConfig;
 
-        this.data$ = ValueObservable
-            .combineLatestTupleArr(this.inputs.map(input => input.state.data$))
+        this.data$ = combineValueArr(this.inputs.map(input => input.state.data$), value => value)
             .map((data: Array<string | null>): Array<string> | null => {
                 const out = [];
 

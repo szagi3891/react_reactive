@@ -1,5 +1,5 @@
 //@flow
-import { ValueObservable } from 'react_reactive_value';
+import { ValueComputed, combineValue } from '../Value';
 
 type SubmitType = {|
     onSubmit: () => void,
@@ -7,10 +7,10 @@ type SubmitType = {|
 |};
 
 export default <T>(
-    data$: ValueObservable<T>,
-    submit$: ValueObservable<(data: T) => void>
-): ValueObservable<SubmitType> => {
-    const onSubmit$ = ValueObservable.combineLatest(
+    data$: ValueComputed<T>,
+    submit$: ValueComputed<(data: T) => void>
+): ValueComputed<SubmitType> => {
+    const onSubmit$ = combineValue(
         data$,
         submit$,
         (data: T, submit: (data: T) => void) =>
@@ -21,7 +21,7 @@ export default <T>(
 
     const submitEnable$ = data$.map(data => data !== null);
 
-    return ValueObservable.combineLatest(
+    return combineValue(
         onSubmit$,
         submitEnable$,
         (onSubmit, submitEnable) => ({

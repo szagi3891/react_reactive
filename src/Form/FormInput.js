@@ -1,6 +1,6 @@
 //@flow
 import * as React from 'react';
-import { BaseComponent } from 'react_reactive_value';
+import { BaseComponent } from '../Value';
 import FormInputState from './FormInputState';
 
 import './FormInput.css';
@@ -14,8 +14,8 @@ export default class FormInput extends BaseComponent<PropsInputType> {
 
     render() {
         const { input, caption } = this.props;
-        const value = this.getValue$(input.value$);
-        const error = this.getValue$(input.error$);
+        const value = this.getFromComputed(input.value$);
+        const error = this.getFromComputed(input.error$);
 
         return (
             <div className="FormInput">

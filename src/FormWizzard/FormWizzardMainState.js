@@ -1,39 +1,29 @@
 //@flow
 
-import { ValueObservable, Subject, ValueSubject } from 'react_reactive_value';
+import { Value, ValueComputed, combineValueArr, combineValue } from '../Value';
 import FormGroupState from '../Form/FormGroupState';
-import { Observable } from 'react_reactive_value/lib/Reactive';
 
-//TODO - do wyrzucenia
-const valueFromObservable = <T>(obs: ValueObservable<T>): T => {
-    let result: null | { value: T } = null;
-
-    obs.subscribe((value) => {
-        result = { value };
-    });
-
-    if (result !== null) {
-        return result.value;
-    }
-
-    throw Error('AASDADADSADAS');
+const getValue = <T>(data: ValueComputed<T>): T => {
+    const connection = data.bind(() => {});
+    const value = connection.getValue();
+    connection.disconnect();
+    return value;
 };
 
 export default class FormWizzardState {
-    +data$: ValueObservable<Array<Array<string>> | null>;
+    +data$: ValueComputed<Array<Array<string>> | null>;
  
-    +currentSteep$: ValueObservable<[number, number]>;
-    +currentGroup$: ValueObservable<FormGroupState>;
+    +currentSteep$: ValueComputed<[number, number]>;
+    +currentGroup$: ValueComputed<FormGroupState>;
 
-    +prevEnable$: ValueObservable<bool>;
-    +nextEnable$: ValueObservable<bool>;
+    +prevEnable$: ValueComputed<bool>;
+    +nextEnable$: ValueComputed<bool>;
     
-    +_currentSteep: ValueSubject<number>;
-    +_maxSteep$: ValueObservable<number>;
+    +_currentSteep: Value<number>;
+    +_maxSteep$: ValueComputed<number>;
 
     constructor(steeps: Array<FormGroupState>) {
-        const listData$: ValueObservable<Array<Array<string> | null>> = ValueObservable
-            .combineLatestTupleArr(steeps.map(steep => steep.data$));
+        const listData$: ValueComputed<Array<Array<string> | null>> = combineValueArr(steeps.map(steep => steep.data$), value => value);
         
         const data$ = listData$
             .map((data: Array<Array<string> | null>): Array<Array<string>> | null => {
@@ -60,9 +50,9 @@ export default class FormWizzardState {
                 return data.length - 1;
             });
 
-        this._currentSteep = new ValueSubject(0);
+        this._currentSteep = new Value(0);
 
-        const steep$ = this._currentSteep.asObservable();
+        const steep$ = this._currentSteep.asComputed();
 
         const currentSteep$ = steep$.map(steep => {
             return [steep + 1, 3]
@@ -72,7 +62,7 @@ export default class FormWizzardState {
 
         const prevEnable$ = steep$.map(steep => steep > 0);
 
-        const nextEnable$ = ValueObservable.combineLatest(
+        const nextEnable$ = combineValue(
             steep$,
             this._maxSteep$,
             (steep, maxSteep) => steep < maxSteep
@@ -86,8 +76,8 @@ export default class FormWizzardState {
     }
 
     back = () => {
-        const maxSteep = valueFromObservable(this._maxSteep$);
-        const steep = valueFromObservable(this._currentSteep.asObservable());
+        const maxSteep = getValue(this._maxSteep$);
+        const steep = this._currentSteep.getValue();
 
         const newSteep = steep - 1;
 
@@ -97,8 +87,8 @@ export default class FormWizzardState {
     }
 
     next = () => {
-        const maxSteep = valueFromObservable(this._maxSteep$);
-        const steep = valueFromObservable(this._currentSteep.asObservable());
+        const maxSteep = getValue(this._maxSteep$);
+        const steep = this._currentSteep.getValue();
 
         const newSteep = steep + 1;
 

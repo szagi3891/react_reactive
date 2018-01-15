@@ -1,7 +1,7 @@
 //@flow
 import * as React from 'react';
 import cx from 'classnames';
-import { BaseComponent } from 'react_reactive_value';
+import { BaseComponent } from '../Value';
 
 import FormGroupState from '../Form/FormGroupState';
 import FormGroup from '../Form/FormGroup';
@@ -19,10 +19,10 @@ export default class FormWizzard extends BaseComponent<PropsType> {
     render() {
         const { className, state } = this.props;
 
-        const currentGroup: FormGroupState = this.getValue$(state.currentGroup$)
-        const [currentSteep, maxSteep] = this.getValue$(state.currentSteep$);
-        const prevEnable = this.getValue$(state.prevEnable$);
-        const nextEnable = this.getValue$(state.nextEnable$);
+        const currentGroup: FormGroupState = this.getFromComputed(state.currentGroup$)
+        const [currentSteep, maxSteep] = this.getFromComputed(state.currentSteep$);
+        const prevEnable = this.getFromComputed(state.prevEnable$);
+        const nextEnable = this.getFromComputed(state.nextEnable$);
 
         return (
             <div className={className}>
@@ -41,7 +41,7 @@ export default class FormWizzard extends BaseComponent<PropsType> {
     }
 
     _renderButton = (label: string, onClick: () => void, enable: bool): React.Node => {
-        const className = cx({
+        const className: string = cx({
             buttonDisable: !enable
         });
 

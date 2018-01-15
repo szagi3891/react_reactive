@@ -1,27 +1,27 @@
 //@flow
-import { ValueSubject, ValueObservable } from 'react_reactive_value';
+import { Value, ValueComputed, combineValue } from '../Value';
 
 export default class FormInputState {
-    _value = new ValueSubject('');
-    _isVisit = new ValueSubject(false);
+    _value = new Value('');
+    _isVisit = new Value(false);
                                                     //dla widoku
-    value$ = this._value.asObservable();
-    error$: ValueObservable<string | null>;
+    value$ = this._value.asComputed();
+    error$: ValueComputed<string | null>;
                                                     //dla wyższego stanu
-    data$: ValueObservable<string | null>;
+    data$: ValueComputed<string | null>;
 
     constructor(errorMessage: string, fnValidator: (value: string) => bool) {
 
         const errorInput$ = this.value$.map((input: string): bool => !fnValidator(input));
 
-        this.error$ = ValueObservable.combineLatest(
+        this.error$ = combineValue(
             errorInput$,
-            this._isVisit.asObservable(),
+            this._isVisit.asComputed(),
             (error: bool, isVisit: bool): string | null =>
                 (error && isVisit) ? errorMessage : null
         );
 
-        this.data$ = ValueObservable.combineLatest(
+        this.data$ = combineValue(
             errorInput$,
             this.value$,
             (error: bool, value: string): string | null => {
@@ -35,10 +35,10 @@ export default class FormInputState {
     }
 
     onChange = (event: SyntheticInputEvent<>) => {
-        this._value.next(event.target.value);
+        this._value.setValue(event.target.value);
     }
  
     onBlur = () => {
-        this._isVisit.next(true);
+        this._isVisit.setValue(true);
     }
 }

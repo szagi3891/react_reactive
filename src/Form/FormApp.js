@@ -1,7 +1,7 @@
 //@flow
 import * as React from 'react';
 import cx from 'classnames';
-import { BaseComponent } from 'react_reactive_value';
+import { BaseComponent } from '../Value';
 import FormGroupState from './FormGroupState';
 import FormGroup from './FormGroup';
 import createFormSubmit from './FormSubmit';
@@ -17,15 +17,15 @@ type PropsType = {|
 export default class FormApp extends BaseComponent<PropsType> {
 
     submit$ = createFormSubmit(
-        this.getProps$().switchMap(props => props.state.data$),
-        this.getProps$().map(props => props.onSubmit)
+        this.propsComputed.switchMap(props => props.state.data$),
+        this.propsComputed.map(props => props.onSubmit)
     );
 
     render() {
         const { className, state } = this.props;
-        const submit = this.getValue$(this.submit$);
+        const submit = this.getFromComputed(this.submit$);
 
-        const submitClassName = cx('FormSubmit', {
+        const submitClassName: string = cx('FormSubmit', {
             'FormSubmit--disable': !submit.submitEnable
         });
 
