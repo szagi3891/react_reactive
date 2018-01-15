@@ -15,18 +15,12 @@ class Autocomplete extends BaseComponent<PropsType> {
     inputHighlight = new Value('');
     direction = new Value(false);
 
-                                                                        //TODO - przywrócić tą wersję
-    /*
     currentList = this.input.asComputed()
-        //.debounceTime(1000)                                           //TODO - do przywrócenia w innej formie
+        .debounceTime(1000)
         .switchMap(input => Store.getList(input));
-    */
-
-                                                                        //TODO - tymczasowy mock
-    currentList = new Value(['adsada', 'dasdas', 'aaa', 'bbb', 'zzz', 'kkk']);
 
     currentListWithDirection = combineValue(
-        this.currentList.asComputed(),
+        this.currentList,
         this.direction.asComputed(),
         (list, direction) => {
             if (direction === false) {
@@ -42,18 +36,6 @@ class Autocomplete extends BaseComponent<PropsType> {
             return list;
         }
     );
-
-    /*
-    constructor(props: PropsType) {
-        super(props);
-
-        let counter = 0;
-        setInterval(() => {
-            this.currentList.update(prev => [...prev, `nowyyyy ${counter}`]);
-            counter++;
-        }, 5000);
-    }
-    */
 
     _onChange = (event: Object) => {
         console.info('input', event.target.value);
@@ -129,14 +111,12 @@ class AutocompleteListItem extends BaseComponent<PropsListType> {
         super(props);
 
         const value$: ValueComputed<string> = this.propsComputed
-            .map(props => props.value);
-            //.distinctUntilChanged();                                      //TODO ???
-
-
+            .map(props => props.value)
+            .distinctUntilChanged();
 
         const highlight$: ValueComputed<string> = this.propsComputed
-            .switch(props => props.highlight);
-            //.distinctUntilChanged();                                      //TODO ???
+            .switchMap(props => props.highlight)
+            .distinctUntilChanged();
 
 
 

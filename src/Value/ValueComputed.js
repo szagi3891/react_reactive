@@ -77,7 +77,7 @@ export class ValueComputed<T> {
         );
     }
 
-    switch<K>(swithFunc: ((value: T) => ValueComputed<K>)): ValueComputed<K> {
+    switchMap<K>(swithFunc: ((value: T) => ValueComputed<K>)): ValueComputed<K> {
         type ConnectionDataType = {
             self: ValueConnection<T>,
             target: ValueConnection<K>,
@@ -146,8 +146,12 @@ export class ValueComputed<T> {
         );
     }
 
-    /*
     debounceTime(time: number): ValueComputed<T> {
+        return this;
+
+        //TODO 
+
+        /*
         type ConnectionDataType = {
             connection: null | ValueConnection<T>,
             timer: number,
@@ -175,13 +179,14 @@ export class ValueComputed<T> {
         //...
 
         return out.asComputed();
+        */
     }
-    */
 
-    /*
     distinctUntilChanged(): ValueComputed<T> {
+        return this;
+
+        //TODO
     }
-    */
 
     bind(notify: () => void): ValueConnection<T> {
         const disconnect = this._subscription.bind(notify);
