@@ -3,6 +3,7 @@
 import { ValueSubscription } from './ValueSubscription';
 import { ValueConnection } from './ValueConnection';
 import { pushToRefresh } from './transaction';
+import { Value } from './Value';
 
 export class ValueComputed<T> {
     _subscription: ValueSubscription;
@@ -144,6 +145,43 @@ export class ValueComputed<T> {
             getResult
         );
     }
+
+    /*
+    debounceTime(time: number): ValueComputed<T> {
+        type ConnectionDataType = {
+            connection: null | ValueConnection<T>,
+            timer: number,
+        };
+
+        let connection: null | ValueConnection<T> = null;
+
+        const subscription = new ValueSubscription(() => {
+            if (connection !== null) {
+                connection.disconnect();
+                connection = null;
+            } else {
+                throw Error('debounceTime - disconnect - Incorrect code branch');
+            }
+        });
+
+        const getValue = (): T => {
+            //...
+            return this._getValue();
+        };
+
+        const out = new Value();
+        out._subscription = subscription;
+
+        //...
+
+        return out.asComputed();
+    }
+    */
+
+    /*
+    distinctUntilChanged(): ValueComputed<T> {
+    }
+    */
 
     bind(notify: () => void): ValueConnection<T> {
         const disconnect = this._subscription.bind(notify);

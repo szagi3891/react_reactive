@@ -6,8 +6,6 @@ import { BaseComponent, Value, ValueComputed, combineValue } from '../Value';
 
 import Store from './Store';
 
-//const combineLatest = <A,B,R>(aa: ValueComputed<A>, bb: ValueComputed<B>, ())
-
 type PropsType = {|
     className: string
 |};
