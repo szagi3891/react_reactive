@@ -1,8 +1,8 @@
 //@flow
 
-import { ValueComputed } from '../ValueComputed';
-import { ValueConnection } from '../ValueConnection';
-import { ValueSubscription } from '../ValueSubscription';
+import { ValueComputed } from './ValueComputed';
+import { ValueConnection } from './ValueConnection';
+import { ValueSubscription } from './ValueSubscription';
 
 export const combineValue = <A, B, R>(
     a: ValueComputed<A>,

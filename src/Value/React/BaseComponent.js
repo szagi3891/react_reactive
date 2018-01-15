@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Value } from '../Value';
 import { ValueComputed } from '../ValueComputed';
-import { logError } from '../Utils/Log';
+import { logError } from './Log';
 
 const isSSR = typeof window === 'undefined';
 

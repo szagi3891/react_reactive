@@ -3,7 +3,7 @@
 import { Value } from './Value';
 import { BaseComponent } from './React/BaseComponent';
 import { ValueComputed } from './ValueComputed';
-import { combineValue } from './Operators/combineValue';
+import { combineValue } from './combineValue';
 
 export {
     Value,
