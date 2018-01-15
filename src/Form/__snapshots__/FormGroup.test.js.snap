@@ -2,30 +2,18 @@
 
 exports[`aa check blur for input 1`] = `
 Object {
-  "data": Array [
-    "",
-    "",
-    "",
-  ],
-  "erross": Array [
-    "Oczekiwano poprawnej daty",
-    "Oczekiwano poprawnego wieku",
-    "Oczekiwano hasła do biosu",
-  ],
+  "data": null,
   "inputs": Array [
     Object {
-      "errorForForm": "Oczekiwano poprawnej daty",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
     Object {
-      "errorForForm": "Oczekiwano poprawnego wieku",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
     Object {
-      "errorForForm": "Oczekiwano hasła do biosu",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
   ],
@@ -34,30 +22,18 @@ Object {
 
 exports[`aa check blur for input 2`] = `
 Object {
-  "data": Array [
-    "",
-    "",
-    "",
-  ],
-  "erross": Array [
-    "Oczekiwano poprawnej daty",
-    "Oczekiwano poprawnego wieku",
-    "Oczekiwano hasła do biosu",
-  ],
+  "data": null,
   "inputs": Array [
     Object {
-      "errorForForm": "Oczekiwano poprawnej daty",
-      "errorForInput": "Oczekiwano poprawnej daty",
+      "error": "Oczekiwano poprawnej daty",
       "value": "",
     },
     Object {
-      "errorForForm": "Oczekiwano poprawnego wieku",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
     Object {
-      "errorForForm": "Oczekiwano hasła do biosu",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
   ],
@@ -66,30 +42,18 @@ Object {
 
 exports[`aa check blur for input 3`] = `
 Object {
-  "data": Array [
-    "1322",
-    "",
-    "",
-  ],
-  "erross": Array [
-    "Oczekiwano poprawnej daty",
-    "Oczekiwano poprawnego wieku",
-    "Oczekiwano hasła do biosu",
-  ],
+  "data": null,
   "inputs": Array [
     Object {
-      "errorForForm": "Oczekiwano poprawnej daty",
-      "errorForInput": "Oczekiwano poprawnej daty",
+      "error": "Oczekiwano poprawnej daty",
       "value": "1322",
     },
     Object {
-      "errorForForm": "Oczekiwano poprawnego wieku",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
     Object {
-      "errorForForm": "Oczekiwano hasła do biosu",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
   ],
@@ -98,29 +62,18 @@ Object {
 
 exports[`aa check blur for input 4`] = `
 Object {
-  "data": Array [
-    "1410",
-    "",
-    "",
-  ],
-  "erross": Array [
-    "Oczekiwano poprawnego wieku",
-    "Oczekiwano hasła do biosu",
-  ],
+  "data": null,
   "inputs": Array [
     Object {
-      "errorForForm": null,
-      "errorForInput": null,
+      "error": null,
       "value": "1410",
     },
     Object {
-      "errorForForm": "Oczekiwano poprawnego wieku",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
     Object {
-      "errorForForm": "Oczekiwano hasła do biosu",
-      "errorForInput": null,
+      "error": null,
       "value": "",
     },
   ],

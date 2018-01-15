@@ -2,9 +2,15 @@ import FormInputState from './FormInputState';
 import FormGroupState from './FormGroupState';
 import Validators from './Validators';
 
+const getValue = <T>(data: ValueComputed<T>): T => {
+    const connection = data.bind(() => {});
+    const value = connection.getValue();
+    connection.disconnect();
+    return value;
+};
+
 const getStateInput = (inputState) => ({
-    errorForInput: getValue(inputState.errorForInput$),
-    errorForForm: getValue(inputState.errorForForm$),
+    error: getValue(inputState.error$),
     value: getValue(inputState.value$)
 });
 
@@ -14,8 +20,7 @@ const getStateForm = (formState) => ({
         getStateInput(formState.inputs[1].state),
         getStateInput(formState.inputs[2].state)
     ],
-    data: getValue(formState.data$),
-    erross: getValue(formState.errors$)
+    data: getValue(formState.data$)
 });
 
 const ErrorLable1 = 'Oczekiwano poprawnej daty';
