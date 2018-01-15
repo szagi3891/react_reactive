@@ -146,17 +146,9 @@ export class ValueComputed<T> {
         );
     }
 
-    /*
-        null
-        connection, value,
-        connection, value, timer
-    */
-
     debounceTime(timeout: number): ValueComputed<T> {
         let connection: null | ValueConnection<T> = null;
         let timer: TimeoutID | null = null;
-
-        //const valueOut = new Value();
 
         const clearConnection = () => {
             if (connection !== null) {
