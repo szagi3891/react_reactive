@@ -72,7 +72,7 @@ class App extends BaseComponent<{||}> {
         state: new FormInputState('Wrong value', Validators.isGrunwald)
     }]);
 
-    formWizzardState = this.mount$(FormWizzardMainState.build([this.formState1, this.formState2, this.formState3]));
+    formWizzardState = new FormWizzardMainState([this.formState1, this.formState2, this.formState3]);
 
     tab: ValueSubject<string> = new ValueSubject('formWizzard');
     tab$ = this.tab.asObservable();
