@@ -1,5 +1,5 @@
 {
-  "name": "aaaa",
+  "name": "react_reactive",
   "version": "0.1.0",
   "private": true,
   "homepage": "https://szagi3891.github.io/react_reactive/",
@@ -13,7 +13,7 @@
   "devDependencies": {
     "flow-bin": "0.63.1",
     "flow-bin-ci": "^0.1.1",
-    "flow-typed": "^2.1.5",
+    "flow-typed": "^2.2.3",
     "react-scripts": "^1.0.13"
   },
   "scripts": {
@@ -23,7 +23,7 @@
     "test": "react-scripts test --env=jsdom",
     "test-coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
-    "flow": "flow status",
+    "flowa": "flow status",
     "flow-ci": "flow-bin-ci src src/App.js"
   }
 }
