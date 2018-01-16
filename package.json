@@ -8,8 +8,7 @@
     "firebase": "^4.3.1",
     "immutable": "4.0.0-rc.9",
     "react": "^16.0.0-rc.3",
-    "react-dom": "^16.0.0-rc.3",
-    "react_reactive_value": "https://github.com/szagi3891/react_reactive_value"
+    "react-dom": "^16.0.0-rc.3"
   },
   "devDependencies": {
     "flow-bin": "0.63.1",

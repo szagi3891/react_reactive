@@ -1,13 +1,13 @@
 //@flow
 
-import { ValueSubject, ValueObservable } from 'react_reactive_value';
+import { Value, ValueComputed } from '../../Value';
 
 import GraphRenderManager from '../GraphRenderManager';
 import type { MessageItemType } from '../Models';
 
 export default class ChatMessage {
 
-    _data: Map<string, ValueSubject<MessageItemType | null>>;
+    _data: Map<string, Value<MessageItemType | null>>;
 
     constructor() {
         this._data = new Map();
@@ -16,23 +16,23 @@ export default class ChatMessage {
     set(id: string, model: MessageItemType) {
         const item = this._data.get(id);
         if (item) {
-            item.next(model);
+            item.setValue(model);
             return;
         }
 
-        const newItem = new ValueSubject(model);
+        const newItem = new Value(model);
         this._data.set(id, newItem);
     }
 
-    get$(id: string): ValueObservable<MessageItemType | null> {
+    get$(id: string): ValueComputed<MessageItemType | null> {
         const item = this._data.get(id);
         if (item) {
-            return item.asObservable();
+            return item.asComputed();
         }
 
-        const newSub = new ValueSubject(null);
+        const newSub = new Value(null);
         this._data.set(id, newSub);
-        return newSub.asObservable();
+        return newSub.asComputed();
     }
 
     get(id: string): MessageItemType | null {

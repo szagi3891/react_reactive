@@ -42,8 +42,6 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
 }
 
 /*
-Do późniejszego wykorzystania
-
 var original = {
     "foo": "bar"
 };

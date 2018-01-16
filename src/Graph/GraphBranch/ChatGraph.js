@@ -1,7 +1,7 @@
 //@flow
 import { database } from './firebase';
 
-import { ValueSubject, ValueObservable } from 'react_reactive_value';
+import { Value, ValueComputed } from '../../Value';
 import GraphRenderManager from '../GraphRenderManager';
 import ChatMessageGraph from './ChatMessageGraph';
 
@@ -9,20 +9,20 @@ export default class ChatGraph {
 
     _chatMessage: ChatMessageGraph;
 
-    _list: ValueSubject<Array<string>>;
-    list$: ValueObservable<Array<string>>;
+    _list: Value<Array<string>>;
+    list$: ValueComputed<Array<string>>;
 
-    _online: ValueSubject<bool>;
-    online$: ValueObservable<bool>;
+    _online: Value<bool>;
+    online$: ValueComputed<bool>;
 
-    _sending: ValueSubject<bool>;
-    sending$: ValueObservable<bool>;
+    _sending: Value<bool>;
+    sending$: ValueComputed<bool>;
 
     constructor(chatMessage: ChatMessageGraph) {
         this._chatMessage = chatMessage;
 
-        this._list = new ValueSubject([]);
-        this.list$ = this._list.asObservable();
+        this._list = new Value([]);
+        this.list$ = this._list.asComputed();
 
         const messages = database.ref('rxjs-demo');
  
@@ -51,30 +51,30 @@ export default class ChatGraph {
             console.info('child_removed', data, data.val());
         });
 
-        this._online = new ValueSubject(true);
-        this.online$ = this._online.asObservable();
+        this._online = new Value(true);
+        this.online$ = this._online.asComputed();
 
         database.ref(".info/connected").on("value", (snap) => {
-            this._online.next(snap.val());
+            this._online.setValue(snap.val());
         });
 
-        this._sending = new ValueSubject(false);
-        this.sending$ = this._sending.asObservable();
+        this._sending = new Value(false);
+        this.sending$ = this._sending.asComputed();
     }
 
     send(nick: string, message: string): Promise<void> {
         const messagesRef = database.ref('rxjs-demo');
 
-        this._sending.next(true);
+        this._sending.setValue(true);
 
         return messagesRef.push({
             nick,
             message
         }).then((response) => {
-            this._sending.next(false);
+            this._sending.setValue(false);
             return response;
         }).catch((error: Object) => {
-            this._sending.next(false);
+            this._sending.setValue(false);
             return Promise.reject(error);
         });
     }

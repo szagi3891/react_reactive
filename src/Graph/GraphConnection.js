@@ -1,14 +1,14 @@
 //@flow
 
 import * as React from 'react';
-import { ValueObservable, Subscription } from 'react_reactive_value';
+import { ValueComputed } from '../Value';
 import GraphRenderManager from './GraphRenderManager';
 
 const isSSR = typeof window === 'undefined';
 
 export default class GraphConnection {
 
-    _subscriptionForRender: Array<Subscription>;
+    _subscriptionForRender: Array<() => void>;
 
     _oldRender: () => React.Node;
     _updateComponent: () => void;
@@ -28,7 +28,7 @@ export default class GraphConnection {
         GraphRenderManager.renderExit();
 
         for (const sub of old_sub) {
-            sub.unsubscribe();
+            sub();
         }
 
         return renderOut;
@@ -36,31 +36,20 @@ export default class GraphConnection {
 
     unmount() {
         for (const sub of this._subscriptionForRender) {
-            sub.unsubscribe();
+            sub();
         }
     }
 
-    getValue$ = <T>(stream: ValueObservable<T>): T => {
-        let result: null | { value: T }  = null;
-
-        const subscription = stream.subscribe(data => {
-            if (result === null) {
-                result = { value: data };
-            } else {
-                this._updateComponent();
-            }
-        });
-
-        if (result === null) {
-            throw Error('getValue - not available branches');
-        }
+    getValue$ = <T>(stream: ValueComputed<T>): T => {
+        const connect = stream.connect(this._updateComponent);
+        const result = connect.getValue();
 
         if (isSSR) {
-            subscription.unsubscribe();
+            connect.disconnect();
         } else {
-            this._subscriptionForRender.push(subscription);
+            this._subscriptionForRender.push(connect.disconnect);
         }
 
-        return result.value;
+        return result;
     };
 }

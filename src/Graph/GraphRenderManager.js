@@ -1,8 +1,8 @@
 //@flow
 
-import { ValueObservable } from 'react_reactive_value';
+import { ValueComputed } from '../Value';
 
-type GetValueType = <T>(stream: ValueObservable<T>) => T;
+type GetValueType = <T>(stream: ValueComputed<T>) => T;
 
 class GraphRenderManager {
 
@@ -16,7 +16,7 @@ class GraphRenderManager {
         this._getValue$ = getValue$;
     }
 
-    getValue$<T>(stream: ValueObservable<T>): T {
+    getValue$<T>(stream: ValueComputed<T>): T {
         if (this._getValue$ !== null) {
             return this._getValue$(stream);
         }
