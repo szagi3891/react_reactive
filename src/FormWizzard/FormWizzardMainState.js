@@ -1,6 +1,6 @@
 //@flow
 
-import { Value, ValueComputed, combineValueArr, combineValue } from '../Value';
+import { Value, ValueComputed, combineValueArr, combineValue } from 'computed-values';
 import FormGroupState from '../Form/FormGroupState';
 
 const getValue = <T>(data: ValueComputed<T>): T => {

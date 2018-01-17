@@ -1,7 +1,7 @@
 //@flow
 import * as React from 'react';
 import cx from 'classnames';
-import { BaseComponent } from '../Value';
+import { BaseComponent } from 'computed-values';
 import FormGroupState from './FormGroupState';
 import FormGroup from './FormGroup';
 import createFormSubmit from './FormSubmit';

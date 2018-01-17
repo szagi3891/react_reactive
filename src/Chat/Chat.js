@@ -1,7 +1,7 @@
 //@flow
 
 import * as React from 'react';
-import { BaseComponent, Value } from '../Value';
+import { BaseComponent, Value } from 'computed-values';
 
 import { database } from '../Graph/GraphBranch/firebase';
 

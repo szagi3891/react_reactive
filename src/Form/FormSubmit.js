@@ -1,5 +1,5 @@
 //@flow
-import { ValueComputed, combineValue } from '../Value';
+import { ValueComputed, combineValue } from 'computed-values';
 
 type SubmitType = {|
     onSubmit: () => void,

@@ -8,7 +8,7 @@ import MessageItem from './MessageItem/MessageItem';
 import Chat from './Chat/Chat';
 import Chat2 from './Chat2/Chat';
 import Autocomplete from './Autocomplete/Autocomplete';
-import { BaseComponent, Value } from './Value';
+import { BaseComponent, Value } from 'computed-values';
 import Tab from './Tab';
 import FormApp from './Form/FormApp';
 import FormInputState from './Form/FormInputState';

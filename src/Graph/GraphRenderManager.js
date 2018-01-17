@@ -1,6 +1,6 @@
 //@flow
 
-import { ValueComputed } from '../Value';
+import { ValueComputed } from 'computed-values';
 
 type GetValueType = <T>(stream: ValueComputed<T>) => T;
 

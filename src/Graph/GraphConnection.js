@@ -1,7 +1,7 @@
 //@flow
 
 import * as React from 'react';
-import { ValueComputed } from '../Value';
+import { ValueComputed } from 'computed-values';
 import GraphRenderManager from './GraphRenderManager';
 
 const isSSR = typeof window === 'undefined';

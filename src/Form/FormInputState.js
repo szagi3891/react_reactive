@@ -1,5 +1,5 @@
 //@flow
-import { Value, ValueComputed, combineValue } from '../Value';
+import { Value, ValueComputed, combineValue } from 'computed-values';
 
 export default class FormInputState {
     _value = new Value('');

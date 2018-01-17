@@ -1,6 +1,6 @@
 //@flow
 
-import { Value, ValueComputed } from '../../Value';
+import { Value, ValueComputed } from 'computed-values';
 
 import GraphRenderManager from '../GraphRenderManager';
 import type { MessageItemType } from '../Models';

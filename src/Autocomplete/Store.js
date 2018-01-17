@@ -1,6 +1,6 @@
 //@flow
 
-import { Value, ValueComputed } from '../Value';
+import { Value, ValueComputed } from 'computed-values';
 
 class Store {
     _data: Map<string, Value<Array<string> | null>>;

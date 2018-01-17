@@ -1,5 +1,5 @@
 //@flow
-import { ValueComputed, combineValueArr } from '../Value';
+import { ValueComputed, combineValueArr } from 'computed-values';
 import FormInputState from './FormInputState';
 
 type InputConfig = {|
