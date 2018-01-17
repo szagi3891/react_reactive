@@ -1,6 +1,6 @@
 //@flow
 import * as React from 'react';
-import { BaseComponent } from 'computed-values';
+import { BaseComponent } from '../BaseComponent';
 
 import FormInput from './FormInput';
 import FormGroupState from './FormGroupState';

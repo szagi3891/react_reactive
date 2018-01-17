@@ -30,6 +30,7 @@ export default class ChatGraph {
             this._list.update(currentList => {
                 const messageKey = messageItem.key;
                 const messageVal = messageItem.val();
+
                 const message = {
                     id: messageKey,
                     nick: messageVal.nick,
@@ -73,7 +74,7 @@ export default class ChatGraph {
         }).then((response) => {
             this._sending.setValue(false);
             return response;
-        }).catch((error: Object) => {
+        }).catch((error: mixed) => {
             this._sending.setValue(false);
             return Promise.reject(error);
         });

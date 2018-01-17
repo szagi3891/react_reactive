@@ -1,8 +1,9 @@
 //@flow
 
 import * as React from 'react';
-import { BaseComponent, Value } from 'computed-values';
+import { Value } from 'computed-values';
 
+import { BaseComponent } from '../BaseComponent';
 import { database } from '../Graph/GraphBranch/firebase';
 
 const messages = database.ref('rxjs-demo');

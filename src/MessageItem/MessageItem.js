@@ -1,6 +1,7 @@
 //@flow
 import * as React from 'react';
-import { BaseComponent, Value } from 'computed-values';
+import { Value } from 'computed-values';
+import { BaseComponent } from '../BaseComponent';
 
 const counter = new Value(44);
 const counter2 = new Value(1);

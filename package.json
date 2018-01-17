@@ -5,7 +5,7 @@
   "homepage": "https://szagi3891.github.io/react_reactive/",
   "dependencies": {
     "classnames": "^2.2.5",
-    "computed-values": "^0.0.3",
+    "computed-values": "0.0.4",
     "firebase": "^4.3.1",
     "immutable": "4.0.0-rc.9",
     "react": "^16.0.0-rc.3",

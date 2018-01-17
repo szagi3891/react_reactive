@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 
-import { BaseComponent, Value, ValueComputed, combineValue } from 'computed-values';
+import { Value, ValueComputed, combineValue } from 'computed-values';
+import { BaseComponent } from '../BaseComponent';
 
 import Store from './Store';
 
