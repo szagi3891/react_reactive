@@ -62,7 +62,7 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
         if (isSSR) {
             connection.disconnect();
         } else {
-            this._connections.push(connection.disconnect);
+            this._connections.push(() => connection.disconnect());
         }
 
         return connection.getValue();
