@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Value, ValueComputed, combineValue } from 'computed-values';
+import { Value, ValueComputed } from 'computed-values';
 import { BaseComponent } from '../BaseComponent';
 
 import Store from './Store';
@@ -20,7 +20,7 @@ class Autocomplete extends BaseComponent<PropsType> {
         .debounceTime(1000)
         .switchMap(input => Store.getList(input));
 
-    currentListWithDirection = combineValue(
+    currentListWithDirection = ValueComputed.combine(
         this.currentList,
         this.direction.asComputed(),
         (list, direction) => {
@@ -121,7 +121,7 @@ class AutocompleteListItem extends BaseComponent<PropsListType> {
 
 
 
-        this.chunks$ = combineValue(
+        this.chunks$ = ValueComputed.combine(
             value$,
             highlight$,
             (value, highlight) => {

@@ -1,5 +1,5 @@
 //@flow
-import { ValueComputed, combineValueArr } from 'computed-values';
+import { ValueComputed } from 'computed-values';
 import FormInputState from './FormInputState';
 
 type InputConfig = {|
@@ -17,7 +17,7 @@ export default class FormGroupState {
     constructor(inputsConfig: Array<InputConfig>) {
         this.inputs = inputsConfig;
 
-        this.data$ = combineValueArr(this.inputs.map(input => input.state.data$), value => value)
+        this.data$ = ValueComputed.combineArray(this.inputs.map(input => input.state.data$), value => value)
             .map((data: Array<string | null>): Array<string> | null => {
                 const out = [];
 

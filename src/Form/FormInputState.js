@@ -1,5 +1,5 @@
 //@flow
-import { Value, ValueComputed, combineValue } from 'computed-values';
+import { Value, ValueComputed } from 'computed-values';
 
 export default class FormInputState {
     _value = new Value('');
@@ -14,14 +14,14 @@ export default class FormInputState {
 
         const errorInput$ = this.value$.map((input: string): bool => !fnValidator(input));
 
-        this.error$ = combineValue(
+        this.error$ = ValueComputed.combine(
             errorInput$,
             this._isVisit.asComputed(),
             (error: bool, isVisit: bool): string | null =>
                 (error && isVisit) ? errorMessage : null
         );
 
-        this.data$ = combineValue(
+        this.data$ = ValueComputed.combine(
             errorInput$,
             this.value$,
             (error: bool, value: string): string | null => {

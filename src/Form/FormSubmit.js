@@ -1,5 +1,5 @@
 //@flow
-import { ValueComputed, combineValue } from 'computed-values';
+import { ValueComputed } from 'computed-values';
 
 type SubmitType = {|
     onSubmit: () => void,
@@ -10,7 +10,7 @@ export default <T>(
     data$: ValueComputed<T>,
     submit$: ValueComputed<(data: T) => void>
 ): ValueComputed<SubmitType> => {
-    const onSubmit$ = combineValue(
+    const onSubmit$ = ValueComputed.combine(
         data$,
         submit$,
         (data: T, submit: (data: T) => void) =>
@@ -21,7 +21,7 @@ export default <T>(
 
     const submitEnable$ = data$.map(data => data !== null);
 
-    return combineValue(
+    return ValueComputed.combine(
         onSubmit$,
         submitEnable$,
         (onSubmit, submitEnable) => ({

@@ -1,10 +1,10 @@
 //@flow
 
-import { Value, ValueComputed, combineValueArr, combineValue } from 'computed-values';
+import { Value, ValueComputed } from 'computed-values';
 import FormGroupState from '../Form/FormGroupState';
 
 const getValue = <T>(data: ValueComputed<T>): T => {
-    const connection = data.bind(() => {});
+    const connection = data.bind();
     const value = connection.getValue();
     connection.disconnect();
     return value;
@@ -23,7 +23,7 @@ export default class FormWizzardState {
     +_maxSteep$: ValueComputed<number>;
 
     constructor(steeps: Array<FormGroupState>) {
-        const listData$: ValueComputed<Array<Array<string> | null>> = combineValueArr(steeps.map(steep => steep.data$), value => value);
+        const listData$: ValueComputed<Array<Array<string> | null>> = ValueComputed.combineArray(steeps.map(steep => steep.data$), value => value);
         
         const data$ = listData$
             .map((data: Array<Array<string> | null>): Array<Array<string>> | null => {
@@ -62,7 +62,7 @@ export default class FormWizzardState {
 
         const prevEnable$ = steep$.map(steep => steep > 0);
 
-        const nextEnable$ = combineValue(
+        const nextEnable$ = ValueComputed.combine(
             steep$,
             this._maxSteep$,
             (steep, maxSteep) => steep < maxSteep
