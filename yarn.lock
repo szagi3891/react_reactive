@@ -1539,9 +1539,9 @@ compression@^1.5.2:
     safe-buffer "5.1.1"
     vary "~1.1.2"
 
-computed-values@0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/computed-values/-/computed-values-0.0.18.tgz#745288c7bbe3d949310afd7da7d58e932dfd93a8"
+computed-values@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/computed-values/-/computed-values-0.1.1.tgz#a5a7328995a1c084ae881f8c6c0f2708a16e6958"
 
 concat-map@0.0.1:
   version "0.0.1"

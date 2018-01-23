@@ -1,6 +1,5 @@
 //@flow
 
-import GraphRenderManager from './GraphRenderManager';
 import ChatMessageGraph from './GraphBranch/ChatMessageGraph';
 import ChatGraph from './GraphBranch/ChatGraph';
 

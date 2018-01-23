@@ -1,7 +1,7 @@
 //@flow
 
 import * as React from 'react';
-import { ValueComputed } from 'computed-values';
+import { Computed } from 'computed-values';
 import GraphRenderManager from './GraphRenderManager';
 
 const isSSR = typeof window === 'undefined';
@@ -40,7 +40,7 @@ export default class GraphConnection {
         }
     }
 
-    getValue$ = <T>(stream: ValueComputed<T>): T => {
+    getValue$ = <T>(stream: Computed<T>): T => {
         const connect = stream.connect(this._updateComponent);
         const result = connect.getValue();
 

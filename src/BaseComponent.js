@@ -1,7 +1,7 @@
 //@flow
 
 import * as React from 'react';
-import { Value, ValueComputed } from 'computed-values';
+import { Value, Computed } from 'computed-values';
 
 const isSSR = typeof window === 'undefined';
 
@@ -10,7 +10,7 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
     _connections: Array<() => void>;
 
     _propsValue: Value<Props>;
-    propsComputed: ValueComputed<Props>;
+    propsComputed: Computed<Props>;
 
     componentDidCatch(error: {}, info: {}) {
         console.error('componentDidCatch -> ', error, info);
@@ -56,7 +56,7 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
         this.forceUpdate();
     }
 
-    getFromComputed<T>(computed: ValueComputed<T>): T {
+    getFromComputed<T>(computed: Computed<T>): T {
         const connection = computed.connect(this._refresh);
 
         if (isSSR) {

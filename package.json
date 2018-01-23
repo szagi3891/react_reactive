@@ -5,7 +5,7 @@
   "homepage": "https://szagi3891.github.io/react_reactive/",
   "dependencies": {
     "classnames": "^2.2.5",
-    "computed-values": "0.0.18",
+    "computed-values": "0.1.1",
     "firebase": "^4.3.1",
     "immutable": "4.0.0-rc.9",
     "react": "^16.0.0-rc.3",
@@ -24,7 +24,7 @@
     "test": "react-scripts test --env=jsdom",
     "test-coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
-    "flowa": "flow status",
+    "flow": "flow status",
     "flow-ci": "flow-bin-ci src src/App.js"
   }
 }

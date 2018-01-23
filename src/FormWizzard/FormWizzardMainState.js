@@ -1,29 +1,22 @@
 //@flow
 
-import { Value, ValueComputed } from 'computed-values';
+import { Value, Computed } from 'computed-values';
 import FormGroupState from '../Form/FormGroupState';
 
-const getValue = <T>(data: ValueComputed<T>): T => {
-    const connection = data.bind();
-    const value = connection.getValue();
-    connection.disconnect();
-    return value;
-};
-
 export default class FormWizzardState {
-    +data$: ValueComputed<Array<Array<string>> | null>;
+    +data$: Computed<Array<Array<string>> | null>;
  
-    +currentSteep$: ValueComputed<[number, number]>;
-    +currentGroup$: ValueComputed<FormGroupState>;
+    +currentSteep$: Computed<[number, number]>;
+    +currentGroup$: Computed<FormGroupState>;
 
-    +prevEnable$: ValueComputed<bool>;
-    +nextEnable$: ValueComputed<bool>;
+    +prevEnable$: Computed<bool>;
+    +nextEnable$: Computed<bool>;
     
     +_currentSteep: Value<number>;
-    +_maxSteep$: ValueComputed<number>;
+    +_maxSteep$: Computed<number>;
 
     constructor(steeps: Array<FormGroupState>) {
-        const listData$: ValueComputed<Array<Array<string> | null>> = ValueComputed.combineArray(steeps.map(steep => steep.data$), value => value);
+        const listData$: Computed<Array<Array<string> | null>> = Computed.combineArray(steeps.map(steep => steep.data$), value => value);
         
         const data$ = listData$
             .map((data: Array<Array<string> | null>): Array<Array<string>> | null => {
@@ -62,7 +55,7 @@ export default class FormWizzardState {
 
         const prevEnable$ = steep$.map(steep => steep > 0);
 
-        const nextEnable$ = ValueComputed.combine(
+        const nextEnable$ = Computed.combine(
             steep$,
             this._maxSteep$,
             (steep, maxSteep) => steep < maxSteep
@@ -76,7 +69,6 @@ export default class FormWizzardState {
     }
 
     back = () => {
-        const maxSteep = getValue(this._maxSteep$);
         const steep = this._currentSteep.getValue();
 
         const newSteep = steep - 1;
@@ -87,7 +79,7 @@ export default class FormWizzardState {
     }
 
     next = () => {
-        const maxSteep = getValue(this._maxSteep$);
+        const maxSteep = this._maxSteep$.getValueSnapshot();
         const steep = this._currentSteep.getValue();
 
         const newSteep = steep + 1;

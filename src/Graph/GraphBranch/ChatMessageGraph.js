@@ -1,6 +1,6 @@
 //@flow
 
-import { Value, ValueComputed } from 'computed-values';
+import { Value, Computed } from 'computed-values';
 
 import GraphRenderManager from '../GraphRenderManager';
 import type { MessageItemType } from '../Models';
@@ -24,7 +24,7 @@ export default class ChatMessage {
         this._data.set(id, newItem);
     }
 
-    get$(id: string): ValueComputed<MessageItemType | null> {
+    get$(id: string): Computed<MessageItemType | null> {
         const item = this._data.get(id);
         if (item) {
             return item.asComputed();

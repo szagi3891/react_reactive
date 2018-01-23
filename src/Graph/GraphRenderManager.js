@@ -1,8 +1,8 @@
 //@flow
 
-import { ValueComputed } from 'computed-values';
+import { Computed } from 'computed-values';
 
-type GetValueType = <T>(stream: ValueComputed<T>) => T;
+type GetValueType = <T>(stream: Computed<T>) => T;
 
 class GraphRenderManager {
 
@@ -16,7 +16,7 @@ class GraphRenderManager {
         this._getValue$ = getValue$;
     }
 
-    getValue$<T>(stream: ValueComputed<T>): T {
+    getValue$<T>(stream: Computed<T>): T {
         if (this._getValue$ !== null) {
             return this._getValue$(stream);
         }

@@ -1,6 +1,6 @@
 //@flow
 
-import { Value, ValueComputed } from 'computed-values';
+import { Value, Computed } from 'computed-values';
 
 class Store {
     _data: Map<string, Value<Array<string> | null>>;
@@ -9,7 +9,7 @@ class Store {
         this._data = new Map();
     }
 
-    getList(text: string): ValueComputed<Array<string> | null> {
+    getList(text: string): Computed<Array<string> | null> {
         const item = this._data.get(text);
 
         if (item) {

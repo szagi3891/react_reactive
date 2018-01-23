@@ -1,7 +1,7 @@
 //@flow
 import { database } from './firebase';
 
-import { Value, ValueComputed } from 'computed-values';
+import { Value, Computed } from 'computed-values';
 import GraphRenderManager from '../GraphRenderManager';
 import ChatMessageGraph from './ChatMessageGraph';
 
@@ -10,13 +10,13 @@ export default class ChatGraph {
     _chatMessage: ChatMessageGraph;
 
     _list: Value<Array<string>>;
-    list$: ValueComputed<Array<string>>;
+    list$: Computed<Array<string>>;
 
     _online: Value<bool>;
-    online$: ValueComputed<bool>;
+    online$: Computed<bool>;
 
     _sending: Value<bool>;
-    sending$: ValueComputed<bool>;
+    sending$: Computed<bool>;
 
     constructor(chatMessage: ChatMessageGraph) {
         this._chatMessage = chatMessage;
