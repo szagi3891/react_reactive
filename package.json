@@ -16,6 +16,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "cross-env": "^5.1.3",
     "flow-bin": "0.63.1",
     "flow-bin-ci": "^0.1.1",
     "flow-typed": "^2.2.3",
@@ -25,7 +26,7 @@
   "scripts": {
     "ci": "yarn run flow-ci && yarn run flow && yarn run test",
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html && rm -Rf docs && mv dist docs",
+    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url ./ && rm -Rf docs && mv dist docs",
     "test": "jest",
     "flow": "flow status",
     "flow-ci": "flow-bin-ci src src/App.js"
