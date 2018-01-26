@@ -17,6 +17,7 @@ import FormGroupState from './Form/FormGroupState';
 import Validators from './Form/Validators';
 import FormWizzardMain from './FormWizzard/FormWizzardMain';
 import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
+import Overlay from './Overlay/Overlay';
 
 class App extends BaseComponent<{||}> {
     formState1 = new FormGroupState([{
@@ -123,6 +124,10 @@ class App extends BaseComponent<{||}> {
                 onSubmit={this._onSubmit2}
             />
         )
+    },{
+        key: 'overlay',
+        label: 'Overlay',
+        render: () => <Overlay/>
     }];
 
     _getTabClass = (tab: string): string => {
