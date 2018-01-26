@@ -1,4 +1,3 @@
-//@flow
 import * as React from 'react';
 import { Value, Computed } from 'computed-values';
 import { BaseComponent } from '../BaseComponent';
@@ -37,10 +36,12 @@ export default class extends BaseComponent<PropsType> {
     }
 
     _triggerEnter = () => {
+        console.info('enter');
         this._visitedTrigger.setValue(true);
     }
 
     _triggerLeave = () => {
+        console.info('leave');
         this._visitedTrigger.setValue(false);
     }
 
