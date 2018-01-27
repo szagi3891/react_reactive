@@ -27,7 +27,7 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
     }
 
     constructor(props: Props) {
-        super();
+        super(props);
 
         this._connections = [];
 

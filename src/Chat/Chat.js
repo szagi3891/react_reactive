@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Value } from 'computed-values';
 
 import { BaseComponent } from '../BaseComponent';
-import { database } from '../Graph/GraphBranch/firebase';
+import { database } from '../Graph/Store/firebase';
 
 const messages = database.ref('rxjs-demo');
 
@@ -25,12 +25,15 @@ messages.on('child_added', function(messageItem) {
     chat.update(currentList => {
         const messageKey = messageItem.key;
         const messageVal = messageItem.val();
-        const message = {
-            id: messageKey,
-            nick: messageVal.nick,
-            message: messageVal.message
+
+        if (typeof messageKey === 'string') {
+            currentList.push({
+                id: messageKey,
+                nick: messageVal.nick,
+                message: messageVal.message
+            });
         }
-        currentList.push(message);
+
         return currentList;
     });
 });
@@ -53,12 +56,16 @@ type PropsType = {|
 
 export default class Chat extends BaseComponent<PropsType> {
 
-    _onChangeNick = (event: Object) => {
-        nick.setValue(event.target.value);
+    _onChangeNick = (event: SyntheticEvent<>) => {
+        if (event.target instanceof HTMLInputElement) {
+            nick.setValue(event.target.value);
+        }
     }
 
-    _onChangeTextarea = (event: Object) => {
-        textarea.setValue(event.target.value);
+    _onChangeTextarea = (event: SyntheticEvent<>) => {
+        if (event.target instanceof HTMLTextAreaElement) {
+            textarea.setValue(event.target.value);
+        }
     }
 
     _onSend = () => {
@@ -84,7 +91,7 @@ export default class Chat extends BaseComponent<PropsType> {
         }).then((aaa) => {
             console.info(`Message send: ${textareaValue}`);
             sending.setValue(false);
-        }).catch((error: Object) => {
+        }).catch((error: mixed) => {
             console.error(error);
             sending.setValue(false);
         });

@@ -38,17 +38,26 @@ class Autocomplete extends BaseComponent<PropsType> {
         }
     );
 
-    _onChange = (event: Object) => {
-        console.info('input', event.target.value);
-        this.input.setValue(event.target.value);
+    _onChange = (event: SyntheticEvent<>) => {
+        const target = event.target;
+        if (target instanceof HTMLInputElement) {
+            console.info('input', target.value);
+            this.input.setValue(target.value);
+        }
     }
 
-    _onChangeHighlight = (event: Object) => {
-        this.inputHighlight.setValue(event.target.value);
+    _onChangeHighlight = (event: SyntheticEvent<>) => {
+        const target = event.target;
+        if (target instanceof HTMLInputElement) {
+            this.inputHighlight.setValue(target.value);
+        }
     };
 
-    _onChangeDirection = (event: Object) => {
-        this.direction.setValue(event.target.checked);
+    _onChangeDirection = (event: SyntheticEvent<>) => {
+        const target = event.target;
+        if (target instanceof HTMLInputElement) {
+            this.direction.setValue(target.checked);
+        }
     }
 
     render() {

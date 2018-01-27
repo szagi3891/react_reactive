@@ -4,7 +4,7 @@ import { Computed } from 'computed-values';
 
 type GetValueType = <T>(stream: Computed<T>) => T;
 
-class GraphRenderManager {
+class RenderManager {
 
     _getValue$: null | GetValueType;
 
@@ -21,7 +21,7 @@ class GraphRenderManager {
             return this._getValue$(stream);
         }
 
-        throw Error('getValue$ - has been called outside the render function');
+        return stream.getValueSnapshot();
     }
 
     renderExit() {
@@ -29,4 +29,4 @@ class GraphRenderManager {
     }
 }
 
-export default new GraphRenderManager();
+export default new RenderManager();

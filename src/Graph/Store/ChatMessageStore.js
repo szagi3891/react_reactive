@@ -2,12 +2,12 @@
 
 import { Value, Computed } from 'computed-values';
 
-import GraphRenderManager from '../GraphRenderManager';
+import RenderManager from '../RenderManager';
 import type { MessageItemType } from '../Models';
 
-export default class ChatMessage {
+export default class ChatMessageStore {
 
-    _data: Map<string, Value<MessageItemType | null>>;
+    +_data: Map<string, Value<MessageItemType | null>>;
 
     constructor() {
         this._data = new Map();
@@ -36,6 +36,6 @@ export default class ChatMessage {
     }
 
     get(id: string): MessageItemType | null {
-        return GraphRenderManager.getValue$(this.get$(id));
+        return RenderManager.getValue$(this.get$(id));
     }
 }

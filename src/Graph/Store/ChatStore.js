@@ -2,23 +2,23 @@
 import { database } from './firebase';
 
 import { Value, Computed } from 'computed-values';
-import GraphRenderManager from '../GraphRenderManager';
-import ChatMessageGraph from './ChatMessageGraph';
+import RenderManager from '../RenderManager';
+import ChatMessageStore from './ChatMessageStore';
 
-export default class ChatGraph {
+export default class ChatStore {
 
-    _chatMessage: ChatMessageGraph;
+    +_chatMessage: ChatMessageStore;
 
-    _list: Value<Array<string>>;
-    list$: Computed<Array<string>>;
+    +_list: Value<Array<string>>;
+    +list$: Computed<Array<string>>;
 
-    _online: Value<bool>;
-    online$: Computed<bool>;
+    +_online: Value<bool>;
+    +online$: Computed<bool>;
 
-    _sending: Value<bool>;
-    sending$: Computed<bool>;
+    +_sending: Value<bool>;
+    +sending$: Computed<bool>;
 
-    constructor(chatMessage: ChatMessageGraph) {
+    constructor(chatMessage: ChatMessageStore) {
         this._chatMessage = chatMessage;
 
         this._list = new Value([]);
@@ -28,17 +28,17 @@ export default class ChatGraph {
  
         messages.on('child_added', (messageItem) => {
             this._list.update(currentList => {
-                const messageKey = messageItem.key;
+                const id = messageItem.key;
                 const messageVal = messageItem.val();
 
-                const message = {
-                    id: messageKey,
-                    nick: messageVal.nick,
-                    message: messageVal.message
+                if (typeof id === 'string') {
+                    this._chatMessage.set(id, {
+                        id,
+                        nick: messageVal.nick,
+                        message: messageVal.message
+                    });
+                    currentList.push(id);
                 }
-
-                this._chatMessage.set(message.id, message);
-                currentList.push(message.id);
 
                 return currentList;
             });
@@ -81,14 +81,14 @@ export default class ChatGraph {
     }
 
     get sending(): bool {
-        return GraphRenderManager.getValue$(this.sending$);
+        return RenderManager.getValue$(this.sending$);
     }
 
     get online(): bool {
-        return GraphRenderManager.getValue$(this.online$);
+        return RenderManager.getValue$(this.online$);
     }
 
     get list(): Array<string> {
-        return GraphRenderManager.getValue$(this.list$);
+        return RenderManager.getValue$(this.list$);
     }
 }
