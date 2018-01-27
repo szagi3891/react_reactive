@@ -30,8 +30,6 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
         this._subscriptionForRender = [];
     }
 
-    //event gdy otrzymujemy nowe propsy
-
     constructor(props: Props) {
 
         /*
@@ -85,6 +83,9 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
 
     _updateComponent = () => {
         this.forceUpdate();
+
+        //Component.prototype.forceUpdate.call(this)
+        //https://github.com/mobxjs/mobx-react
 
         /*
         //$FlowFixMe
