@@ -1185,9 +1185,9 @@ command-line-usage@^4.0.0:
     table-layout "^0.4.2"
     typical "^2.6.1"
 
-computed-values@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/computed-values/-/computed-values-0.1.6.tgz#597c76e2f2e1b7c76c99bdba93c0caf5c45a5c9e"
+computed-values@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/computed-values/-/computed-values-0.2.1.tgz#de2e19c96c2d39e3a878295acc320da62a4345b0"
 
 concat-map@0.0.1:
   version "0.0.1"

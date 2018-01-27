@@ -88,7 +88,7 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
         //https://github.com/mobxjs/mobx-react
 
         /*
-        //$FlowFixMe
+        //$ FlowFixMe
         this.setState({
             __refresh: {}
         });

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Value, Computed } from 'computed-values';
+import { Value, Computed, ValueDebounce } from 'computed-values';
 import { BaseComponent } from '../BaseComponent';
 
 import Store from './Store';
@@ -12,12 +12,11 @@ type PropsType = {|
 |};
 
 class Autocomplete extends BaseComponent<PropsType> {
-    input = new Value('');
+    input: ValueDebounce<string> = new ValueDebounce('', 1000);
     inputHighlight = new Value('');
     direction = new Value(false);
 
     currentList = this.input.asComputed()
-        .debounceTime(1000)
         .switchMap(input => Store.getList(input));
 
     currentListWithDirection = Computed.combine(
