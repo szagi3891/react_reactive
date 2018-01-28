@@ -22,20 +22,19 @@ type MessageItemType = {|
 const chat: Value<Array<MessageItemType>> = new Value([]);
 
 messages.on('child_added', function(messageItem) {
-    chat.update(currentList => {
-        const messageKey = messageItem.key;
-        const messageVal = messageItem.val();
+    const currentList = chat.getValue();
+    const messageKey = messageItem.key;
+    const messageVal = messageItem.val();
 
-        if (typeof messageKey === 'string') {
-            currentList.push({
-                id: messageKey,
-                nick: messageVal.nick,
-                message: messageVal.message
-            });
-        }
+    if (typeof messageKey === 'string') {
+        currentList.push({
+            id: messageKey,
+            nick: messageVal.nick,
+            message: messageVal.message
+        });
+    }
 
-        return currentList;
-    });
+    chat.setValue(currentList);
 });
 
 database.ref(".info/connected").on("value", function(snap) {

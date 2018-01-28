@@ -27,21 +27,21 @@ export default class ChatStore {
         const messages = database.ref('rxjs-demo');
  
         messages.on('child_added', (messageItem) => {
-            this._list.update(currentList => {
-                const id = messageItem.key;
-                const messageVal = messageItem.val();
+            const currentList = this._list.getValue();
 
-                if (typeof id === 'string') {
-                    this._chatMessage.set(id, {
-                        id,
-                        nick: messageVal.nick,
-                        message: messageVal.message
-                    });
-                    currentList.push(id);
-                }
+            const id = messageItem.key;
+            const messageVal = messageItem.val();
 
-                return currentList;
-            });
+            if (typeof id === 'string') {
+                this._chatMessage.set(id, {
+                    id,
+                    nick: messageVal.nick,
+                    message: messageVal.message
+                });
+                currentList.push(id);
+            }
+
+            this._list.setValue(currentList);
         });
 
         messages.on('child_changed', (data) => {

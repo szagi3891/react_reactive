@@ -74,7 +74,7 @@ export default class FormWizzardState {
         const newSteep = steep - 1;
 
         if (newSteep >= 0) {
-            this._currentSteep.update((value) => newSteep);
+            this._currentSteep.setValue(newSteep);
         }
     }
 
@@ -85,7 +85,7 @@ export default class FormWizzardState {
         const newSteep = steep + 1;
 
         if (newSteep <= maxSteep) {
-            this._currentSteep.update((value) => newSteep);
+            this._currentSteep.setValue(newSteep);
         }
     }
 }

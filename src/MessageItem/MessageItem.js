@@ -7,14 +7,11 @@ const counter = new Value(44);
 const counter2 = new Value(1);
 
 setInterval(() => {
-    counter.update(prevValue => {
-        counter2.update(prevValue => prevValue);
-        return prevValue + 1;
-    });
+    counter.setValue(counter.getValue() + 1);
 }, 500);
 
 setInterval(() => {
-    counter2.update(prevValue => prevValue + 1);
+    counter2.setValue(counter2.getValue() + 1);
 }, 3000);
 
 type PropsType = {|
