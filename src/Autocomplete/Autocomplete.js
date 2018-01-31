@@ -13,9 +13,10 @@ type PropsType = {|
 
 class Autocomplete extends BaseComponent<PropsType> {
     input: ValueDebounce<string> = new ValueDebounce('', 1000);
-    inputHighlight = new Value('');
+    _inputHighlight = new Value('');
     direction = new Value(false);
 
+    inputHighlight = this._inputHighlight.asComputed();
     currentList = this.input.asComputed()
         .switchMap(input => Store.getList(input));
 
@@ -48,7 +49,7 @@ class Autocomplete extends BaseComponent<PropsType> {
     _onChangeHighlight = (event: SyntheticEvent<>) => {
         const target = event.target;
         if (target instanceof HTMLInputElement) {
-            this.inputHighlight.setValue(target.value);
+            this._inputHighlight.setValue(target.value);
         }
     };
 
@@ -100,7 +101,7 @@ class Autocomplete extends BaseComponent<PropsType> {
                     <AutocompleteListItem
                         key={item}
                         value={item}
-                        highlight={this.inputHighlight.asComputed()}
+                        highlight={this.inputHighlight}
                     />
                 ))}
             </div>
@@ -113,8 +114,19 @@ type PropsListType = {|
     highlight: Computed<string>,
 |};
 
+const joinArr = <T>(list: Array<T>, separator: T): Array<T> => {
+    const out = [];
+    for (const item of list) {
+        out.push(item);
+        out.push(separator);
+    }
+
+    out.pop();
+    return out;
+};
+
 class AutocompleteListItem extends BaseComponent<PropsListType> {
-    chunks$: Computed<[Array<string>, string]>;
+    chunks$: Computed<Array<[string, bool]>>;
 
     constructor(props: PropsListType) {
         super(props);
@@ -127,35 +139,62 @@ class AutocompleteListItem extends BaseComponent<PropsListType> {
             .switchMap(props => props.highlight)
             .distinctUntilChanged();
 
-
-
         this.chunks$ = Computed.combine(
             value$,
             highlight$,
             (value, highlight) => {
                 if (highlight === '') {
-                    return [[value], highlight]    
+                    return [[value, false]];   
                 };
 
-                return [value.split(highlight), highlight]
+                const chunks = value.split(highlight).map(word => [word, false]);
+                
+                return joinArr(chunks, [highlight, true]);
             }
-        );
+        ).distinctUntilChanged((list1, list2): bool => {
+            if (list1.length !== list2.length) {
+                return false;
+            }
+
+            for (let i=0; i<list1.length; i++) {
+                const [word1, high1] = list1[i];
+                const [word2, high2] = list2[i];
+
+                if (word1 !== word2) {
+                    return false;
+                }
+
+                if (high1 !== high2) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
     }
 
     render() {
-        const [chunks, highlight] = this.getFromComputed(this.chunks$);
+        const list = this.getFromComputed(this.chunks$);
 
         const out = [];
-        for (const [index, item] of chunks.entries()) {
-            if (index !== 0) {
-                out.push(<div key={`${highlight}_${index}`} className="Autocomplite__highlight">{highlight}</div>);
+
+        for (const [index, [word, isHighlight]] of list.entries()) {
+            if (isHighlight) {
+                out.push(<div key={index} className="Autocomplite__highlight">{word}</div>);
+            } else {
+                out.push(<div key={index}>{word}</div>);
             }
-            out.push(<div key={index}>{item}</div>);
         }
 
         return (
             <div className="Autocomplite__result_item">
-                { out }
+                {
+                    React.createElement(
+                        React.Fragment,
+                        {},
+                        ...out
+                    )
+                }
             </div>
         );
     }
