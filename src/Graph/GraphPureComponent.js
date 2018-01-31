@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import Store from './Store/Store';
-import { Computed } from 'computed-values';
+import { Computed, groupConnectionRefresh, Connection } from 'computed-values';
 import RenderManager from './RenderManager';
 
 const graph: Store = new Store();
@@ -11,21 +11,21 @@ const isSSR = typeof window === 'undefined';
 
 export default class GraphPureComponent<Props, StateType = void> extends React.PureComponent<Props, StateType> {
 
-    _subscriptionForRender: Array<() => void>;
+    _subscriptionForRender: Array<Connection<mixed>>;
     graph: Store;
 
     componentDidCatch(error: {}, info: {}) {
         console.info('componentDidCatch -> ', error, info);
 
         for (const sub of this._subscriptionForRender) {
-            sub();
+            sub.disconnect();
         }
         this._subscriptionForRender = [];
     }
 
     componentWillUnmount() {
         for (const sub of this._subscriptionForRender) {
-            sub();
+            sub.disconnect();
         }
         this._subscriptionForRender = [];
     }
@@ -58,9 +58,11 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
             RenderManager.renderExit();
     
             for (const sub of old_sub) {
-                sub();
+                sub.disconnect();
             }
     
+            groupConnectionRefresh(this._subscriptionForRender, this._updateComponent);
+
             return renderOut;
         };
 
@@ -69,13 +71,14 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
     }
 
     getValue$ = <T>(stream: Computed<T>): T => {
-        const connect = stream.connect(this._updateComponent);
+        const connect = stream.bind();
         const result = connect.getValue();
 
         if (isSSR) {
             connect.disconnect();
         } else {
-            this._subscriptionForRender.push(connect.disconnect);
+            //$FlowFixMe
+            this._subscriptionForRender.push(connect);
         }
 
         return result;

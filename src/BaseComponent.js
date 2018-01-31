@@ -1,13 +1,13 @@
 //@flow
 
 import * as React from 'react';
-import { Value, Computed } from 'computed-values';
+import { Value, Computed, groupConnectionRefresh, Connection } from 'computed-values';
 
 const isSSR = typeof window === 'undefined';
 
 export class BaseComponent<Props> extends React.Component<Props, void> {
 
-    _connections: Array<() => void>;
+    _connections: Array<Connection<mixed>>;
 
     _propsValue: Value<Props>;
     propsComputed: Computed<Props>;
@@ -22,7 +22,7 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
 
     componentWillUnmount() {
         for (const item of this._connections) {
-            item();
+            item.disconnect();
         }
     }
 
@@ -45,8 +45,10 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
             const renderOut = oldRender();
 
             for (const item of old_connections) {
-                item();
+                item.disconnect();
             }
+
+            groupConnectionRefresh(this._connections, this._refresh);
 
             return renderOut;
         };
@@ -57,12 +59,13 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
     }
 
     getFromComputed<T>(computed: Computed<T>): T {
-        const connection = computed.connect(this._refresh);
+        const connection = computed.bind();
 
         if (isSSR) {
             connection.disconnect();
         } else {
-            this._connections.push(() => connection.disconnect());
+            //$FlowFixMe
+            this._connections.push(connection);
         }
 
         return connection.getValue();
