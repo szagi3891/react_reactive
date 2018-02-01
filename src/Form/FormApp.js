@@ -23,7 +23,7 @@ export default class FormApp extends BaseComponent<PropsType> {
 
     render() {
         const { className, state } = this.props;
-        const submit = this.getFromComputed(this.submit$);
+        const submit = this.submit$.value();
 
         const submitClassName: string = cx('FormSubmit', {
             'FormSubmit--disable': !submit.submitEnable

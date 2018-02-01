@@ -85,7 +85,7 @@ class Autocomplete extends BaseComponent<PropsType> {
     }
 
     _renderList = () => {
-        const list = this.getFromComputed(this.currentListWithDirection);
+        const list = this.currentListWithDirection.value();
         
         if (list === null) {
             return (
@@ -174,7 +174,7 @@ class AutocompleteListItem extends BaseComponent<PropsListType> {
     }
 
     render() {
-        const list = this.getFromComputed(this.chunks$);
+        const list = this.chunks$.value();
 
         const out = [];
 

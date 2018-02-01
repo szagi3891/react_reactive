@@ -97,9 +97,9 @@ export default class Chat extends BaseComponent<PropsType> {
     }
 
     render() {
-        const nickValue = this.getFromComputed(nick.asComputed());
-        const textareaValue = this.getFromComputed(textarea.asComputed());
-        const sendingValue = this.getFromComputed(sending.asComputed());
+        const nickValue = nick.asComputed().value();
+        const textareaValue = textarea.asComputed().value();
+        const sendingValue = sending.asComputed().value();
 
         return (
             <div className="Chat__wrapper">
@@ -133,7 +133,7 @@ export default class Chat extends BaseComponent<PropsType> {
     }
 
     _renderNetworkStatus = () => {
-        const onlineValue = this.getFromComputed(online.asComputed());
+        const onlineValue = online.asComputed().value();
         if (onlineValue) {
             return (
                 <div className="Chat__online">Network Online</div>
@@ -146,7 +146,7 @@ export default class Chat extends BaseComponent<PropsType> {
     }
 
     _renderList() {
-        const list = this.getFromComputed(chat.asComputed()).concat().reverse();
+        const list = chat.asComputed().value().concat().reverse();
         return (
             <div className="Chat__list App__border">
                 { list.map(item => this._renderListItem(item)) }

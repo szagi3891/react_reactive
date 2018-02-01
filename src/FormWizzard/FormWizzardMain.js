@@ -19,10 +19,10 @@ export default class FormWizzard extends BaseComponent<PropsType> {
     render() {
         const { className, state } = this.props;
 
-        const currentGroup: FormGroupState = this.getFromComputed(state.currentGroup$)
-        const [currentSteep, maxSteep] = this.getFromComputed(state.currentSteep$);
-        const prevEnable = this.getFromComputed(state.prevEnable$);
-        const nextEnable = this.getFromComputed(state.nextEnable$);
+        const currentGroup: FormGroupState = state.currentGroup$.value();
+        const [currentSteep, maxSteep] = state.currentSteep$.value();
+        const prevEnable = state.prevEnable$.value();
+        const nextEnable = state.nextEnable$.value();
 
         return (
             <div className={className}>

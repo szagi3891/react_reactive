@@ -14,8 +14,8 @@ export default class FormInput extends BaseComponent<PropsInputType> {
 
     render() {
         const { input, caption } = this.props;
-        const value = this.getFromComputed(input.value$);
-        const error = this.getFromComputed(input.error$);
+        const value = input.value$.value();
+        const error = input.error$.value();
 
         return (
             <div className="FormInput">

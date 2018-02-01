@@ -48,10 +48,6 @@ export default class GraphPureComponent<Props, StateType = void> extends React.P
             return catchSubscriptions(this._updateComponent, oldRender);
         };
     }
-
-    getValue$ = <T>(stream: Computed<T>): T => {
-        return stream.value();
-    }
 }
 
 

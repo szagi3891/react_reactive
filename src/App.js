@@ -142,7 +142,7 @@ class App extends BaseComponent<{||}> {
     }
 
     _getTabClass = (tab: string): string => {
-        const currentTab = this.getFromComputed(this.tab$);
+        const currentTab = this.tab$.value();
         return cx('Menu__item', {
             'Menu__item--select': currentTab === tab
         });

@@ -39,8 +39,4 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
             return catchSubscriptions(this._refresh, () => oldRender());
         };
     }
-
-    getFromComputed<T>(computed: Computed<T>): T {
-        return computed.value();
-    }
 }

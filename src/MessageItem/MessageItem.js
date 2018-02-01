@@ -27,8 +27,8 @@ export default class MessageItem extends BaseComponent<PropsType> {
 
     render() {
         const { className, messageId } = this.props;
-        const counter = this.getFromComputed(this.counter$);
-        const char = this.getFromComputed(this.char$);
+        const counter = this.counter$.value();
+        const char = this.char$.value();
 
         return (
             <div className={className}>
