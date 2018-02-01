@@ -8,7 +8,7 @@ import MessageItem from './MessageItem/MessageItem';
 import Chat from './Chat/Chat';
 import Chat2 from './Chat2/Chat';
 import Autocomplete from './Autocomplete/Autocomplete';
-import { Value } from 'computed-values';
+import { Value, Computed } from 'computed-values';
 import { BaseComponent } from './BaseComponent';
 import Tab from './Tab';
 import FormApp from './Form/FormApp';
@@ -18,6 +18,8 @@ import Validators from './Form/Validators';
 import FormWizzardMain from './FormWizzard/FormWizzardMain';
 import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
 //simport Overlay from './Overlay/Overlay';
+
+type PropsType = {||};
 
 class App extends BaseComponent<{||}> {
     formState1 = new FormGroupState([{
@@ -75,9 +77,9 @@ class App extends BaseComponent<{||}> {
     }]);
 
     formWizzardState = new FormWizzardMainState([this.formState1, this.formState2, this.formState3]);
-
-    tab: Value<string> = new Value('formWizzard');
-    tab$ = this.tab.asComputed();
+    
+    tab: Value<string>;
+    tab$: Computed<string>;
 
     _config = [{
         key: 'formWizzard',
@@ -132,6 +134,13 @@ class App extends BaseComponent<{||}> {
     */
     }];
 
+    constructor(props: PropsType) {
+        super(props);
+            
+        this.tab = new Value('formWizzard');
+        this.tab$ = this.tab.asComputed();
+    }
+
     _getTabClass = (tab: string): string => {
         const currentTab = this.getFromComputed(this.tab$);
         return cx('Menu__item', {
@@ -172,7 +181,7 @@ class App extends BaseComponent<{||}> {
     );
 
     render() {
-        const currentTab = this.getFromComputed(this.tab$);
+        const currentTab = this.tab$.value();
 
         return (
             <div className="App">

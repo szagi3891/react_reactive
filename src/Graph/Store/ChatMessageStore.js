@@ -2,7 +2,6 @@
 
 import { Value, Computed } from 'computed-values';
 
-import RenderManager from '../RenderManager';
 import type { MessageItemType } from '../Models';
 
 export default class ChatMessageStore {
@@ -36,6 +35,6 @@ export default class ChatMessageStore {
     }
 
     get(id: string): MessageItemType | null {
-        return RenderManager.getValue$(this.get$(id));
+        return this.get$(id).value();
     }
 }

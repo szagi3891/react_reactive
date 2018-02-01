@@ -2,7 +2,6 @@
 import { database } from './firebase';
 
 import { Value, Computed } from 'computed-values';
-import RenderManager from '../RenderManager';
 import ChatMessageStore from './ChatMessageStore';
 
 export default class ChatStore {
@@ -81,14 +80,14 @@ export default class ChatStore {
     }
 
     get sending(): bool {
-        return RenderManager.getValue$(this.sending$);
+        return this.sending$.value();
     }
 
     get online(): bool {
-        return RenderManager.getValue$(this.online$);
+        return this.online$.value();
     }
 
     get list(): Array<string> {
-        return RenderManager.getValue$(this.list$);
+        return this.list$.value();
     }
 }
