@@ -1,7 +1,6 @@
 //@flow
 import * as React from 'react';
-import { Value } from 'computed-values';
-import { BaseComponent } from '../BaseComponent';
+import { Value, ReactDecorator } from 'computed-values';
 
 const counter = new Value(44);
 const counter2 = new Value(1);
@@ -14,21 +13,22 @@ setInterval(() => {
     counter2.setValue(counter2.getValue() + 1);
 }, 3000);
 
+const counter$ = counter.asComputed();
+const char$ = counter2.asComputed()
+    .map(count => '.'.repeat(Math.min(count, 30)));
+
+
 type PropsType = {|
     className: string,
     messageId: string,
 |};
 
-export default class MessageItem extends BaseComponent<PropsType> {
-
-    counter$ = counter.asComputed();
-    char$ = counter2.asComputed()
-        .map(count => '.'.repeat(Math.min(count, 30)));
-
+@ReactDecorator
+export default class MessageItem extends React.Component<PropsType> {
     render() {
         const { className, messageId } = this.props;
-        const counter = this.counter$.value();
-        const char = this.char$.value();
+        const counter = counter$.value();
+        const char = char$.value();
 
         return (
             <div className={className}>
