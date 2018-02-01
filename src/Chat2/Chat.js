@@ -2,64 +2,59 @@
 
 import * as React from 'react';
 import GraphPureComponent from '../Graph/GraphPureComponent';
+import { Value, transaction } from 'computed-values';
 
 type PropsType = {|
     className: string,
 |};
 
-type StateType = {|
-    nick: string,
-    message: string,
-    errorMessage: string | null,
-|};
-
-export default class Chat extends GraphPureComponent<PropsType, StateType> {
-    constructor(props: PropsType) {
-        super(props);
-        this.state = {
-            nick: '',
-            message: '',
-            errorMessage: null
-        };
-    }
+export default class Chat extends GraphPureComponent<PropsType> {
+    nick = new Value('');
+    message = new Value('');
+    errorMessage: Value<string | null> = new Value(null);
 
     _onChangeNick = (event: SyntheticEvent<>) => {
-        if (event.target instanceof HTMLInputElement) {
-            this.setState({
-                nick: event.target.value,
-                errorMessage: null
+        const target = event.target;
+        if (target instanceof HTMLInputElement) {
+            transaction(() => {
+                this.nick.setValue(target.value);
+                this.errorMessage.setValue(null);
             });
         }
     }
 
     _onChangeTextarea = (event: SyntheticEvent<>) => {
         if (event.target instanceof HTMLTextAreaElement) {
-            this.setState({
-                message: event.target.value,
-                errorMessage: null
+            const target = event.target;
+            transaction(() => {
+                this.message.setValue(target.value);
+                this.errorMessage.setValue(null);
             });
         }
     }
 
     _onSend = () => {
-        const { nick, message } = this.state;
+        const nick = this.nick.getValue();
+        const message = this.message.getValue();
 
         if (nick.length < 1) {
-            this.setState({ errorMessage: 'Type in the nick' });
+            this.errorMessage.setValue('Type in the nick');
             return;
         }
 
         if (message.length < 1) {
-            this.setState({ errorMessage: 'Type in the message' });
+            this.errorMessage.setValue('Type in the message');
             return;
         }
 
         this.graph.chat.send(nick, message);
-        this.setState({ message: '' });
+        this.errorMessage.setValue('');
+        'Type in the message'
     };
 
     render() {
-        const { nick, message } = this.state;
+        const nick = this.nick.asComputed().value();
+        const message = this.message.asComputed().value();
 
         return (
             <div className="Chat__wrapper">

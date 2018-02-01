@@ -8,7 +8,7 @@ import { Computed, Connection, catchSubscriptions, catchSubscriptionsDisconnect 
 const graph: Store = new Store();
 const isSSR = typeof window === 'undefined';
 
-export default class GraphPureComponent<Props, StateType = void> extends React.PureComponent<Props, StateType> {
+export default class GraphPureComponent<Props> extends React.PureComponent<Props, void> {
 
     graph: Store;
 
