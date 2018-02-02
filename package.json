@@ -27,7 +27,6 @@
   "scripts": {
     "ci": "yarn run flow-ci && yarn run flow && yarn run test",
     "start": "parcel src/index.html",
-    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url ./ && rm -Rf docs && mv dist docs",
     "test": "jest",
     "flow": "flow status",
     "flow-ci": "flow-bin-ci src src/App.js"
