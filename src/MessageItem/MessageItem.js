@@ -1,6 +1,8 @@
 //@flow
 import * as React from 'react';
 import { Value, ReactDecorator, Computed } from 'computed-values';
+import {observable, action} from 'mobx';
+import {observer} from 'mobx-react';
 
 const counter = new Value(44);
 const counter2 = new Value(1);
@@ -25,12 +27,24 @@ const sum$ = Computed.combine(
     (counter1, counter2) => counter1 + counter2
 );
 
+const appState = observable({
+    timer: 0,
+    resetTimer: () => {
+        appState.timer = 0;    
+    }
+});
+
+setInterval(action(() => {
+    appState.timer += 1;
+}), 1000);
+
 type PropsType = {|
     className: string,
     messageId: string,
 |};
 
 @ReactDecorator
+@observer
 export default class MessageItem extends React.Component<PropsType> {
     render() {
         const { className, messageId } = this.props;
@@ -38,11 +52,14 @@ export default class MessageItem extends React.Component<PropsType> {
         const char = char$.value();
         const sum = sum$.value();
 
+        const timer = appState.timer;
+
         return (
             <div className={className}>
                 <p>{ messageId } { counter }</p>
                 <p>{char}</p>
                 <p>Suma: { sum }</p>
+                <p onClick={appState.resetTimer}>{ timer }</p>
             </div>
         );
     }
