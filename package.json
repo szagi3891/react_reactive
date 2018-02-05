@@ -10,8 +10,8 @@
     "immutable": "4.0.0-rc.9",
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
-    "react": "16.2",
-    "react-dom": "16.2"
+    "react": "^16.3.0-alpha.0",
+    "react-dom": "^16.3.0-alpha.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.5",

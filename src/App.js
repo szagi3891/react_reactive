@@ -19,6 +19,9 @@ import FormWizzardMain from './FormWizzard/FormWizzardMain';
 import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
 //simport Overlay from './Overlay/Overlay';
 
+import { AppContext, AppContextCounter } from './AppContext';
+import AppFooter from './AppFooter';
+
 type PropsType = {||};
 
 class App extends BaseComponent<{||}> {
@@ -182,12 +185,16 @@ class App extends BaseComponent<{||}> {
 
     render() {
         const currentTab = this.tab$.value();
+        const appCounter = AppContextCounter.value();
 
         return (
-            <div className="App">
-                { this._renderMenu() }
-                { this._renderBody(currentTab) }
-            </div>
+            <AppContext.Provider value={{ appCounter }}>
+                <div className="App">
+                    { this._renderMenu() }
+                    { this._renderBody(currentTab) }
+                    <AppFooter />
+                </div>
+            </AppContext.Provider>
         );
     }
 }
