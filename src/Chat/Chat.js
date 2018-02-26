@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Value } from 'computed-values';
 
 import { BaseComponent } from '../BaseComponent';
-import { database } from '../Graph/Store/firebase';
+import { database } from '../Chat2/Store/firebase';
 
 const messages = database.ref('rxjs-demo');
 

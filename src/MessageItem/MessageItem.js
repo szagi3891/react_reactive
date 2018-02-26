@@ -1,31 +1,7 @@
 //@flow
 import * as React from 'react';
-import { Value, ReactDecorator, Computed } from 'computed-values';
 import {observable, action} from 'mobx';
 import {observer} from 'mobx-react';
-
-const counter = new Value(44);
-const counter2 = new Value(1);
-
-const counter$ = counter.asComputed();
-const counter2$ = counter2.asComputed();
-
-setInterval(() => {
-    counter.setValue(counter.getValue() + 1);
-}, 500);
-
-setInterval(() => {
-    counter2.setValue(counter2.getValue() + 1);
-}, 3000);
-
-const char$ = counter2$
-    .map(count => '.'.repeat(Math.min(count, 30)));
-
-const sum$ = Computed.combine(
-    counter$,
-    counter2$,
-    (counter1, counter2) => counter1 + counter2
-);
 
 const appState = observable({
     timer: 0,
@@ -34,31 +10,27 @@ const appState = observable({
     }
 });
 
+/*
 setInterval(action(() => {
     appState.timer += 1;
 }), 1000);
+*/
 
 type PropsType = {|
     className: string,
     messageId: string,
 |};
 
-@ReactDecorator
 @observer
 export default class MessageItem extends React.Component<PropsType> {
     render() {
         const { className, messageId } = this.props;
-        const counter = counter$.value();
-        const char = char$.value();
-        const sum = sum$.value();
 
         const timer = appState.timer;
 
         return (
             <div className={className}>
-                <p>{ messageId } { counter }</p>
-                <p>{char}</p>
-                <p>Suma: { sum }</p>
+                <p>{ messageId }</p>
                 <p onClick={appState.resetTimer}>{ timer }</p>
             </div>
         );

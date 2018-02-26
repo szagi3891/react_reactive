@@ -1,14 +1,14 @@
 //@flow
 
 import * as React from 'react';
-import GraphPureComponent from '../Graph/GraphPureComponent';
+import PureComponent from './PureComponent';
 import { Value, transaction } from 'computed-values';
 
 type PropsType = {|
     className: string,
 |};
 
-export default class Chat extends GraphPureComponent<PropsType> {
+export default class Chat extends PureComponent<PropsType> {
     nick = new Value('');
     message = new Value('');
     errorMessage: Value<string | null> = new Value(null);

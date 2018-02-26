@@ -18,6 +18,7 @@ import Validators from './Form/Validators';
 import FormWizzardMain from './FormWizzard/FormWizzardMain';
 import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
 //simport Overlay from './Overlay/Overlay';
+import FormMobx from './FormMobx/FormMobx';
 
 import { AppContext, AppContextCounter } from './AppContext';
 import AppFooter from './AppFooter';
@@ -135,6 +136,11 @@ class App extends BaseComponent<{||}> {
         label: 'Overlay',
         render: () => <Overlay/>
     */
+
+    },{
+        key: 'formMobx',
+        label: 'FormMobx',
+        render: () => <FormMobx className="App__border" />
     }];
 
     constructor(props: PropsType) {
@@ -192,7 +198,7 @@ class App extends BaseComponent<{||}> {
                 <div className="App">
                     { this._renderMenu() }
                     { this._renderBody(currentTab) }
-                    <AppFooter />
+                    <AppFooter className="App__border" />
                 </div>
             </AppContext.Provider>
         );

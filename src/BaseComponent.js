@@ -36,7 +36,7 @@ export class BaseComponent<Props> extends React.Component<Props, void> {
         
         //$FlowFixMe
         this.render = () => {
-            return catchSubscriptions(this._refresh, () => oldRender());
+            return catchSubscriptions(this._refresh, oldRender);
         };
     }
 }

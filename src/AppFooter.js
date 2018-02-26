@@ -5,13 +5,17 @@ import * as React from 'react';
 import { BaseComponent } from './BaseComponent'
 import { AppContext } from './AppContext';
 
-type PropsType = {||};
+type PropsType = {|
+    className: string,
+|};
 
 export default class AppFooter extends BaseComponent<PropsType> {
-
     render(): React.Node {
+        const { className } = this.props;
+
         return (
-            <div>
+            <div className={className}>
+                Context
                 <AppContext.Consumer>
                     {(context) => {
                         return (
