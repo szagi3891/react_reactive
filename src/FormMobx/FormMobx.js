@@ -57,7 +57,7 @@ class InputState {
     }
 }
 
-class Form {
+class FormState {
     field1: InputState;
     field2: InputState;
     field3: InputState;
@@ -76,7 +76,7 @@ class Form {
     }
 }
 
-const state = new Form(
+const state = new FormState(
     new InputState('Imię', minChars(10)),
     new InputState('Nazwisko', minChars(3)),
     new InputState('Jakieś inne pole', onlyNumbers),
