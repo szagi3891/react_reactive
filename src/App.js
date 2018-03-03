@@ -19,6 +19,7 @@ import FormWizzardMain from './FormWizzard/FormWizzardMain';
 import FormWizzardMainState from './FormWizzard/FormWizzardMainState';
 //simport Overlay from './Overlay/Overlay';
 import FormMobx from './FormMobx/FormMobx';
+import Window from './Window/Window';
 
 import { AppContext, AppContextCounter } from './AppContext';
 import AppFooter from './AppFooter';
@@ -141,6 +142,11 @@ class App extends BaseComponent<{||}> {
         key: 'formMobx',
         label: 'FormMobx',
         render: () => <FormMobx className="App__border" />
+
+    }, {
+        key: 'window',
+        label: "Window",
+        render: () => <Window className="App__border" />
     }];
 
     constructor(props: PropsType) {

@@ -6,12 +6,55 @@
     <meta name="theme-color" content="#000000">
     <link rel="shortcut icon" href="./favicon.ico">
     <title>React App</title>
-  </head>
+    <link rel="prefetch" data-autorun="js-nocache" href="./index.js" />
+    <script>
+      (function() {
+          var isRun = false;
+
+          addEvent(window, 'load', run);
+          setTimeout(run, 3000);
+
+          function run() {
+              if (isRun) {
+                  return;
+              }
+              isRun = true;
+
+              const list = [].slice.call(document.querySelectorAll('*[data-autorun]'));
+              for (var i = 0; i < list.length; i++) {
+                  runItem(list[i].getAttribute('data-autorun'), list[i].getAttribute('href'));
+              }
+          }
+
+          function runItem(mode, src) {
+              if (mode === 'js-nocache') {
+                loadScript(src + '?random=' + new Date().getTime());
+              } else if (mode === 'js') {
+                loadScript(src);
+              }
+          }
+
+          function loadScript(src) {
+              var script = document.createElement('script');
+              script.setAttribute('type', 'text/javascript');
+              script.setAttribute('src', src);
+              document.head.appendChild(script);
+          }
+
+          function addEvent(element, event, callback) {
+              if (element.addEventListener) {
+                  element.addEventListener(event, callback, false);
+              } else {
+                  element.attachEvent('on' + event, callback);
+              }
+          }
+      })();
+  </script>
+</head>
   <body>
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
-    <script src="./index.js"></script>
   </body>
 </html>
