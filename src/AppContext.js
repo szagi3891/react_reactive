@@ -12,5 +12,5 @@ const AppContextCounterVal = new Value(0);
 export const AppContextCounter = AppContextCounterVal.asComputed();
 
 setInterval(() => {
-    AppContextCounterVal.setValue(AppContextCounterVal.getValue() + 2);
+    AppContextCounterVal.setValue(AppContextCounterVal.getValueSnapshot() + 2);
 }, 1000);

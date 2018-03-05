@@ -26,7 +26,7 @@ export default class ChatStore {
         const messages = database.ref('rxjs-demo');
  
         messages.on('child_added', (messageItem) => {
-            const currentList = this._list.getValue();
+            const currentList = this._list.getValueSnapshot();
 
             const id = messageItem.key;
             const messageVal = messageItem.val();

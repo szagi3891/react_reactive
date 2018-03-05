@@ -22,7 +22,7 @@ type MessageItemType = {|
 const chat: Value<Array<MessageItemType>> = new Value([]);
 
 messages.on('child_added', function(messageItem) {
-    const currentList = chat.getValue();
+    const currentList = chat.getValueSnapshot();
     const messageKey = messageItem.key;
     const messageVal = messageItem.val();
 
@@ -68,8 +68,8 @@ export default class Chat extends BaseComponent<PropsType> {
     }
 
     _onSend = () => {
-        const nickValue = nick.getValue();
-        const textareaValue = textarea.getValue();
+        const nickValue = nick.getValueSnapshot();
+        const textareaValue = textarea.getValueSnapshot();
 
         if (nickValue.length < 1) {
             alert('Type in the nick');

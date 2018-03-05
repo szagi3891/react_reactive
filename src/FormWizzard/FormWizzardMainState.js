@@ -69,7 +69,7 @@ export default class FormWizzardState {
     }
 
     back = () => {
-        const steep = this._currentSteep.getValue();
+        const steep = this._currentSteep.getValueSnapshot();
 
         const newSteep = steep - 1;
 
@@ -80,7 +80,7 @@ export default class FormWizzardState {
 
     next = () => {
         const maxSteep = this._maxSteep$.getValueSnapshot();
-        const steep = this._currentSteep.getValue();
+        const steep = this._currentSteep.getValueSnapshot();
 
         const newSteep = steep + 1;
 

@@ -34,8 +34,8 @@ export default class Chat extends PureComponent<PropsType> {
     }
 
     _onSend = () => {
-        const nick = this.nick.getValue();
-        const message = this.message.getValue();
+        const nick = this.nick.getValueSnapshot();
+        const message = this.message.getValueSnapshot();
 
         if (nick.length < 1) {
             this.errorMessage.setValue('Type in the nick');

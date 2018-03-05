@@ -1077,9 +1077,9 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-computed-values@0.3.15:
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/computed-values/-/computed-values-0.3.15.tgz#df40df02ab26354d86fde62b9e30ae78e9b54a3a"
+computed-values@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/computed-values/-/computed-values-0.5.1.tgz#f0eea59b51267aa1351faf133e016bf7232b779e"
 
 concat-map@0.0.1:
   version "0.0.1"
